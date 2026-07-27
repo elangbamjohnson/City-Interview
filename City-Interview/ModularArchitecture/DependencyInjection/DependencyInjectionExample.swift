@@ -41,6 +41,42 @@ class ProfileViewModel {
     }
 }
 
+// 4. The Mock Implementation (For Unit Testing)
+// 💡 INTERVIEW TALKING POINTS:
+// • Creating a Mock conforming to the same protocol allows us to test `ProfileViewModel` 
+//   in complete isolation without relying on slow, flaky network calls or backend services.
+// • By tracking state (like `fetchUserNameCallCount`), we can also verify that methods 
+//   were called the expected number of times (Spy pattern).
+class MockUserService: ModularUserServiceProtocol {
+    // We can inject behaviors into our mock to test different scenarios
+    var stubbedUserName: String = "Test User"
+    var fetchUserNameCallCount = 0
+    
+    func fetchUserName() -> String {
+        fetchUserNameCallCount += 1
+        return stubbedUserName
+    }
+}
+
+// 5. Unit Testing Example
+// 💡 INTERVIEW TALKING POINTS:
+// • This demonstrates how DI shines. We swap the real network dependency for the mock,
+//   allowing us to verify the ViewModel's logic instantaneously and deterministically.
+func testProfileViewModelGreeting() {
+    let mockService = MockUserService()
+    mockService.stubbedUserName = "Interview Candidate"
+    
+    // 🛡️ Inject the mock into the ViewModel instead of the RealUserService
+    let viewModel = ProfileViewModel(userService: mockService)
+    
+    let greeting = viewModel.getGreeting()
+    
+    // In a real XCTest, this would be: XCTAssertEqual(greeting, "Hello, Interview Candidate")
+    assert(greeting == "Hello, Interview Candidate")
+    assert(mockService.fetchUserNameCallCount == 1)
+    print("✅ DI Mock Test Passed: \(greeting)")
+}
+
 // ==========================================
 // 🎙️ Interview Q&A
 // ==========================================

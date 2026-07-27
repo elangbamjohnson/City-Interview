@@ -21,8 +21,20 @@ class BasicOperationDemonstrator {
     func runBlockOperation() {
         // BlockOperation is a built-in subclass for executing closures
         let downloadOp = BlockOperation {
-            print("Downloading Image... (BlockOperation)")
-            sleep(1) // Simulate work
+            print("Starting image download... (BlockOperation)")
+            
+            // ⚠️ This is synchronous blocking I/O, but it is entirely safe here because
+            // the OperationQueue automatically executes this closure on a background thread.
+            guard let url = URL(string: "https://picsum.photos/200/300"),
+                  let data = try? Data(contentsOf: url) else {
+                print("Failed to download image.")
+                return
+            }
+            
+            print("Successfully downloaded image of size: \(data.count) bytes")
+            
+            // If this was an app, you must dispatch back to the Main Thread to update the UI:
+            // DispatchQueue.main.async { imageView.image = UIImage(data: data) }
         }
         
         // As soon as you add it to the queue, it schedules execution on a background thread.

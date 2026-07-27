@@ -1,3 +1,4 @@
+import SwiftUI
 import Foundation
 
 // MARK: - 🌐 URLSession Basics
@@ -22,7 +23,8 @@ struct SessionUser: Codable {
 }
 
 class URLSessionDemonstrator {
-    let url = URL(string: "https://api.example.com/users/1")!
+    // We use JSONPlaceholder for a real working demonstration in the UI
+    let url = URL(string: "https://jsonplaceholder.typicode.com/users/1")!
     
     // ==========================================
     // 1. Traditional Completion Handler
@@ -35,7 +37,11 @@ class URLSessionDemonstrator {
                 return
             }
             
-            guard let data = data else { return } // Should handle custom error here
+            guard let data = data else {
+                let error = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data received"])
+                completion(.failure(error))
+                return
+            }
             
             do {
                 let user = try JSONDecoder().decode(SessionUser.self, from: data)
@@ -57,13 +63,91 @@ class URLSessionDemonstrator {
         let (data, response) = try await URLSession.shared.data(from: url)
         
         // Basic validation
-        guard let httpResponse = response as? HTTPURLResponse,
-              (200...299).contains(httpResponse.statusCode) else {
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             throw URLError(.badServerResponse)
         }
         
         return try JSONDecoder().decode(SessionUser.self, from: data)
     }
+}
+
+// ==========================================
+// 3. UI Playground
+// ==========================================
+struct URLSessionPlaygroundView: View {
+    let demonstrator = URLSessionDemonstrator()
+    
+    @State private var resultText = "Tap a button to fetch data"
+    @State private var isLoading = false
+    
+    var body: some View {
+        VStack(spacing: 24) {
+            Text("URLSession Basics")
+                .font(.title2).bold()
+            
+            GroupBox {
+                if isLoading {
+                    ProgressView()
+                } else {
+                    Text(resultText)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                }
+            }
+            .frame(height: 120)
+            
+            VStack(spacing: 16) {
+                Button {
+                    isLoading = true
+                    // Calling the legacy completion handler method
+                    demonstrator.fetchUserLegacy { result in
+                        // ⚠️ INTERVIEW TRAP: Completion handlers return on a background thread.
+                        // You MUST dispatch to the Main Thread before updating the UI!
+                        DispatchQueue.main.async {
+                            isLoading = false
+                            switch result {
+                            case .success(let user):
+                                resultText = "Legacy Success:\n\(user.name)\n(\(user.email))"
+                            case .failure(let error):
+                                resultText = "Legacy Error: \(error.localizedDescription)"
+                            }
+                        }
+                    }
+                } label: {
+                    Text("Fetch (Legacy Completion)")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                
+                Button {
+                    isLoading = true
+                    // Calling the modern Async/Await method inside a Task
+                    Task {
+                        do {
+                            let user = try await demonstrator.fetchUserModern()
+                            // No manual DispatchQueue.main needed if inside a MainActor or standard Task tied to the View
+                            resultText = "Modern Success:\n\(user.name)\n(\(user.email))"
+                        } catch {
+                            resultText = "Modern Error: \(error.localizedDescription)"
+                        }
+                        isLoading = false
+                    }
+                } label: {
+                    Text("Fetch (Modern Async/Await)")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+            }
+            .padding(.horizontal)
+            
+            Spacer()
+        }
+        .padding()
+    }
+}
+
+#Preview {
+    URLSessionPlaygroundView()
 }
 
 // ==========================================

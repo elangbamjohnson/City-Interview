@@ -1,74 +1,83 @@
 import Foundation
 import CoreData
 
-// MARK: - 🗄️ Core Data Internals
+// MARK: - 🗄️ Core Data Stack (Bare Minimum)
 //
-// 💡 INTERVIEW TALKING POINTS:
-// • What is Core Data? It is an **Object Graph Manager** (it manages objects and their relationships), NOT just a database. It usually uses SQLite under the hood, but abstracts it completely.
-// • Persistent Container & Coordinator: The Persistent Container encapsulates the Core Data stack. The Coordinator sits between the Context (scratchpad) and the Persistent Store (actual DB file), managing saves and loads.
-// • Main vs Background Context: The `viewContext` runs on the main thread and is for UI updates. `newBackgroundContext()` runs on a background thread for heavy importing/saving to avoid freezing the UI.
-// • NSFetchedResultsController: A powerful controller used to automatically keep a UITableView/UICollectionView in sync with Core Data changes.
+// 💡 INTERVIEW CONCEPTS TO MEMORIZE:
+// 1. Container: Wraps the whole stack (Model, Coordinator, Contexts).
+// 2. viewContext: Runs on the MAIN thread. Used for UI fetching.
+// 3. Thread Rule: NEVER pass an NSManagedObject across threads. Pass its ID or map it to a struct.
 
 // ==========================================
-// CRUD Flow Example (Core Data)
+// 1. The Core Data Stack Initialization
 // ==========================================
+class PersistenceController {
+    static let shared = PersistenceController()
+    let container: NSPersistentContainer
 
-// Assume `NoteEntity` is defined in an .xcdatamodeld file
-@objc(NoteEntity)
-class NoteEntity: NSManagedObject {
-    @NSManaged var id: String
-    @NSManaged var title: String
-    @NSManaged var timestamp: Date
+    init() {
+        // "YourModel" must match the .xcdatamodeld filename exactly
+        container = NSPersistentContainer(name: "YourModel")
+        
+        container.loadPersistentStores { description, error in
+            if let error = error {
+                fatalError("Core Data failed to load: \(error)")
+            }
+        }
+        
+        // Auto-merge background saves into the main UI context
+        container.viewContext.automaticallyMergesChangesFromParent = true
+    }
 }
 
+// ==========================================
+// 2. The Entity (Manual Codegen)
+// ==========================================
+@objc(NoteEntity)
+class NoteEntity: NSManagedObject {
+    @NSManaged var title: String
+}
+
+// ==========================================
+// 3. Simple Usage (Main Thread vs Background)
+// ==========================================
 class CoreDataDemonstrator {
-    let context: NSManagedObjectContext
+    let container = PersistenceController.shared.container
     
-    init(context: NSManagedObjectContext) {
-        self.context = context
-    }
-    
-    // Create
-    func createNote(id: String, title: String) {
+    // 🟢 MAIN THREAD (UI)
+    func saveOnMainThread(title: String) {
+        let context = container.viewContext // Main thread context
         let note = NoteEntity(context: context)
-        note.id = id
         note.title = title
-        note.timestamp = Date()
         
-        try? context.save()
+        try? context.save() // Blocks UI during disk write
     }
     
-    // Read
-    func fetchNotes() -> [NoteEntity] {
-        let request = NSFetchRequest<NoteEntity>(entityName: "NoteEntity")
-        // Optional: request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
-        
-        do {
-            return try context.fetch(request)
-        } catch {
-            return []
+    // 🔵 BACKGROUND THREAD (Heavy operations)
+    func saveInBackground(title: String) {
+        // Automatically creates a private context on a background queue
+        container.performBackgroundTask { backgroundContext in
+            let note = NoteEntity(context: backgroundContext)
+            note.title = title
+            
+            try? backgroundContext.save() // Safe background disk write
         }
     }
     
-    // Update
-    func updateNote(note: NoteEntity, newTitle: String) {
-        note.title = newTitle
-        try? context.save()
-    }
-    
-    // Delete
-    func deleteNote(note: NoteEntity) {
-        context.delete(note)
-        try? context.save()
+    // 🔵 BACKGROUND FETCH (Thread Safety)
+    func fetchInBackground(completion: @escaping ([String]) -> Void) {
+        let backgroundContext = container.newBackgroundContext()
+        
+        backgroundContext.perform {
+            let request = NSFetchRequest<NoteEntity>(entityName: "NoteEntity")
+            let notes = (try? backgroundContext.fetch(request)) ?? []
+            
+            // ⚠️ CRITICAL: Map NSManagedObjects to simple strings before returning!
+            let titles = notes.map { $0.title }
+            
+            DispatchQueue.main.async {
+                completion(titles)
+            }
+        }
     }
 }
-
-// ==========================================
-// 🎙️ Interview Q&A
-// ==========================================
-// • Q: Why use Core Data instead of direct SQLite?
-//   A: Core Data handles complex object relationships (graph management), lazy loading (faulting), and provides built-in UI synchronization (NSFetchedResultsController).
-// • Q: What is a "fault" in Core Data?
-//   A: A placeholder object. Core Data doesn't load all data into memory at once; it loads a fault, and only fetches the actual data from disk when you access a property.
-// • Q: Why did your app crash when you passed a managed object to a background thread?
-//   A: Managed objects are strictly bound to the context/thread they were created on. You must pass the object's `NSManagedObjectID` and re-fetch it on the background context.

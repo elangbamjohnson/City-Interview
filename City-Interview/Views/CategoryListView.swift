@@ -101,6 +101,22 @@ struct CategoryListView: View {
                     }
                     .padding(.vertical, 8)
                 }
+                
+                NavigationLink(destination: AutoLayoutPlaygroundRepresentable()) {
+                    HStack {
+                        Image(systemName: "squareshape.split.2x2")
+                            .foregroundColor(.pink)
+                            .font(.system(size: 24))
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Auto Layout Basics")
+                                .font(.system(size: 22, weight: .bold))
+                            Text("Constraints & Anchors")
+                                .font(.system(size: 16))
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .padding(.vertical, 8)
+                }
             }
             
             Section(header: Text("Interview Questions").font(.system(size: 16))) {

@@ -6,9 +6,27 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		144BBAD017A38CF617BA28A3 /* StringValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7EAF4648D3EB91C2E9A07AE /* StringValidatorTests.swift */; };
+		F2A6AE515D79A167D6ED130A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C357DF2EAE500F9C99968C0F /* Foundation.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F8300463D0F6B2F7158827EC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2380D9E93010E0BA0012C47A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2380D9F03010E0BA0012C47A;
+			remoteInfo = "City-Interview";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		00F4B53F273D11ACCA7DE71F /* City-InterviewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "City-InterviewTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2380D9F13010E0BA0012C47A /* City-Interview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "City-Interview.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		31AC496A173105CBB67C94BC /* InterviewPrepIndex.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = InterviewPrepIndex.md; sourceTree = "<group>"; };
+		B7EAF4648D3EB91C2E9A07AE /* StringValidatorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StringValidatorTests.swift; sourceTree = "<group>"; };
+		C357DF2EAE500F9C99968C0F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -27,6 +45,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B99225F490DCC6FC1006C282 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F2A6AE515D79A167D6ED130A /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -36,6 +62,8 @@
 				2380D9F33010E0BA0012C47A /* City-Interview */,
 				2380D9F23010E0BA0012C47A /* Products */,
 				31AC496A173105CBB67C94BC /* InterviewPrepIndex.md */,
+				36889691ABC84385E898DCC7 /* Frameworks */,
+				915A94D466056BC279051F8B /* City-InterviewTests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -43,8 +71,33 @@
 			isa = PBXGroup;
 			children = (
 				2380D9F13010E0BA0012C47A /* City-Interview.app */,
+				00F4B53F273D11ACCA7DE71F /* City-InterviewTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		35A7EA4D4FD73A5BAA786EA3 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				C357DF2EAE500F9C99968C0F /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		36889691ABC84385E898DCC7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				35A7EA4D4FD73A5BAA786EA3 /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		915A94D466056BC279051F8B /* City-InterviewTests */ = {
+			isa = PBXGroup;
+			children = (
+				B7EAF4648D3EB91C2E9A07AE /* StringValidatorTests.swift */,
+			);
+			path = "City-InterviewTests";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -70,6 +123,24 @@
 			productReference = 2380D9F13010E0BA0012C47A /* City-Interview.app */;
 			productType = "com.apple.product-type.application";
 		};
+		967AED3ED85D786ED4C628C6 /* City-InterviewTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 322DEA948E12508B66077C0A /* Build configuration list for PBXNativeTarget "City-InterviewTests" */;
+			buildPhases = (
+				D62614F5258DDF482007F3A6 /* Sources */,
+				B99225F490DCC6FC1006C282 /* Frameworks */,
+				8945E52CAE44872AB075CCE7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				553A01ED0822164316235839 /* PBXTargetDependency */,
+			);
+			name = "City-InterviewTests";
+			productName = "City-InterviewTests";
+			productReference = 00F4B53F273D11ACCA7DE71F /* City-InterviewTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -82,6 +153,9 @@
 				TargetAttributes = {
 					2380D9F03010E0BA0012C47A = {
 						CreatedOnToolsVersion = 26.6;
+					};
+					967AED3ED85D786ED4C628C6 = {
+						TestTargetID = 2380D9F03010E0BA0012C47A;
 					};
 				};
 			};
@@ -100,12 +174,20 @@
 			projectRoot = "";
 			targets = (
 				2380D9F03010E0BA0012C47A /* City-Interview */,
+				967AED3ED85D786ED4C628C6 /* City-InterviewTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		2380D9EF3010E0BA0012C47A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8945E52CAE44872AB075CCE7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +204,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D62614F5258DDF482007F3A6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				144BBAD017A38CF617BA28A3 /* StringValidatorTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		553A01ED0822164316235839 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "City-Interview";
+			target = 2380D9F03010E0BA0012C47A /* City-Interview */;
+			targetProxy = F8300463D0F6B2F7158827EC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		2380D9FA3010E0BB0012C47A /* Debug */ = {
@@ -306,6 +405,47 @@
 			};
 			name = Release;
 		};
+		5A40561D8FAEBE64D273D8CA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				EXECUTABLE_NAME = "City-InterviewTests";
+				INFOPLIST_FILE = "City-InterviewTests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.city.City-InterviewTests";
+				PRODUCT_NAME = "City-InterviewTests";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/City-Interview.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/City-Interview";
+			};
+			name = Debug;
+		};
+		DF3AEE8557A5B07F9B252F15 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				EXECUTABLE_NAME = "City-InterviewTests";
+				INFOPLIST_FILE = "City-InterviewTests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.city.City-InterviewTests";
+				PRODUCT_NAME = "City-InterviewTests";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/City-Interview.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/City-Interview";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -323,6 +463,15 @@
 			buildConfigurations = (
 				2380D9FD3010E0BB0012C47A /* Debug */,
 				2380D9FE3010E0BB0012C47A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		322DEA948E12508B66077C0A /* Build configuration list for PBXNativeTarget "City-InterviewTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DF3AEE8557A5B07F9B252F15 /* Release */,
+				5A40561D8FAEBE64D273D8CA /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
