@@ -3,6 +3,7 @@ import Foundation
 // MARK: - 🧠 ARC (Automatic Reference Counting) Internals
 //
 // 💡 INTERVIEW TALKING POINTS:
+// • ARC keeps a count of strong references to each object, and deallocates it the moment that count hits zero — it's compile-time inserted, deterministic, and only applies to reference types, not value types.
 // • ARC is a compile-time feature, not a runtime garbage collector.
 //   The Swift compiler automatically inserts `retain` and `release` calls.
 // • When retain count > 0, the object stays in memory.
