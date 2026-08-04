@@ -39,6 +39,57 @@ final class UserService: UserServiceProtocol {
         }
         return try JSONDecoder().decode([User].self, from: data)
     }
+    
+    // MARK: - async let Example
+    /// INTERVIEW TOPIC: async let
+    /// - `async let` allows you to spawn multiple child tasks concurrently.
+    /// - They all run in parallel, and you `await` them all at once at the end.
+    /// - Ideal for a fixed, known number of independent tasks.
+    func fetchUsersAndPostsConcurrently() async throws -> ([User], [String]) {
+        // Dummy URL for posts
+        let postsUrl = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        let usersUrl = URL(string: "https://jsonplaceholder.typicode.com/users")!
+        
+        // 1. Fire off both requests in parallel
+        async let usersData = URLSession.shared.data(from: usersUrl)
+        async let postsData = URLSession.shared.data(from: postsUrl)
+        
+        // 2. Suspend once to await both results
+        let (uData, _) = try await usersData
+        let (pData, _) = try await postsData
+        
+        // 3. Decode
+        let users = try JSONDecoder().decode([User].self, from: uData)
+        // Just returning dummy posts for demonstration
+        let posts = ["Post 1", "Post 2"]
+        
+        return (users, posts)
+    }
+    
+    // MARK: - TaskGroup Example
+    /// INTERVIEW TOPIC: TaskGroup
+    /// - `withThrowingTaskGroup` is used for a dynamic or unknown number of parallel tasks.
+    /// - You add tasks to the group and process their results as they finish.
+    func fetchMultipleUsersConcurrently(userIds: [Int]) async throws -> [User] {
+        return try await withThrowingTaskGroup(of: User.self) { group in
+            // 1. Spawn a concurrent child task for each ID
+            for id in userIds {
+                group.addTask {
+                    let url = URL(string: "https://jsonplaceholder.typicode.com/users/\(id)")!
+                    let (data, _) = try await URLSession.shared.data(from: url)
+                    return try JSONDecoder().decode(User.self, from: data)
+                }
+            }
+            
+            var collectedUsers: [User] = []
+            // 2. Await the results as they finish (in whatever order they complete)
+            for try await user in group {
+                collectedUsers.append(user)
+            }
+            
+            return collectedUsers
+        }
+    }
 }
 
 // MARK: - ViewModel
