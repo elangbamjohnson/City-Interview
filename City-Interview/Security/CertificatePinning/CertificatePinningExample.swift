@@ -12,39 +12,20 @@ import Security
 // Minimal Public Key Pinning Example
 // ==========================================
 class PinningSessionDelegate: NSObject, URLSessionDelegate {
-    
     // The known public key of our server (Base64 encoded)
-    let pinnedPublicKeyBase64 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA..." 
-    
-    func urlSession(_ session: URLSession, 
-                    didReceive challenge: URLAuthenticationChallenge, 
+    let pinnedPublicKeyBase64 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA..."
+
+    func urlSession(_ session: URLSession,
+                    didReceive challenge: URLAuthenticationChallenge,
                     completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        
-        // 1. Only evaluate HTTPS server trust
         guard challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
-              let serverTrust = challenge.protectionSpace.serverTrust else {
-            completionHandler(.cancelAuthenticationChallenge, nil)
-            return
+              let trust = challenge.protectionSpace.serverTrust,
+              let key = SecTrustCopyKey(trust),
+              let data = SecKeyCopyExternalRepresentation(key, nil) as Data? else {
+            return completionHandler(.cancelAuthenticationChallenge, nil)
         }
-        
-        // 2. Extract the Public Key from the server's trust chain
-        // SecTrustCopyKey (iOS 14+) gets the public key seamlessly.
-        guard let serverPublicKey = SecTrustCopyKey(serverTrust),
-              let serverPublicKeyData = SecKeyCopyExternalRepresentation(serverPublicKey, nil) as Data? else {
-            completionHandler(.cancelAuthenticationChallenge, nil)
-            return
-        }
-        
-        // 3. Compare the server's key against our hardcoded pin
-        let serverKeyBase64 = serverPublicKeyData.base64EncodedString()
-        
-        if serverKeyBase64 == pinnedPublicKeyBase64 {
-            // Success! The server is authentically ours.
-            completionHandler(.useCredential, URLCredential(trust: serverTrust))
-        } else {
-            // 🚨 MITM Attack Detected! Abort the connection!
-            completionHandler(.cancelAuthenticationChallenge, nil)
-        }
+        completionHandler(data.base64EncodedString() == pinnedPublicKeyBase64 ? .useCredential : .cancelAuthenticationChallenge,
+                          data.base64EncodedString() == pinnedPublicKeyBase64 ? URLCredential(trust: trust) : nil)
     }
 }
 
@@ -57,3 +38,4 @@ class PinningSessionDelegate: NSObject, URLSessionDelegate {
 //   A: It occurs when a server's certificate rotates unexpectedly and the app's hardcoded pin no longer matches. Users are locked out of the app until an update is pushed to the App Store.
 // • Q: Is there a modern alternative to writing this `URLSessionDelegate` boilerplate?
 //   A: Yes! iOS 14 introduced `NSPinnedDomains` in the `Info.plist`. It allows you to configure public key pinning natively without writing any code.
+

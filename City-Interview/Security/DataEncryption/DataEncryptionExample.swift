@@ -14,22 +14,17 @@ import CryptoKit
 class DataEncryptionDemonstrator {
     
     // In a real app, you generate this ONCE and save it to the iOS Keychain.
+    // Generate or retrieve a symmetric key (store this securely, e.g., in Keychain)
     let symmetricKey = SymmetricKey(size: .bits256)
     
     // 1. Encrypting Data
-    func encrypt(plainText: String) -> Data? {
+    func encrypt(plainText: String) throws -> Data? {
         let data = Data(plainText.utf8)
-        
-        do {
             // AES.GCM (Galois/Counter Mode) automatically handles the Nonce and Authentication Tag.
             let sealedBox = try AES.GCM.seal(data, using: symmetricKey)
             
             // The combined data contains: Nonce + Ciphertext + Tag
             return sealedBox.combined
-        } catch {
-            print("Encryption Failed: \(error)")
-            return nil
-        }
     }
     
     // 2. Decrypting Data
@@ -58,3 +53,12 @@ class DataEncryptionDemonstrator {
 //   A: CommonCrypto is an old C-API that requires complex pointer manipulation and manual memory management, leading to frequent buffer overflows. CryptoKit is a native Swift framework that makes encryption incredibly safe and minimal.
 // • Q: If AES-GCM is so secure, why doesn't Apple use it for everything?
 //   A: AES-GCM is symmetric, meaning both the app and the server would need to share the exact same key securely. Distributing a symmetric key to an iPhone over the internet safely requires asymmetric cryptography (like a TLS handshake).
+
+// ==========================================
+// 🎙️ Interview Summary Rule & One-liner
+// ==========================================
+// Simple rule to remember:
+// "iOS already encrypts app data on disk automatically, tied to the passcode. For extra-sensitive data, I use the Keychain for small secrets like tokens, and CryptoKit's AES-GCM for encrypting larger data myself — always keeping the encryption key in the Keychain, never hardcoded."
+//
+// One-liner for interview:
+// "Data protection has two sides — in transit, handled by TLS and cert pinning, and at rest, handled by iOS's automatic file protection plus Keychain for secrets. For anything extra sensitive, I'd use CryptoKit to encrypt it manually, storing the key in the Keychain."

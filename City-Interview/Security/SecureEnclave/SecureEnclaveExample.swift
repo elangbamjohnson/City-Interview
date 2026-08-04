@@ -14,40 +14,20 @@ import Security
 class SecureEnclaveDemonstrator {
     
     func generateKeyAndSign(dataToSign: Data) -> Data? {
-        
-        // 1. Require Biometrics (Face ID) to use this key
-        guard let accessControl = SecAccessControlCreateWithFlags(
-            nil, 
-            kSecAttrAccessibleWhenUnlockedThisDeviceOnly, 
-            [.privateKeyUsage, .biometryAny], 
-            nil
-        ) else { return nil }
-        
-        // 2. Instruct the OS to generate the key INSIDE the Secure Enclave
-        let attributes: [String: Any] = [
+        guard let ac = SecAccessControlCreateWithFlags(nil, kSecAttrAccessibleWhenUnlockedThisDeviceOnly, [.privateKeyUsage, .biometryAny], nil) else { return nil }
+        let attrs: [String: Any] = [
             kSecAttrKeyType as String: kSecAttrKeyTypeECSECPrimeRandom,
             kSecAttrKeySizeInBits as String: 256,
-            kSecAttrTokenID as String: kSecAttrTokenIDSecureEnclave, // 👈 The magic flag
+            kSecAttrTokenID as String: kSecAttrTokenIDSecureEnclave,
             kSecPrivateKeyAttrs as String: [
-                kSecAttrIsPermanent as String: false, // Set to true to persist to Keychain in a real app
-                kSecAttrAccessControl as String: accessControl
+                kSecAttrIsPermanent as String: false,
+                kSecAttrAccessControl as String: ac
             ]
         ]
-        
-        // The resulting `privateKey` is just a reference. The actual key bits are safe in hardware.
-        guard let privateKey = SecKeyCreateRandomKey(attributes as CFDictionary, nil) else { return nil }
-        
-        // 3. Ask the Secure Enclave to sign the data (This will prompt Face ID!)
-        // The data goes IN, the signature comes OUT. The key stays hidden.
+        guard let privateKey = SecKeyCreateRandomKey(attrs as CFDictionary, nil) else { return nil }
         var error: Unmanaged<CFError>?
-        guard let signature = SecKeyCreateSignature(
-            privateKey, 
-            .ecdsaSignatureMessageX962SHA256, 
-            dataToSign as CFData, 
-            &error
-        ) else { return nil }
-        
-        return signature as Data
+        guard let sig = SecKeyCreateSignature(privateKey, .ecdsaSignatureMessageX962SHA256, dataToSign as CFData, &error) else { return nil }
+        return sig as Data
     }
 }
 
@@ -60,3 +40,4 @@ class SecureEnclaveDemonstrator {
 //   A: The Enclave only does asymmetric cryptography (specifically 256-bit Elliptic Curve). Asymmetric crypto is mathematically too slow for large files. Instead, you use a symmetric key (AES) to encrypt the file, and use the Enclave's asymmetric key to encrypt the AES key (Envelope Encryption).
 // • Q: What happens if the user deletes their Face ID profile?
 //   A: If the key was created with the `biometryCurrentSet` flag, changing or deleting Face ID permanently invalidates the key.
+

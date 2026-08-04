@@ -70,6 +70,7 @@ final class UserService: UserServiceProtocol {
     /// INTERVIEW TOPIC: TaskGroup
     /// - `withThrowingTaskGroup` is used for a dynamic or unknown number of parallel tasks.
     /// - You add tasks to the group and process their results as they finish.
+    /// - Use this when you have a list of things to fetch (unknown count), unlike 'async let' which is fixed to a specific number of calls.
     func fetchMultipleUsersConcurrently(userIds: [Int]) async throws -> [User] {
         return try await withThrowingTaskGroup(of: User.self) { group in
             // 1. Spawn a concurrent child task for each ID
@@ -110,23 +111,20 @@ final class UsersViewModel: ObservableObject {
         self.service = service
     }
     
-    /// INTERVIEW TOPIC: Task { ... }
-    /// - Used to bridge the synchronous world (e.g. button tap) to the asynchronous world (async/await).
-    /// - Creates a new unstructured task running on behalf of the actor.
+    // INTERVIEW TOPIC: Task { ... }
+    // - A Task is how you start doing async work in Swift. Normal functions run in sync context (like viewDidLoad or button tap), but await only works inside an async context — Task { } creates that context for you.
+    //
+    // When to use Task:
+    // Calling an async function from a non-async context — like a button tap action, viewDidLoad, or any UIKit delegate method (none of these are async by default).
+    //
+    
     func loadUsers() {
         Task {
-            isLoading = true
-            do {
                 // Suspends execution of this task until the service returns.
                 // Thread stays unblocked for rendering UI/animations.
                 let fetchedUsers = try await service.fetchUsers()
                 self.users = fetchedUsers
                 print("Fetched users (\(fetchedUsers.count)): \(fetchedUsers)")
-            } catch {
-                self.errorMessage = error.localizedDescription
-                print("Failed to fetch users: \(error)")
-            }
-            isLoading = false
         }
     }
 }
@@ -281,34 +279,6 @@ struct SwiftConcurrencyPlaygroundView: View {
     NavigationView { SwiftConcurrencyPlaygroundView() }
 }
 
-// ==========================================
-// 🚀 Async/Await + Concurrency in Networking — Quick Notes
-// ==========================================
-//
-// Basic async/await call
-// let (data, response) = try await URLSession.shared.data(from: url)
-// 💡 No more nested closures ("callback hell") — reads top to bottom like normal code.
-// 💡 try because it can throw, await because it pauses until the network call finishes, without blocking the thread.
-//
-// async let — run multiple requests in parallel
-// async let user = fetchUser()
-// async let posts = fetchPosts()
-// let (userResult, postsResult) = try await (user, posts)
-// 💡 Both requests start at the same time, not one after another.
-// 💡 You only wait once, at the end, for both to finish.
-// 💡 Good when requests don't depend on each other.
-//
-// TaskGroup — parallel requests when the number isn't fixed
-// try await withThrowingTaskGroup(of: Post.self) { group in
-//     for id in postIds {
-//         group.addTask { try await fetchPost(id: id) }
-//     }
-//     for try await post in group {
-//         // collect results as they complete
-//     }
-// }
-// 💡 Use this when you have a list of things to fetch (unknown count), unlike async let which is fixed to a specific number of calls.
-//
 // Cancellation
 // 💡 If you cancel a Task, and that task is doing a network call, the URLSession call is cancelled too — you'll get a CancellationError or URLError(.cancelled).
 // 💡 Important for things like search-as-you-type — cancel the previous request before starting a new one, so you don't waste bandwidth or show stale results.
@@ -325,3 +295,4 @@ struct SwiftConcurrencyPlaygroundView: View {
 //
 // One-liner for interview:
 // "I use async/await for cleaner networking code, async let when I need a couple of independent calls in parallel, and TaskGroup for a dynamic batch of requests — and I make sure to cancel superseded tasks, like in search, to avoid wasted calls and stale results."
+
