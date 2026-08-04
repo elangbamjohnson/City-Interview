@@ -1,25 +1,27 @@
 import Foundation
 
 // MARK: - 🌍 Background URLSession
-//
-// 💡 INTERVIEW TALKING POINTS:
-//
+/*
+ 💡 INTERVIEW TALKING POINTS:
+
 // ==========================================
-// 1. What is a Background Session?
+//   1. What is a Background Session?
 // ==========================================
-// It allows network tasks (like downloading a large video or uploading a big file) to continue even if your app is suspended, in the background, or completely terminated by the OS.
-// The operating system (specifically an out-of-process daemon) takes over the transfer.
-//
-// ==========================================
-// 2. Key Differences from Default Sessions
-// ==========================================
-// • Requires a unique identifier: `URLSessionConfiguration.background(withIdentifier: "com.app.background")`
-// • MUST use Delegate-based URLSession (URLSessionDownloadDelegate / URLSessionTaskDelegate). You CANNOT use closure-based completion handlers for background tasks because closures cannot be serialized and restored if the app is terminated.
-// • App Wake-Up: When a background task finishes, the OS wakes your app up in the background by calling `application(_:handleEventsForBackgroundURLSession:completionHandler:)` in the AppDelegate (or SceneDelegate equivalent).
-//
+ It allows network tasks (like downloading a large video or uploading a big file) to continue even if your app is suspended, in the background, or completely terminated by the OS.
+ The operating system (specifically an out-of-process daemon) takes over the transfer.
+
+ ==========================================
+ 2. Key Differences from Default Sessions
+ ==========================================
+ • Requires a unique identifier: `URLSessionConfiguration.background(withIdentifier: "com.app.background")`
+ • MUST use Delegate-based URLSession (URLSessionDownloadDelegate / URLSessionTaskDelegate). You CANNOT use closure-based completion handlers for background tasks because closures cannot be serialized and restored if the app is terminated.
+ • App Wake-Up: When a background task finishes, the OS wakes your app up in the background by calling `application(_:handleEventsForBackgroundURLSession:completionHandler:)` in the AppDelegate (or SceneDelegate equivalent).
+
 // ==========================================
 // 3. Simple Code Example
 // ==========================================
+
+*/
 
 class BackgroundSessionDemonstrator: NSObject, URLSessionDownloadDelegate {
     

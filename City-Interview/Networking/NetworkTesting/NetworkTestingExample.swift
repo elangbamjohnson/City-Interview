@@ -26,7 +26,7 @@ protocol MockUserServiceProtocol {
  - We conform to the protocol.
  - We add properties to control the outcome (success or failure) during tests.
 */
-class MockUserService: MockUserServiceProtocol {
+class NetworkMockUserService: MockUserServiceProtocol {
     
     // Flags to control the mock's behavior from the test case
     var shouldReturnError = false
@@ -45,7 +45,7 @@ class MockUserService: MockUserServiceProtocol {
  Example Usage (Mental Model for Tests)
  ==========================================
  func testFetchUsers_Success() async throws {
-     let mockService = MockUserService()
+     let mockService = NetworkMockUserService()
      mockService.mockUsersToReturn = [MockUser(id: 1, name: "John")] // Setup Mock
      
      let viewModel = UsersViewModel(service: mockService) // Inject Mock

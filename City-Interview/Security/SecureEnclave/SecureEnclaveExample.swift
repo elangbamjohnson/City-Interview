@@ -29,7 +29,25 @@ class SecureEnclaveDemonstrator {
         guard let sig = SecKeyCreateSignature(privateKey, .ecdsaSignatureMessageX962SHA256, dataToSign as CFData, &error) else { return nil }
         return sig as Data
     }
+    
+    func runDemo() {
+        let message = "Hello, Secure Enclave!"
+        let data = Data(message.utf8)
+        if let signature = generateKeyAndSign(dataToSign: data) {
+            print("SecureEnclaveDemonstrator signature (base64): \(signature.base64EncodedString())")
+        } else {
+            print("SecureEnclaveDemonstrator failed to sign data")
+        }
+    }
 }
+
+
+#if DEBUG
+func SecureEnclave_RunDemo() {
+    let demo = SecureEnclaveDemonstrator()
+    demo.runDemo()
+}
+#endif
 
 // ==========================================
 // 🎙️ Interview Q&A
@@ -41,3 +59,14 @@ class SecureEnclaveDemonstrator {
 // • Q: What happens if the user deletes their Face ID profile?
 //   A: If the key was created with the `biometryCurrentSet` flag, changing or deleting Face ID permanently invalidates the key.
 
+/*
+ 
+ Simple rule to remember:
+
+"The Secure Enclave is a separate, locked chip that holds keys nobody can extract — not the app, not Apple, not even a hacked OS. It does the crypto operation internally and only hands back the result. Face ID/Touch ID data lives here, and it's the strongest option for protecting the most sensitive keys."
+
+One-liner for interview:
+
+"For most secrets like tokens, I use the Keychain. For the highest-security cases — like biometric-backed signing keys — I'd use Secure Enclave, since the private key material never leaves the chip, even from the app itself."
+ */
+                
