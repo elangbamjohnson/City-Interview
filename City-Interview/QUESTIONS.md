@@ -1,16 +1,16 @@
 # 📱 iOS Senior Interview Question Bank
 
-> A comprehensive, human-readable revision guide for 37 senior iOS interview questions. Each question includes a spoken pitch, in-depth breakdown, and real-world Swift code.
+> A comprehensive, human-readable revision guide for 38 senior iOS interview questions. Each question includes a spoken pitch, in-depth breakdown, and real-world Swift code.
 
 ## 📊 Overview
 
 | Tier | Target Level | Questions |
 |---|---|:---:|
 | **Tier 1 — Must know cold** | Essential interview preparedness | `16` |
-| **Tier 2 — Your differentiator** | Essential interview preparedness | `4` |
+| **Tier 2 — Your differentiator** | Essential interview preparedness | `5` |
 | **Tier 3 — Know the concept** | Essential interview preparedness | `14` |
 | **Tier 4 — Just enough to not go blank** | Essential interview preparedness | `3` |
-| **Total** | Full Curriculum | **`37`** |
+| **Total** | Full Curriculum | **`38`** |
 
 ## 📑 Table of Contents
 
@@ -580,6 +580,41 @@ AI-generated code must go through the exact same rigorous pipeline as human code
 #### 📖 Detailed Answer
 
 Building AI tools gave me a deep understanding of how LLMs process context and system prompts. This changed how I use tools like Cursor — I now focus heavily on providing structured, rich context and constraints upfront, rather than just treating it as a smart autocomplete.
+
+---
+
+### `T2-05` — How do you control app size?
+
+- **Difficulty:** 🟣 `Advanced`
+- **Tier:** `Tier 2 — Your differentiator`
+
+> [!TIP]
+> **🗣️ Interview Pitch (Say it like this):**  
+> *"I inspect the App Thinning Size Report first to target the biggest assets and models—like quantizing Core ML to INT8 in my Meitei Mayek OCR app—while stripping unused code and enforcing CI size gates."*
+
+#### 📖 Detailed Answer
+
+First, I look at what is actually taking space. I build an App Store archive and open the App Thinning Size Report, and I use the Xcode Organizer to see the real download and install size per device. Most of the time, the biggest part is not the code. It is images, videos, fonts, and ML models. Then I fix the biggest items first.
+
+For assets, I use the asset catalog, so the App Store sends each device only the image scale it needs. I prefer vector images or SF Symbols over big PNGs, and I use HEIC or WebP for photos. Big or rarely used content, like tutorial videos, goes to On-Demand Resources or is downloaded later from a server. For code, I remove unused code and unused libraries, keep the Release build on -Osize if speed allows, and avoid heavy third-party SDKs when a small piece of code can do the job. Too many dynamic frameworks also add size, because each one carries its own overhead. Last, I add a size check in CI, so a pull request that adds 5 MB gets noticed before it merges.
+
+A real example from my work: In my Meitei Mayek OCR app, the Core ML model was the biggest file. I exported it with coremltools and used INT8 weight compression, which makes the model file much smaller than the Float16 version. I then checked that the text recognition was still good enough. That is the same method I would use in a big app: find the largest item, shrink it, and test that quality did not drop.
+
+#### 💻 Swift Code Example
+
+```swift
+// 1. On-Demand Resources (ODR): Download heavy assets only when needed
+let tags: Set<String> = ["tutorial_videos"]
+let resourceRequest = NSBundleResourceRequest(tags: tags)
+
+try await resourceRequest.conditionallyBeginAccessingResources()
+// Assets ready in bundle; release when done:
+resourceRequest.endAccessingResources()
+
+// 2. Core ML INT8 Quantization (as used in Meitei Mayek OCR):
+// coremltools.models.neural_network.quantization_utils.quantize_weights(model, nbits=8)
+// Reduces ML model file size by ~50-75% with negligible accuracy loss.
+```
 
 ---
 
