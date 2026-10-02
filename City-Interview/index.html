@@ -354,34 +354,52 @@
       border-color: var(--accent-indigo);
     }
 
-    /* Floating Index Button (shows when sidebar is closed) */
+    .header-btn.btn-highlight {
+      background: linear-gradient(135deg, var(--accent-indigo) 0%, #4f46e5 100%);
+      color: #ffffff;
+      border-color: var(--accent-indigo);
+      box-shadow: 0 0 16px rgba(99, 102, 241, 0.45);
+    }
+
+    /* Floating Index Button (shows when sidebar is closed so you can reopen from anywhere) */
     .floating-index-btn {
       position: fixed;
-      bottom: 1.75rem;
-      left: 1.75rem;
-      background: var(--accent-indigo);
+      bottom: 2rem;
+      left: 2rem;
+      background: linear-gradient(135deg, var(--accent-indigo) 0%, #4338ca 100%);
       color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 999px;
-      padding: 0.75rem 1.25rem;
-      font-size: 0.92rem;
+      padding: 0.8rem 1.4rem;
+      font-size: 0.95rem;
       font-weight: 700;
       cursor: pointer;
       display: none;
       align-items: center;
-      gap: 0.5rem;
-      box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.6);
-      z-index: 999;
+      gap: 0.6rem;
+      box-shadow: 0 12px 28px -5px rgba(99, 102, 241, 0.75), 0 0 0 1px rgba(99, 102, 241, 0.4);
+      z-index: 9999;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .floating-index-btn:hover {
-      transform: translateY(-2px) scale(1.03);
-      box-shadow: 0 15px 30px -5px rgba(99, 102, 241, 0.8);
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 16px 36px -5px rgba(99, 102, 241, 0.9);
     }
 
-    .app-layout.sidebar-hidden .floating-index-btn {
-      display: flex;
+    .floating-index-btn.visible,
+    .app-layout.sidebar-hidden ~ .floating-index-btn {
+      display: flex !important;
+    }
+
+    .floating-index-btn .kbd-hint {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      background: rgba(255, 255, 255, 0.22);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      margin-left: 0.25rem;
     }
 
     /* Progress Stats Banner */
@@ -909,10 +927,6 @@
         transform: translateX(-100%);
         margin-right: 0;
       }
-
-      .floating-index-btn {
-        display: flex;
-      }
     }
 
     @media (max-width: 768px) {
@@ -1039,8 +1053,8 @@
   </div>
 
   <!-- Floating Quick Toggle Button (Always reachable while scrolling) -->
-  <button id="floatingIndexBtn" class="floating-index-btn" title="Open Question Index">
-    <span>📑</span> <span>Question Index</span>
+  <button id="floatingIndexBtn" class="floating-index-btn" title="Open Question Index (or Press 'M')">
+    <span>📑</span> <span>Show Question Index</span> <span class="kbd-hint">M</span>
   </button>
 
   <script>
@@ -1097,26 +1111,38 @@
     }
 
     function updateSidebarVisibilityUI() {
-      if (window.innerWidth <= 1024) {
-        // Mobile drawer behavior
+      const isMobile = window.innerWidth <= 1024;
+      if (isMobile) {
         if (isSidebarVisible) {
           appLayout.classList.add('sidebar-open');
           appLayout.classList.remove('sidebar-hidden');
           sidebarToggleLabel.textContent = 'Hide Index';
+          sidebarToggleBtn.classList.remove('btn-highlight');
         } else {
           appLayout.classList.remove('sidebar-open');
           appLayout.classList.add('sidebar-hidden');
           sidebarToggleLabel.textContent = 'Show Index';
+          sidebarToggleBtn.classList.add('btn-highlight');
         }
       } else {
-        // Desktop side-by-side behavior
         if (isSidebarVisible) {
           appLayout.classList.remove('sidebar-hidden');
           sidebarToggleLabel.textContent = 'Hide Index';
+          sidebarToggleBtn.classList.remove('btn-highlight');
         } else {
           appLayout.classList.add('sidebar-hidden');
           sidebarToggleLabel.textContent = 'Show Index';
+          sidebarToggleBtn.classList.add('btn-highlight');
         }
+      }
+
+      // Control floating button: always visible when sidebar is closed so you can reopen from anywhere
+      if (!isSidebarVisible) {
+        floatingIndexBtn.style.display = 'flex';
+        floatingIndexBtn.classList.add('visible');
+      } else {
+        floatingIndexBtn.style.display = 'none';
+        floatingIndexBtn.classList.remove('visible');
       }
     }
 
@@ -1134,6 +1160,15 @@
 
     sidebarBackdrop.addEventListener('click', () => {
       setSidebarVisible(false);
+    });
+
+    // Keyboard shortcut: Press 'M' (menu) or '[' to toggle question index
+    document.addEventListener('keydown', (e) => {
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+      if (e.key === 'm' || e.key === 'M' || e.key === '[') {
+        e.preventDefault();
+        setSidebarVisible(!isSidebarVisible);
+      }
     });
 
     window.addEventListener('resize', () => {
