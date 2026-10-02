@@ -69,3 +69,94 @@ The container and entry point.
 
 ### Q4: How does this pattern help with Deep Linking?
 > **Answer:** Since the Coordinator owns the navigation state (`NavigationPath`), handling a deep link is as simple as parsing the URL and appending the correct sequence of `enum` cases to the path. The app instantly jumps to the desired screen.
+
+### Q5: What is a coordinator pattern? Is it still needed with NavigationStack?
+
+> **🗣️ Spoken Interview Pitch (Say it like this):**
+> *"The Coordinator pattern is an architectural pattern that separates navigation and flow logic from Views and ViewModels into a dedicated routing controller. 
+> 
+> With iOS 16's `NavigationStack`, Apple introduced native data-driven navigation via `NavigationPath`, but **yes, a coordinator pattern is still very much needed in enterprise apps**—its role has simply evolved from manipulating UIKit view hierarchies to orchestrating application flow, dependency injection, and presentation state.
+> 
+> While `NavigationStack` solves how the UI pushes and pops views based on a path, it does not solve who decides business navigation rules, who injects dependencies into destination screens, who coordinates modal sheets/covers, or how deep links route across independent modules without tight coupling. In a modern SwiftUI architecture, the Coordinator owns the `NavigationPath` and sheet state, keeping Views completely agnostic of the app's overall flow."*
+
+#### 🧠 In-Depth Interview Breakdown:
+
+#### 1. Why `NavigationStack` Alone Isn't Enough for Large Apps:
+| Requirement | `NavigationStack` Alone | `NavigationStack` + Coordinator |
+| :--- | :--- | :--- |
+| **Push/Pop Stack** | Native `NavigationPath` handles it ✅ | Coordinator owns and mutates `NavigationPath` ✅ |
+| **Dependency Injection** | Views must instantiate destination Views & ViewModels ❌ | Coordinator builds destination views and injects mocks/services ✅ |
+| **Cross-Module Navigation** | View in Feature A must import View in Feature B ❌ | Views emit actions; Coordinator routes across module boundaries ✅ |
+| **Modal Sheets & Full-Screen Covers** | Scattered across individual `.sheet` modifiers in Views ❌ | Coordinator centralizes sheets, covers, and alerts alongside stack navigation ✅ |
+| **Complex Branching / Business Logic** | If/else branching pollutes Views or ViewModels ❌ | Coordinator evaluates business rules (e.g., KYC status, session expiry) ✅ |
+| **Deep Linking & Push Notifications** | Fragile parsing and manual state passing across views ❌ | Coordinator parses URL and sets the exact navigation path in one place ✅ |
+
+#### 2. How the Coordinator Pattern Looks in Modern SwiftUI:
+In modern SwiftUI, the Coordinator is an `ObservableObject` (or `@Observable` in iOS 17+) that acts as the single source of truth for:
+1. The `NavigationPath` (for push/pop stack navigation).
+2. The `@Published var sheetDestination: Sheet?` (for modal presentations).
+3. The `@Published var fullScreenCoverDestination: Cover?` (for full-screen flows).
+
+```swift
+// Modern SwiftUI Coordinator Pattern
+enum AppScreen: Hashable {
+    case transferInput(accountID: String)
+    case transferReview(amount: Double)
+    case transferReceipt
+}
+
+enum AppSheet: Identifiable {
+    case termsAndConditions
+    case helpCenter
+    var id: String { String(describing: self) }
+}
+
+@MainActor
+final class TransferCoordinator: ObservableObject {
+    @Published var path = NavigationPath()
+    @Published var activeSheet: AppSheet?
+    
+    // Dependencies injected at initialization
+    private let paymentService: PaymentServiceProtocol
+    
+    init(paymentService: PaymentServiceProtocol) {
+        self.paymentService = paymentService
+    }
+    
+    // MARK: - Navigation Actions (Views call these methods)
+    func showReview(amount: Double) {
+        path.append(AppScreen.transferReview(amount: amount))
+    }
+    
+    func showReceipt() {
+        path.append(AppScreen.transferReceipt)
+    }
+    
+    func popToRoot() {
+        path.removeLast(path.count)
+    }
+    
+    func presentTerms() {
+        activeSheet = .termsAndConditions
+    }
+    
+    // MARK: - View Builder (Centralized Dependency Injection)
+    @ViewBuilder
+    func build(screen: AppScreen) -> some View {
+        switch screen {
+        case .transferInput(let accountID):
+            let viewModel = TransferInputViewModel(accountID: accountID, service: paymentService)
+            TransferInputView(viewModel: viewModel)
+        case .transferReview(let amount):
+            TransferReviewView(amount: amount)
+        case .transferReceipt:
+            TransferReceiptView()
+        }
+    }
+}
+```
+
+#### 3. Key Interview Talking Points to Highlight:
+- **Single Responsibility Principle (SRP)**: Views render pixels and handle gestures; ViewModels prepare presentation state; Coordinators own the user's journey.
+- **Decoupled Modules**: In a multi-module enterprise app (like Citi), a feature module exposes its Coordinator/Router protocol, not its internal SwiftUI views.
+- **Coordinators Evolved, Not Died**: In UIKit, coordinators imperatively manipulated `UINavigationController` (`pushViewController`). In SwiftUI, coordinators declaratively own the navigation state (`NavigationPath` and sheet enums) that drives the UI.
