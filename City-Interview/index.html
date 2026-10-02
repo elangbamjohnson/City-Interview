@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Citi iOS Interview Master Question Bank</title>
-  <meta name="description" content="Interactive revision dashboard for 37 senior iOS engineering interview questions with rehearsal pitches and Swift code.">
+  <meta name="description" content="Interactive revision dashboard for 38 senior iOS engineering interview questions with sidebar index, rehearsal pitches, and Swift code.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
       --bg-card-hover: rgba(26, 34, 52, 0.95);
       --bg-code: #0b0f17;
       --border-color: rgba(255, 255, 255, 0.08);
-      --border-accent: rgba(99, 102, 241, 0.3);
+      --border-accent: rgba(99, 102, 241, 0.35);
       --text-primary: #f8fafc;
       --text-secondary: #94a3b8;
       --text-muted: #64748b;
@@ -28,10 +28,12 @@
       --accent-rose: #f43f5e;
       --accent-purple: #a855f7;
       --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-      --shadow-lg: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 12px 32px -8px rgba(0, 0, 0, 0.5);
       --radius-sm: 8px;
       --radius-md: 12px;
       --radius-lg: 16px;
+      --sidebar-width: 320px;
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       --font-mono: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
@@ -39,16 +41,17 @@
     [data-theme="light"] {
       --bg-primary: #f8fafc;
       --bg-secondary: #ffffff;
-      --bg-card: rgba(255, 255, 255, 0.9);
+      --bg-card: rgba(255, 255, 255, 0.92);
       --bg-card-hover: #ffffff;
       --bg-code: #1e293b;
       --border-color: rgba(0, 0, 0, 0.08);
-      --border-accent: rgba(99, 102, 241, 0.4);
+      --border-accent: rgba(99, 102, 241, 0.45);
       --text-primary: #0f172a;
       --text-secondary: #475569;
       --text-muted: #94a3b8;
       --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
-      --shadow-lg: 0 12px 28px -8px rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 12px 28px -8px rgba(0, 0, 0, 0.12);
     }
 
     * {
@@ -71,10 +74,219 @@
       background-attachment: fixed;
     }
 
-    .container {
-      max-width: 1200px;
+    /* Global Layout Container */
+    .app-layout {
+      display: flex;
+      max-width: 1480px;
       margin: 0 auto;
-      padding: 2.5rem 1.5rem 5rem 1.5rem;
+      padding: 1.5rem 1.5rem 5rem 1.5rem;
+      gap: 2rem;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    /* Sidebar Index */
+    .sidebar-drawer {
+      width: var(--sidebar-width);
+      flex-shrink: 0;
+      position: sticky;
+      top: 1.5rem;
+      height: calc(100vh - 3rem);
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-md);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, margin 0.3s ease;
+      z-index: 100;
+      overflow: hidden;
+    }
+
+    .app-layout.sidebar-hidden .sidebar-drawer {
+      transform: translateX(calc(-1 * var(--sidebar-width) - 2rem));
+      margin-right: calc(-1 * var(--sidebar-width));
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .sidebar-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .sidebar-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .sidebar-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .sidebar-count {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--accent-indigo-light);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .sidebar-close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s;
+    }
+
+    .sidebar-close-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-search-box {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .sidebar-search-input {
+      width: 100%;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 0.45rem 0.75rem;
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      outline: none;
+      font-family: var(--font-sans);
+      transition: border-color 0.2s;
+    }
+
+    .sidebar-search-input:focus {
+      border-color: var(--accent-indigo);
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.75rem 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .sidebar-nav::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .sidebar-nav::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+    }
+
+    .sidebar-tier-header {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      padding: 0.6rem 0.75rem 0.3rem 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .sidebar-tier-header:first-child {
+      margin-top: 0;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border-left: 2px solid transparent;
+      user-select: none;
+    }
+
+    .sidebar-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-primary);
+      transform: translateX(2px);
+    }
+
+    .sidebar-item.active {
+      background: rgba(99, 102, 241, 0.12);
+      color: var(--accent-indigo-light);
+      border-left-color: var(--accent-indigo);
+      font-weight: 600;
+    }
+
+    [data-theme="light"] .sidebar-item.active {
+      color: var(--accent-indigo);
+    }
+
+    .sidebar-item.reviewed .sidebar-check {
+      color: var(--accent-emerald);
+      opacity: 1;
+    }
+
+    .sidebar-id-badge {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .sidebar-item.active .sidebar-id-badge {
+      background: rgba(99, 102, 241, 0.2);
+      color: var(--accent-indigo-light);
+    }
+
+    .sidebar-item-text {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sidebar-check {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      opacity: 0.3;
+      flex-shrink: 0;
+    }
+
+    /* Main Content Area */
+    .main-area {
+      flex: 1;
+      min-width: 0;
+      max-width: 100%;
     }
 
     /* Header */
@@ -82,19 +294,19 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
       border-bottom: 1px solid var(--border-color);
-      padding-bottom: 2rem;
+      padding-bottom: 1.5rem;
     }
 
     .header-content h1 {
-      font-size: 2.25rem;
+      font-size: 2.1rem;
       font-weight: 800;
       letter-spacing: -0.03em;
       background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 50%, var(--accent-indigo-light) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.4rem;
     }
 
     [data-theme="light"] .header-content h1 {
@@ -105,34 +317,71 @@
 
     .header-content p {
       color: var(--text-secondary);
-      font-size: 1.05rem;
+      font-size: 1rem;
       max-width: 650px;
     }
 
     .header-actions {
       display: flex;
-      gap: 0.75rem;
+      gap: 0.65rem;
       align-items: center;
     }
 
-    .theme-toggle-btn {
-      background: var(--bg-secondary);
+    .header-btn {
+      background: var(--bg-card);
       border: 1px solid var(--border-color);
       color: var(--text-primary);
-      padding: 0.6rem 1rem;
+      padding: 0.55rem 0.95rem;
       border-radius: var(--radius-sm);
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      font-size: 0.9rem;
+      gap: 0.45rem;
+      font-size: 0.88rem;
       font-weight: 600;
       transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
     }
 
-    .theme-toggle-btn:hover {
+    .header-btn:hover {
       border-color: var(--accent-indigo);
       transform: translateY(-1px);
+    }
+
+    .header-btn.active {
+      background: var(--accent-indigo);
+      color: #fff;
+      border-color: var(--accent-indigo);
+    }
+
+    /* Floating Index Button (shows when sidebar is closed) */
+    .floating-index-btn {
+      position: fixed;
+      bottom: 1.75rem;
+      left: 1.75rem;
+      background: var(--accent-indigo);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 999px;
+      padding: 0.75rem 1.25rem;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.6);
+      z-index: 999;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .floating-index-btn:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 15px 30px -5px rgba(99, 102, 241, 0.8);
+    }
+
+    .app-layout.sidebar-hidden .floating-index-btn {
+      display: flex;
     }
 
     /* Progress Stats Banner */
@@ -141,8 +390,8 @@
       backdrop-filter: blur(16px);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
-      padding: 1.25rem 1.5rem;
-      margin-bottom: 2rem;
+      padding: 1.15rem 1.4rem;
+      margin-bottom: 1.75rem;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -163,7 +412,7 @@
     }
 
     .stat-value {
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       font-weight: 700;
       color: var(--accent-indigo-light);
     }
@@ -173,7 +422,7 @@
     }
 
     .stat-label {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: var(--text-muted);
@@ -185,7 +434,7 @@
       min-width: 200px;
       display: flex;
       flex-direction: column;
-      gap: 0.4rem;
+      gap: 0.35rem;
     }
 
     .progress-bar-track {
@@ -212,7 +461,7 @@
       border: 1px solid var(--border-color);
       color: var(--text-muted);
       font-size: 0.8rem;
-      padding: 0.4rem 0.75rem;
+      padding: 0.35rem 0.7rem;
       border-radius: var(--radius-sm);
       cursor: pointer;
       transition: all 0.2s;
@@ -227,7 +476,7 @@
     .controls-section {
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
+      gap: 1.15rem;
       margin-bottom: 2rem;
     }
 
@@ -238,11 +487,11 @@
 
     .search-input {
       width: 100%;
-      padding: 0.95rem 1.25rem 0.95rem 3rem;
+      padding: 0.9rem 1.25rem 0.9rem 2.85rem;
       background: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: var(--text-primary);
       outline: none;
       transition: all 0.2s ease;
@@ -287,7 +536,7 @@
     .tier-pills {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
+      gap: 0.45rem;
     }
 
     .tier-btn {
@@ -296,7 +545,7 @@
       color: var(--text-secondary);
       padding: 0.45rem 0.85rem;
       border-radius: 999px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -316,7 +565,7 @@
 
     .secondary-filters {
       display: flex;
-      gap: 0.75rem;
+      gap: 0.65rem;
       align-items: center;
     }
 
@@ -324,9 +573,9 @@
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
       color: var(--text-primary);
-      padding: 0.45rem 0.75rem;
+      padding: 0.42rem 0.75rem;
       border-radius: var(--radius-sm);
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       outline: none;
       cursor: pointer;
     }
@@ -335,9 +584,9 @@
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
       color: var(--text-secondary);
-      padding: 0.45rem 0.75rem;
+      padding: 0.42rem 0.75rem;
       border-radius: var(--radius-sm);
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       cursor: pointer;
       transition: all 0.2s;
     }
@@ -372,7 +621,18 @@
 
     .question-card.reviewed {
       border-left: 4px solid var(--accent-emerald);
-      opacity: 0.88;
+      opacity: 0.9;
+    }
+
+    /* Pulse animation when navigated from sidebar */
+    @keyframes cardHighlightPulse {
+      0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); border-color: var(--accent-indigo); }
+      50% { box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.3); border-color: var(--accent-cyan); }
+      100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); border-color: var(--border-accent); }
+    }
+
+    .card-highlight {
+      animation: cardHighlightPulse 1.8s ease forwards;
     }
 
     .card-header {
@@ -386,14 +646,14 @@
     .card-badges {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
+      gap: 0.45rem;
       align-items: center;
     }
 
     .badge {
       font-size: 0.75rem;
       font-weight: 700;
-      padding: 0.25rem 0.6rem;
+      padding: 0.22rem 0.55rem;
       border-radius: var(--radius-sm);
       letter-spacing: 0.02em;
     }
@@ -468,7 +728,7 @@
       color: var(--accent-indigo-light);
     }
 
-    /* Pitch Box (Rehearsal sentence) */
+    /* Pitch Box */
     .pitch-box {
       background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.06) 100%);
       border: 1px solid rgba(99, 102, 241, 0.25);
@@ -583,7 +843,6 @@
       color: #e2e8f0;
     }
 
-    /* Toggle Arrow */
     .toggle-chevron {
       font-size: 0.85rem;
       color: var(--text-muted);
@@ -595,7 +854,6 @@
       transform: rotate(180deg);
     }
 
-    /* Empty state */
     .empty-state {
       text-align: center;
       padding: 4rem 1rem;
@@ -618,6 +876,45 @@
       color: var(--text-muted);
     }
 
+    /* Mobile Backdrop */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 95;
+    }
+
+    @media (max-width: 1024px) {
+      .sidebar-drawer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        border-radius: 0;
+        transform: translateX(-100%);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .app-layout.sidebar-open .sidebar-drawer {
+        transform: translateX(0);
+      }
+
+      .app-layout.sidebar-open .sidebar-backdrop {
+        display: block;
+      }
+
+      .app-layout.sidebar-hidden .sidebar-drawer {
+        transform: translateX(-100%);
+        margin-right: 0;
+      }
+
+      .floating-index-btn {
+        display: flex;
+      }
+    }
+
     @media (max-width: 768px) {
       header {
         flex-direction: column;
@@ -635,85 +932,116 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="header-content">
-        <h1>iOS Senior Interview Bank</h1>
-        <p>38 curated senior iOS engineering interview questions with spoken elevator pitches, in-depth breakdowns, and Swift code examples.</p>
+  <div class="app-layout" id="appLayout">
+    <!-- Sidebar Index -->
+    <aside class="sidebar-drawer" id="sidebarDrawer" aria-label="Question Navigation Index">
+      <div class="sidebar-header">
+        <div class="sidebar-title-wrap">
+          <span class="sidebar-title">📑 Question Index</span>
+          <span class="sidebar-count" id="sidebarTotalCount">38</span>
+        </div>
+        <button id="closeSidebarBtn" class="sidebar-close-btn" title="Hide Sidebar Index">✕</button>
       </div>
-      <div class="header-actions">
-        <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle theme">
-          <span id="themeIcon">🌙</span> <span id="themeLabel">Dark</span>
-        </button>
-      </div>
-    </header>
 
-    <!-- Progress Tracker -->
-    <div class="progress-banner">
-      <div class="progress-info">
-        <div class="stat-pill">
-          <span class="stat-value" id="reviewedCount">0</span>
-          <span class="stat-label">Reviewed</span>
+      <div class="sidebar-search-box">
+        <input type="text" id="sidebarQuickSearch" class="sidebar-search-input" placeholder="Filter questions..." autocomplete="off">
+      </div>
+
+      <nav class="sidebar-nav" id="sidebarNav"></nav>
+    </aside>
+
+    <!-- Mobile Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Main Content -->
+    <div class="main-area">
+      <header>
+        <div class="header-content">
+          <h1>iOS Senior Interview Bank</h1>
+          <p>38 curated senior iOS engineering interview questions with spoken elevator pitches, in-depth breakdowns, and Swift code examples.</p>
         </div>
-        <div class="stat-pill">
-          <span class="stat-value" id="totalCount">38</span>
-          <span class="stat-label">Total Questions</span>
+        <div class="header-actions">
+          <button id="sidebarToggleBtn" class="header-btn" title="Toggle Question Index Sidebar" aria-label="Toggle Sidebar">
+            <span>📑</span> <span id="sidebarToggleLabel">Hide Index</span>
+          </button>
+          <button id="themeToggleBtn" class="header-btn" aria-label="Toggle theme">
+            <span id="themeIcon">🌙</span> <span id="themeLabel">Dark</span>
+          </button>
         </div>
-        <div class="stat-pill">
-          <span class="stat-value" id="percentVal">0%</span>
-          <span class="stat-label">Readiness</span>
+      </header>
+
+      <!-- Progress Tracker -->
+      <div class="progress-banner">
+        <div class="progress-info">
+          <div class="stat-pill">
+            <span class="stat-value" id="reviewedCount">0</span>
+            <span class="stat-label">Reviewed</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-value" id="totalCount">38</span>
+            <span class="stat-label">Total Questions</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-value" id="percentVal">0%</span>
+            <span class="stat-label">Readiness</span>
+          </div>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progressBarFill"></div>
+          </div>
+        </div>
+        <button id="resetProgressBtn" class="reset-progress-btn">Reset Progress</button>
+      </div>
+
+      <!-- Search & Filter Controls -->
+      <div class="controls-section">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" class="search-input" placeholder="Search by topic, keyword, or concept (e.g. Actor, GCD, URLSession, Build time, App size)..." autocomplete="off">
+          <button id="clearSearchBtn" class="clear-search-btn">✕</button>
+        </div>
+
+        <div class="filters-row">
+          <div class="tier-pills" id="tierPills">
+            <button class="tier-btn active" data-tier="all">All (38)</button>
+            <button class="tier-btn" data-tier="Tier 1">Tier 1: Cold (16)</button>
+            <button class="tier-btn" data-tier="Tier 2">Tier 2: Differentiator (5)</button>
+            <button class="tier-btn" data-tier="Tier 3">Tier 3: Concept (14)</button>
+            <button class="tier-btn" data-tier="Tier 4">Tier 4: Safety (3)</button>
+          </div>
+
+          <div class="secondary-filters">
+            <select id="diffFilter" class="filter-select" aria-label="Filter by difficulty">
+              <option value="all">All Difficulties</option>
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+
+            <button id="toggleAllBtn" class="view-actions-btn">Expand All</button>
+          </div>
         </div>
       </div>
-      <div class="progress-bar-container">
-        <div class="progress-bar-track">
-          <div class="progress-bar-fill" id="progressBarFill"></div>
-        </div>
+
+      <!-- Questions Grid -->
+      <div class="questions-grid" id="questionsContainer"></div>
+
+      <div class="empty-state" id="emptyState">
+        <h3>No questions matched your query</h3>
+        <p>Try searching for a different keyword or resetting your tier filters.</p>
       </div>
-      <button id="resetProgressBtn" class="reset-progress-btn">Reset Progress</button>
+
+      <footer>
+        <p>Citi iOS Interview Prep • Standalone Offline Dashboard • Synchronized with <code>Resources/questions.json</code></p>
+      </footer>
     </div>
-
-    <!-- Search & Filter Controls -->
-    <div class="controls-section">
-      <div class="search-box">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" class="search-input" placeholder="Search by topic, keyword, or concept (e.g. Actor, GCD, URLSession, Build time)..." autocomplete="off">
-        <button id="clearSearchBtn" class="clear-search-btn">✕</button>
-      </div>
-
-      <div class="filters-row">
-        <div class="tier-pills" id="tierPills">
-          <button class="tier-btn active" data-tier="all">All (38)</button>
-          <button class="tier-btn" data-tier="Tier 1">Tier 1: Cold (16)</button>
-          <button class="tier-btn" data-tier="Tier 2">Tier 2: Differentiator (5)</button>
-          <button class="tier-btn" data-tier="Tier 3">Tier 3: Concept (14)</button>
-          <button class="tier-btn" data-tier="Tier 4">Tier 4: Safety (3)</button>
-        </div>
-
-        <div class="secondary-filters">
-          <select id="diffFilter" class="filter-select" aria-label="Filter by difficulty">
-            <option value="all">All Difficulties</option>
-            <option value="Beginner">Beginner</option>
-            <option value="Intermediate">Intermediate</option>
-            <option value="Advanced">Advanced</option>
-          </select>
-
-          <button id="toggleAllBtn" class="view-actions-btn">Expand All</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Questions Grid -->
-    <div class="questions-grid" id="questionsContainer"></div>
-
-    <div class="empty-state" id="emptyState">
-      <h3>No questions matched your query</h3>
-      <p>Try searching for a different keyword or resetting your tier filters.</p>
-    </div>
-
-    <footer>
-      <p>Citi iOS Interview Prep • Standalone Offline Dashboard • Synchronized with <code>Resources/questions.json</code></p>
-    </footer>
   </div>
+
+  <!-- Floating Quick Toggle Button (Always reachable while scrolling) -->
+  <button id="floatingIndexBtn" class="floating-index-btn" title="Open Question Index">
+    <span>📑</span> <span>Question Index</span>
+  </button>
 
   <script>
     // Embedded JSON Data
@@ -723,10 +1051,23 @@
     let currentTier = 'all';
     let currentDiff = 'all';
     let searchQuery = '';
+    let sidebarFilterQuery = '';
     let allExpanded = false;
     let reviewedIDs = new Set(JSON.parse(localStorage.getItem('citi_reviewed_questions') || '[]'));
+    let activeQuestionId = null;
 
     // DOM Elements
+    const appLayout = document.getElementById('appLayout');
+    const sidebarDrawer = document.getElementById('sidebarDrawer');
+    const sidebarNav = document.getElementById('sidebarNav');
+    const sidebarTotalCount = document.getElementById('sidebarTotalCount');
+    const sidebarQuickSearch = document.getElementById('sidebarQuickSearch');
+    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+    const sidebarToggleLabel = document.getElementById('sidebarToggleLabel');
+    const floatingIndexBtn = document.getElementById('floatingIndexBtn');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
     const container = document.getElementById('questionsContainer');
     const searchInput = document.getElementById('searchInput');
     const clearSearchBtn = document.getElementById('clearSearchBtn');
@@ -742,6 +1083,62 @@
     const themeToggleBtn = document.getElementById('themeToggleBtn');
     const themeIcon = document.getElementById('themeIcon');
     const themeLabel = document.getElementById('themeLabel');
+
+    // Sidebar Visibility State Management
+    const savedSidebarState = localStorage.getItem('citi_sidebar_visible');
+    // Default open on desktop, closed on mobile
+    let isSidebarVisible = savedSidebarState !== null ? (savedSidebarState === 'true') : (window.innerWidth > 1024);
+    updateSidebarVisibilityUI();
+
+    function setSidebarVisible(visible) {
+      isSidebarVisible = visible;
+      localStorage.setItem('citi_sidebar_visible', visible);
+      updateSidebarVisibilityUI();
+    }
+
+    function updateSidebarVisibilityUI() {
+      if (window.innerWidth <= 1024) {
+        // Mobile drawer behavior
+        if (isSidebarVisible) {
+          appLayout.classList.add('sidebar-open');
+          appLayout.classList.remove('sidebar-hidden');
+          sidebarToggleLabel.textContent = 'Hide Index';
+        } else {
+          appLayout.classList.remove('sidebar-open');
+          appLayout.classList.add('sidebar-hidden');
+          sidebarToggleLabel.textContent = 'Show Index';
+        }
+      } else {
+        // Desktop side-by-side behavior
+        if (isSidebarVisible) {
+          appLayout.classList.remove('sidebar-hidden');
+          sidebarToggleLabel.textContent = 'Hide Index';
+        } else {
+          appLayout.classList.add('sidebar-hidden');
+          sidebarToggleLabel.textContent = 'Show Index';
+        }
+      }
+    }
+
+    sidebarToggleBtn.addEventListener('click', () => {
+      setSidebarVisible(!isSidebarVisible);
+    });
+
+    closeSidebarBtn.addEventListener('click', () => {
+      setSidebarVisible(false);
+    });
+
+    floatingIndexBtn.addEventListener('click', () => {
+      setSidebarVisible(true);
+    });
+
+    sidebarBackdrop.addEventListener('click', () => {
+      setSidebarVisible(false);
+    });
+
+    window.addEventListener('resize', () => {
+      updateSidebarVisibilityUI();
+    });
 
     // Theme Management
     const savedTheme = localStorage.getItem('citi_theme') || 'dark';
@@ -766,7 +1163,7 @@
       }
     }
 
-    // Update Progress
+    // Progress Management
     function updateProgress() {
       const total = QUESTIONS.length;
       const count = reviewedIDs.size;
@@ -790,6 +1187,10 @@
       if (card) {
         card.classList.toggle('reviewed', isChecked);
       }
+      const sideItem = document.getElementById(`side-item-${id}`);
+      if (sideItem) {
+        sideItem.classList.toggle('reviewed', isChecked);
+      }
     }
 
     resetProgressBtn.addEventListener('click', () => {
@@ -798,10 +1199,118 @@
         localStorage.removeItem('citi_reviewed_questions');
         updateProgress();
         renderQuestions();
+        renderSidebar();
       }
     });
 
-    // Render Cards
+    // Navigate to Question from Sidebar Click
+    window.navigateToQuestion = function(id, event) {
+      if (event) event.preventDefault();
+      activeQuestionId = id;
+
+      // Update active state in sidebar
+      document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+      const activeEl = document.getElementById(`side-item-${id}`);
+      if (activeEl) activeEl.classList.add('active');
+
+      // Scroll to card (if currently hidden by filter, reset filter to reveal)
+      let targetCard = document.getElementById(`card-${id}`);
+      if (!targetCard) {
+        currentTier = 'all';
+        currentDiff = 'all';
+        searchQuery = '';
+        searchInput.value = '';
+        clearSearchBtn.style.display = 'none';
+        diffFilter.value = 'all';
+        document.querySelectorAll('.tier-btn').forEach(b => {
+          b.classList.toggle('active', b.dataset.tier === 'all');
+        });
+        renderQuestions();
+        targetCard = document.getElementById(`card-${id}`);
+      }
+
+      if (targetCard) {
+        // Automatically open the answer drawer
+        const drawer = document.getElementById(`drawer-${id}`);
+        const chev = document.getElementById(`chev-${id}`);
+        if (drawer && !drawer.classList.contains('open')) {
+          drawer.classList.add('open');
+          if (chev) chev.classList.add('rotated');
+        }
+
+        // Smooth scroll
+        targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Trigger flash highlight
+        targetCard.classList.remove('card-highlight');
+        void targetCard.offsetWidth; // Trigger reflow
+        targetCard.classList.add('card-highlight');
+        setTimeout(() => {
+          targetCard.classList.remove('card-highlight');
+        }, 2000);
+      }
+
+      // On mobile / small screens, auto-close sidebar after selection
+      if (window.innerWidth <= 1024) {
+        setSidebarVisible(false);
+      }
+    };
+
+    // Render Sidebar Navigation
+    function renderSidebar() {
+      sidebarNav.innerHTML = '';
+
+      const query = sidebarFilterQuery.toLowerCase();
+      const filtered = QUESTIONS.filter(q => {
+        if (!query) return true;
+        return q.question.toLowerCase().includes(query) || 
+               q.id.toLowerCase().includes(query) ||
+               q.category.toLowerCase().includes(query);
+      });
+
+      sidebarTotalCount.textContent = filtered.length;
+
+      // Group by Tier
+      const grouped = {};
+      filtered.forEach(q => {
+        const tierName = q.category.split('—')[0].trim();
+        if (!grouped[tierName]) grouped[tierName] = [];
+        grouped[tierName].push(q);
+      });
+
+      for (const [tierName, items] of Object.entries(grouped)) {
+        const tierHeader = document.createElement('div');
+        tierHeader.className = 'sidebar-tier-header';
+        tierHeader.textContent = `${tierName} (${items.length})`;
+        sidebarNav.appendChild(tierHeader);
+
+        items.forEach(q => {
+          const isReviewed = reviewedIDs.has(q.id);
+          const isActive = (q.id === activeQuestionId);
+
+          const a = document.createElement('a');
+          a.className = `sidebar-item ${isReviewed ? 'reviewed' : ''} ${isActive ? 'active' : ''}`;
+          a.id = `side-item-${q.id}`;
+          a.href = `#card-${q.id}`;
+          a.onclick = (e) => navigateToQuestion(q.id, e);
+
+          a.innerHTML = `
+            <span class="sidebar-id-badge">${q.id}</span>
+            <span class="sidebar-item-text" title="${escapeHtml(q.question)}">${escapeHtml(q.question)}</span>
+            <span class="sidebar-check">${isReviewed ? '✓' : '○'}</span>
+          `;
+
+          sidebarNav.appendChild(a);
+        });
+      }
+    }
+
+    sidebarQuickSearch.addEventListener('input', (e) => {
+      sidebarFilterQuery = e.target.value.trim();
+      renderSidebar();
+    });
+
+    // Render Main Cards
     function renderQuestions() {
       container.innerHTML = '';
       
@@ -858,7 +1367,7 @@
           codeHTML = `
             <div class="code-container">
               <div class="code-header">
-                <span>Swift Example</span>
+                <span>Swift / Reference Snippet</span>
                 <button class="copy-btn" onclick="copyCode(this, \`${encodeURIComponent(q.codeExample)}\`)">Copy Code</button>
               </div>
               <pre><code>${escapeHtml(q.codeExample)}</code></pre>
@@ -904,7 +1413,7 @@
       const chev = document.getElementById(`chev-${id}`);
       if (drawer) {
         drawer.classList.toggle('open');
-        chev.classList.toggle('rotated');
+        if (chev) chev.classList.toggle('rotated');
       }
     }
 
@@ -969,6 +1478,7 @@
 
     // Initial render
     renderQuestions();
+    renderSidebar();
   </script>
 </body>
 </html>
