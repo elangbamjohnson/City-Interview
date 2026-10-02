@@ -1,16 +1,16 @@
 # 📱 iOS Senior Interview Question Bank
 
-> A comprehensive, human-readable revision guide for 38 senior iOS interview questions. Each question includes a spoken pitch, in-depth breakdown, and real-world Swift code.
+> A comprehensive, human-readable revision guide for 39 senior iOS interview questions. Each question includes a spoken pitch, in-depth breakdown, and real-world Swift code.
 
 ## 📊 Overview
 
 | Tier | Target Level | Questions |
 |---|---|:---:|
-| **Tier 1 — Must know cold** | Essential interview preparedness | `16` |
+| **Tier 1 — Must know cold** | Essential interview preparedness | `17` |
 | **Tier 2 — Your differentiator** | Essential interview preparedness | `5` |
 | **Tier 3 — Know the concept** | Essential interview preparedness | `14` |
 | **Tier 4 — Just enough to not go blank** | Essential interview preparedness | `3` |
-| **Total** | Full Curriculum | **`38`** |
+| **Total** | Full Curriculum | **`39`** |
 
 ## 📑 Table of Contents
 
@@ -518,6 +518,87 @@ let package = Package(
 
 ---
 
+### `T1-17` — Static vs dynamic frameworks. What is the effect on launch?
+
+- **Difficulty:** 🟣 `Advanced`
+- **Tier:** `Tier 1 — Must know cold`
+
+> [!TIP]
+> **🗣️ Interview Pitch (Say it like this):**  
+> *"A static library is copied into the app's main binary at build time. A dynamic framework is a separate file inside the app bundle, and the system loads it when the app starts. That loading is what costs launch time. For every dynamic framework, dyld has to find it, map it into memory, bind its symbols, and run its initializers, all before main(). A few frameworks are fine, but 30 or 50 can make a cold launch noticeably slower.
+> 
+> On the formats: .a is always static. A .framework can be either, depending on the Mach-O Type setting. An XCFramework is only a container that holds device and simulator builds, so it can hold static or dynamic code. In Swift Package Manager, I choose with type: .static or .dynamic on the library product.
+> 
+> So in a big modular app, I link most modules statically to keep launch fast. I keep a dynamic framework only when code must be shared between the app and an extension, like a widget, so there is one copy. The trade-off is that static makes the main binary bigger and the final link slower, but launch is faster. I always measure launch before and after, because the real gain depends on the app."*
+
+#### 📖 Detailed Answer
+
+A static library is copied directly into the app's main executable binary at build time by the static linker (`ld64`). A dynamic framework remains a separate, standalone binary file inside the application bundle's `Frameworks/` directory and is dynamically resolved and mapped into memory by `dyld` (the dynamic link editor) at startup.
+
+#### ⏱️ The Impact on Cold Launch Time
+For every dynamic framework embedded in your app, `dyld` must perform expensive work before `main()` is reached:
+1. **Locate & Map (dlsym / mmap)**: Locates binary on disk, inspects Mach-O load commands (`LC_LOAD_DYLIB`), and maps binary pages into virtual memory.
+2. **Rebase & Bind**: Adjusts internal pointers due to ASLR (Address Space Layout Randomization) and resolves external symbol addresses to dependent libraries.
+3. **Run Initializers**: Executes runtime `+load` methods and static C++ constructors.
+
+While 5 to 10 dynamic frameworks add negligible overhead, having 30 to 50+ dynamic frameworks causes significant pre-main cold launch latency (often 500ms–2 seconds).
+
+#### 📦 Key Formats & Rules
+- **`.a` (Archive)**: Always a static library.
+- **`.framework`**: Can be static or dynamic, dictated by the target's **Mach-O Type** build setting (`Static Library` vs `Dynamic Library`).
+- **`.xcframework`**: A multi-platform bundle container holding device and simulator slices. It can package either static or dynamic binaries.
+- **Swift Package Manager**: Configured explicitly via `.library(name: "Module", type: .static, targets: ["Module"])` or `type: .dynamic`.
+
+#### 🔑 Senior Architectural Rules
+- **Static by Default**: In large modular codebases, link the majority of feature and utility modules statically to maximize launch performance.
+- **Dynamic for App + Extension Sharing**: Use a dynamic framework when code must be shared simultaneously between the main app and an app extension (e.g. WidgetKit extension, Share Extension) so both processes map the exact same binary in memory.
+- **The Duplicate Symbol / Singleton Hazard**: Linking the same static library into both the main app and an embedded dynamic framework duplicates the compiled code and duplicates singleton state (`shared` instances will be separate).
+- **Embedding Rule**: Dynamic XCFrameworks require **Embed & Sign** in Xcode target settings. Static libraries require **Do Not Embed** (or build errors occur). SPM handles this automatically.
+
+#### 🛠️ Implementation Decision Table
+| Need | How to Configure / Tool |
+|---|---|
+| **Measure launch** | Instruments App Launch, `DYLD_PRINT_STATISTICS=1`, MetricKit |
+| **SPM static / dynamic** | `.library(name: "Cart", type: .static, targets: ["Cart"])` |
+| **Xcode target** | Build Settings → **Mach-O Type** (`Static Library` vs `Dynamic Library`) |
+| **CocoaPods** | `use_frameworks! :linkage => :static` |
+| **Debug fast, Release small** | Xcode 15+ Mergeable Libraries (`MERGEABLE_LIBRARY = YES`) |
+| **Binary distribution** | XCFramework + `.binaryTarget` with checksum in SPM |
+
+> **🧠 Memory Trick:** **S-D-E** → *"Static by default, Dynamic for shared, Extensions are the reason."*
+
+#### 💻 Swift Code Example
+
+```swift
+// Package.swift: Configuring Static vs Dynamic Linkage in Swift Package Manager
+import PackageDescription
+
+let package = Package(
+    name: "SharedInfrastructure",
+    platforms: [.iOS(.v17)],
+    products: [
+        // 1. Static Library (Default for app modules — zero pre-main dyld load cost)
+        // Code is statically linked into the main app binary at compile time.
+        .library(
+            name: "CoreNetworking",
+            type: .static,
+            targets: ["CoreNetworking"]
+        ),
+        
+        // 2. Dynamic Library (Use when shared between App and App Extensions like Widgets)
+        // Stored once in the app bundle Frameworks/ folder; shared by both processes.
+        .library(
+            name: "SharedAuthSession",
+            type: .dynamic,
+            targets: ["SharedAuthSession"]
+        )
+    ],
+    targets: [
+        .target(name: "CoreNetworking"),
+        .target(name: "SharedAuthSession")
+    ]
+)
+```
 
 ---
 
