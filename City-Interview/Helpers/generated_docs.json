@@ -658,20 +658,32 @@
       "performance-profiling",
       "ios-internals"
     ],
-    "Q-42": [
+    "Q-39": [
       {
-        "docId": "security-comparison",
-        "title": "Security Decision Table (Keychain, Enclave, Pinning)",
-        "filename": "Security-ComparisonNotes.md",
-        "icon": "🛡️"
+        "docId": "performance-profiling",
+        "title": "Performance Profiling & Instruments — Talking Points",
+        "icon": "⏱️",
+        "filename": "PerformanceProfiling-TalkingPoints.md"
+      },
+      {
+        "docId": "ios-internals",
+        "title": "iOS Internals — Interview Talking Points",
+        "icon": "⚙️",
+        "filename": "iOSInternals-TalkingPoints.md"
       }
     ],
-    "Q-43": [
+    "Q-40": [
       {
-        "docId": "security-comparison",
-        "title": "Security Decision Table (Keychain, Enclave, Pinning)",
-        "filename": "Security-ComparisonNotes.md",
-        "icon": "🛡️"
+        "docId": "performance-profiling",
+        "title": "Performance Profiling & Instruments — Talking Points",
+        "icon": "⏱️",
+        "filename": "PerformanceProfiling-TalkingPoints.md"
+      },
+      {
+        "docId": "ios-internals",
+        "title": "iOS Internals — Interview Talking Points",
+        "icon": "⚙️",
+        "filename": "iOSInternals-TalkingPoints.md"
       }
     ],
     "Q-44": [
@@ -684,18 +696,18 @@
     ],
     "Q-45": [
       {
-        "docId": "leadership-ownership",
-        "title": "Development Lead / Feature Ownership — Talking Points",
-        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
-        "icon": "👔"
+        "docId": "security-comparison",
+        "title": "Security Decision Table (Keychain, Enclave, Pinning)",
+        "filename": "Security-ComparisonNotes.md",
+        "icon": "🛡️"
       }
     ],
     "Q-46": [
       {
-        "docId": "leadership-ownership",
-        "title": "Development Lead / Feature Ownership — Talking Points",
-        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
-        "icon": "👔"
+        "docId": "security-comparison",
+        "title": "Security Decision Table (Keychain, Enclave, Pinning)",
+        "filename": "Security-ComparisonNotes.md",
+        "icon": "🛡️"
       }
     ],
     "Q-47": [
@@ -706,7 +718,23 @@
         "icon": "👔"
       }
     ],
-    "Q-55": [
+    "Q-48": [
+      {
+        "docId": "leadership-ownership",
+        "title": "Development Lead / Feature Ownership — Talking Points",
+        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
+        "icon": "👔"
+      }
+    ],
+    "Q-49": [
+      {
+        "docId": "leadership-ownership",
+        "title": "Development Lead / Feature Ownership — Talking Points",
+        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
+        "icon": "👔"
+      }
+    ],
+    "Q-57": [
       {
         "docId": "testing-xctest",
         "title": "Testing, TDD/BDD, and Testability — Talking Points",
@@ -714,7 +742,7 @@
         "icon": "🧪"
       }
     ],
-    "Q-56": [
+    "Q-58": [
       {
         "docId": "repository-pattern",
         "title": "Repository Pattern — Talking Points",
@@ -728,7 +756,7 @@
         "icon": "🧪"
       }
     ],
-    "Q-66": [
+    "Q-68": [
       "performance-profiling",
       "ios-internals"
     ]

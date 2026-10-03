@@ -1,6 +1,6 @@
 # 📱 iOS Senior & Staff Interview Question Bank
 
-> A comprehensive, senior & staff-level revision suite for 69 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, Memory Management, System Design, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
+> A comprehensive, senior & staff-level revision suite for 70 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, Memory Management, System Design, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
 
 ## 📊 Overview
 
@@ -12,14 +12,14 @@
 | **SwiftUI & UIKit Layout** | `10` |  |
 | **Combine & Reactive Streams** | `1` | Reactive streams, Publishers, Subscribers, Backpressure, Subject types, Debounce vs Throttle, and cancellation lifecycles. |
 | **Networking, APIs & Background Tasks** | `5` | URLSession abstractions, REST vs GraphQL contract-driven schemas, token refresh interceptors, silent APNs pushes, Notification Service Extensions, BGTaskScheduler, App Suspension & State Restoration. |
-| **Modularity & Launch Performance** | `5` | SPM multi-module boundaries, static vs dynamic linkage launch effects, build-time reduction cascades, binary caching, app thinning, and Instruments profiling. |
-| **Data Persistence & Memory Management** | `4` |  |
-| **Security, Auth & Compliance** | `7` |  |
+| **Modularity & Launch Performance** | `6` | SPM multi-module boundaries, static vs dynamic linkage launch effects, build-time reduction cascades, binary caching, app thinning, and Instruments profiling. |
+| **Data Persistence & Memory Management** | `4` | Core Data vs SQLite vs Realm vs SwiftData, multi-context concurrency & merging, ARC retain cycles, Heap side tables (weak/unowned), and OS Jetsam OOM survival. |
+| **Security, Auth & Compliance** | `7` | Keychain vs Secure Enclave, SSL Certificate Pinning, biometric auth, Jailbreak & Frida detection, NSFileProtectionComplete, and banking compliance (PCI-DSS, SOX, GDPR). |
 | **System Design & Mobile Architecture** | `2` | End-to-end mobile system design: Two-tier LRU memory/disk image caching with coalescing, and Offline-First bi-directional syncing with outbox pattern and LWW conflict resolution. |
 | **Testing, CI/CD & AI Engineering** | `8` | Unit and UI testing with XCTest, protocol mocking and stubbing, TDD/BDD, automated CI/CD pipelines, feature flagging, and hybrid cloud/on-device AI systems. |
 | **Engineering Leadership & Operations** | `1` | Production incident triage, Crashlytics velocity alerts, MetricKit crash loops, blameless post-mortems, and migrating legacy monoliths using the Strangler Fig pattern. |
-| **Memory Management** | `8` | ARC strong/weak/unowned, retain cycles, stack vs heap, Copy-on-Write internals, memory warnings & downsampling, the Swift runtime side table, Jetsam OOM survival, and production memory profiling with Instruments and MetricKit. |
-| **Total** | **`69`** | Complete Senior & Staff iOS Interview Curriculum |
+| **Memory Management** | `8` | ARC strong/weak/unowned, retain cycles, stack vs heap, Copy-on-Write internals, memory warnings, the Swift runtime side table, Jetsam OOM survival, and production memory profiling with Instruments and MetricKit. |
+| **Total** | **`70`** | Complete Senior & Staff iOS Interview Curriculum |
 
 ---
 
@@ -3048,7 +3048,7 @@ final class AccountLedgerStore: ObservableObject {
 
 ---
 
-## 📦 Modularity & Launch Performance (Q-35 – Q-39)
+## 📦 Modularity & Launch Performance (Q-35 – Q-40)
 
 > SPM multi-module boundaries, static vs dynamic linkage launch effects, build-time reduction cascades, binary caching, app thinning, and Instruments profiling.
 
@@ -3406,7 +3406,147 @@ final class LaunchPerformanceTests: XCTestCase {
 
 ---
 
-### `Q-39` — Swift Package Manager (SPM) and modularization strategies
+### `Q-39` — Which Instruments tools do you use? What are their purposes?
+
+- **Difficulty:** 🔴 `Advanced`
+- **Category:** `Modularity & Launch Performance`
+
+> [!TIP]
+> **🗣️ Interview Pitch (Say it like this):**  
+> *"I pick the tool based on the symptom: Time Profiler for CPU bottlenecks, Allocations for growing heap, Leaks for orphaned pointers, Hangs for UI freezes over 250ms, and Animation Hitches for scroll stutter."*
+
+#### 📖 Detailed Answer
+
+Instruments is Apple's profiling app that comes with Xcode. You open it with Product > Profile (Cmd + I). It records what your app is doing while it runs, such as CPU, memory, and screen drawing. Each tool inside it answers one question. Use it on a real device, with a Release build.
+
+Say it like this:
+"I pick the tool based on the symptom, because each one answers a different question.
+
+Time Profiler answers 'where is my CPU time going?' It takes samples of the call stack many times a second, so I see which functions take the most time. I use it when the app feels slow or the UI freezes. I look at the main thread and use 'Invert Call Tree' and 'Hide System Libraries' to find my own heavy function quickly.
+
+Allocations answers 'how much memory is my app using, and what is using it?' It tracks every object created. I use it when memory keeps growing. I use the Generations feature: I take a snapshot, do an action like opening and closing a screen a few times, take another snapshot, and look at what stayed in memory. That tells me what is not being freed.
+
+Leaks answers 'which objects can never be freed?' It finds memory that nothing points to anymore, but was never released. It is good for finding the classic leaks. But it misses retain cycles where objects still point to each other, so I also use the Memory Graph debugger in Xcode for those.
+
+Hangs answers 'when did the UI stop responding?' It marks the moments when the main thread was blocked for too long, usually more than 250 milliseconds. I use it to find the exact moment of a freeze, then look at what the main thread was doing at that time.
+
+Animation Hitches answers 'why does my scrolling or animation stutter?' A hitch is a frame that appears late. The tool shows which frames were late and whether the cause was my app's work (commit) or the system rendering. I use it for janky scrolling and slow transitions."
+
+Which Tool for Which Symptom:
+• App feels slow, CPU high: Time Profiler — Inspect heaviest functions on the main thread (Invert Call Tree & Hide System Libraries).
+• Memory keeps growing: Allocations — Use Generations feature to compare snapshots and see what objects stay alive.
+• Objects never freed: Leaks — Identify leaked objects and their exact allocation stack traces.
+• UI freezes for a moment: Hangs — Detect exact moments where the main runloop was blocked (> 250ms).
+• Scroll or animation stutters: Animation Hitches — Pinpoint late frames and isolate Commit phase vs Render phase delays.
+
+Good to Mention (Staff-Level Interview Points):
+• Always profile a Release build on a real device: Debug builds disable compiler optimizations and inject debug assertions; the Simulator uses your Mac's CPU and memory architecture.
+• Other specialized tools: App Launch for startup pre-main dyld and post-main setup, Network for slow endpoints, Energy Log for battery/GPS drain, and SwiftUI instrument for redundant view body evaluations.
+• Combined Template: Hangs and Animation Hitches are bundled together in the "Hangs and Hitches" template in Xcode Instruments.
+• Subtle Memory Growth: A small, steady growth in Allocations across repeated user flows signifies a logical leak, even if the Leaks instrument reports 0 leaks.
+• Field Observability: Complement Instruments with Xcode Organizer and MetricKit to observe real-world hangs and hitches across customer devices.
+
+One-liner: Time Profiler finds slow code, Allocations and Leaks find memory problems, Hangs finds UI freezes, and Animation Hitches finds stutter.
+
+Memory trick: C-M-L-F-S → "CPU = Time Profiler, Memory = Allocations, Leaks = never freed, Freeze = Hangs, Stutter = Hitches."
+
+#### 💻 Swift Code Example
+
+```swift
+// =========================================================================
+// SENIOR INTERVIEW ARCHITECTURE: Instruments Diagnostics & Profiling Code
+// =========================================================================
+import Foundation
+import UIKit
+import os.signpost
+
+// =========================================================================
+// 1. TIME PROFILER & SIGNPOSTS: Custom Points of Interest
+// =========================================================================
+// SENIOR TALKING POINT:
+// os_signpost injects labeled intervals directly into the Instruments timeline.
+// This bridges the gap between high-level business logic and low-level CPU samples.
+final class FeedParserService {
+    private let perfLog = OSLog(subsystem: "com.citi.retailbanking", category: "FeedProcessing")
+
+    func processFeedPayload(_ data: Data) async {
+        let signpostID = OSSignpostID(log: perfLog)
+        
+        // Appears as a highlighted duration bar in Instruments 'os_signpost' track
+        os_signpost(.begin, log: perfLog, name: "ParseFeed", signpostID: signpostID)
+        defer {
+            os_signpost(.end, log: perfLog, name: "ParseFeed", signpostID: signpostID)
+        }
+        
+        // SENIOR TALKING POINT: Time Profiler Optimization
+        // Parsing offload prevents main-thread hitching (>16.6ms)
+        await Task.detached(priority: .userInitiated) {
+            self.parseTransactions(data)
+        }.value
+    }
+
+    private func parseTransactions(_ data: Data) {
+        // High-cost JSON decoding performed safely off the main runloop
+    }
+}
+
+// =========================================================================
+// 2. ALLOCATIONS & MEMORY GRAPH: Detecting Retain Cycles
+// =========================================================================
+// SENIOR TALKING POINT:
+// Leaks instrument catches orphaned heap allocations (0 pointers remaining).
+// But standard Leaks misses cyclic reference graphs (A <-> B) where retain counts > 0.
+// Generations in Allocations & the Xcode Memory Graph Debugger catch these cycles.
+final class DetailViewModel {
+    var onUpdate: (() -> Void)?
+    private var cachedData: [String] = []
+
+    func start() {
+        // ❌ RETAIN CYCLE: self -> onUpdate closure -> self
+        // Closure captures self strongly by default, creating an unfreeable loop.
+        // onUpdate = { self.refresh() }
+
+        // ✅ FIX: [weak self] breaks reference cycle, allowing deallocation
+        onUpdate = { [weak self] in
+            guard let self = self else { return }
+            self.refresh()
+        }
+    }
+
+    func refresh() {
+        // State update safely dispatched to UI
+    }
+
+    deinit {
+        // SENIOR TIP: Add deinit log to confirm deallocation during manual verification
+        print("DetailViewModel safely deallocated")
+    }
+}
+
+// =========================================================================
+// 3. HANGS & HITCHE ELIMINATION: Main-Thread Yielding
+// =========================================================================
+// SENIOR TALKING POINT:
+// Animation Hitches instrument splits frames into Commit phase (app layout)
+// and Render phase (system GPU compositing). Use Task.yield() in heavy loops.
+actor HeavyBatchProcessor {
+    func processLargeArray(_ items: [Int]) async {
+        for (index, item) in items.enumerated() {
+            // Expensive math computation
+            _ = item * 2
+            
+            // Periodically yield execution to allow higher priority tasks to run
+            if index % 500 == 0 {
+                await Task.yield()
+            }
+        }
+    }
+}
+```
+
+---
+
+### `Q-40` — Swift Package Manager (SPM) and modularization strategies
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Modularity & Launch Performance`
@@ -3470,11 +3610,11 @@ import CoreModels
 
 ---
 
-## 📌 Data Persistence & Memory Management (Q-40 – Q-43)
+## 💾 Data Persistence & Memory Management (Q-41 – Q-44)
 
-> 
+> Core Data vs SQLite vs Realm vs SwiftData, multi-context concurrency & merging, ARC retain cycles, Heap side tables (weak/unowned), and OS Jetsam OOM survival.
 
-### `Q-40` — Core Data vs SQLite vs Realm — one-line difference
+### `Q-41` — Core Data vs SQLite vs Realm — one-line difference
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Data Persistence & Memory Management`
@@ -3537,7 +3677,7 @@ func fetchLargeTransactions(db: Database) throws -> [TransactionRecord] {
 
 ---
 
-### `Q-41` — ARC and retain cycles — a clear example of a strong reference cycle
+### `Q-42` — ARC and retain cycles — a clear example of a strong reference cycle
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Data Persistence & Memory Management`
@@ -3605,7 +3745,7 @@ onComplete = { [weak self] in
 
 ---
 
-### `Q-42` — Deep Memory Management — Weak vs Unowned, Side Tables, and OS Jetsam OOM Kills
+### `Q-43` — Deep Memory Management — Weak vs Unowned, Side Tables, and OS Jetsam OOM Kills
 
 - **Difficulty:** 🔴 `Advanced`
 - **Category:** `Data Persistence & Memory Management`
@@ -3674,7 +3814,7 @@ final class ReportPrinter {
 
 ---
 
-### `Q-43` — Core Data & SwiftData Concurrency — Multi-Context Architecture and Merging
+### `Q-44` — Core Data & SwiftData Concurrency — Multi-Context Architecture and Merging
 
 - **Difficulty:** 🔴 `Advanced`
 - **Category:** `Data Persistence & Memory Management`
@@ -3743,11 +3883,11 @@ final class AccountSyncService {
 
 ---
 
-## 📌 Security, Auth & Compliance (Q-44 – Q-50)
+## 🔒 Security, Auth & Compliance (Q-45 – Q-51)
 
-> 
+> Keychain vs Secure Enclave, SSL Certificate Pinning, biometric auth, Jailbreak & Frida detection, NSFileProtectionComplete, and banking compliance (PCI-DSS, SOX, GDPR).
 
-### `Q-44` — Certificate pinning — what it is, why it stops MITM attacks
+### `Q-45` — Certificate pinning — what it is, why it stops MITM attacks
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Security, Auth & Compliance`
@@ -3811,7 +3951,7 @@ class PinnedURLSessionDelegate: NSObject, URLSessionDelegate {
 
 ---
 
-### `Q-45` — Secure Enclave vs Keychain — what each one is actually for
+### `Q-46` — Secure Enclave vs Keychain — what each one is actually for
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Security, Auth & Compliance`
@@ -3879,7 +4019,7 @@ func createSecureEnclaveKey() throws -> SecKey {
 
 ---
 
-### `Q-46` — Secure data handling in financial apps — tokenization, biometric auth, session management
+### `Q-47` — Secure data handling in financial apps — tokenization, biometric auth, session management
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Security, Auth & Compliance`
@@ -3947,7 +4087,7 @@ class SessionManager {
 
 ---
 
-### `Q-47` — PCI-DSS — what it protects and who it applies to
+### `Q-48` — PCI-DSS — what it protects and who it applies to
 
 - **Difficulty:** 🟢 `Beginner`
 - **Category:** `Security, Auth & Compliance`
@@ -4006,7 +4146,7 @@ struct SafePaymentRequest: Codable {
 
 ---
 
-### `Q-48` — SOX (Sarbanes-Oxley) — what it's for
+### `Q-49` — SOX (Sarbanes-Oxley) — what it's for
 
 - **Difficulty:** 🟢 `Beginner`
 - **Category:** `Security, Auth & Compliance`
@@ -4076,7 +4216,7 @@ await auditLogger.log(userId: user.id, action: "INITIATE_TRANSFER", resource: "t
 
 ---
 
-### `Q-49` — GDPR — what it protects and where it applies
+### `Q-50` — GDPR — what it protects and where it applies
 
 - **Difficulty:** 🟢 `Beginner`
 - **Category:** `Security, Auth & Compliance`
@@ -4148,7 +4288,7 @@ func handleDeleteMyDataRequest(userId: String) async throws {
 
 ---
 
-### `Q-50` — Application Hardening & Anti-Tampering — Jailbreak, Frida & At-Rest Encryption
+### `Q-51` — Application Hardening & Anti-Tampering — Jailbreak, Frida & At-Rest Encryption
 
 - **Difficulty:** 🔴 `Advanced`
 - **Category:** `Security, Auth & Compliance`
@@ -4227,11 +4367,11 @@ struct AppSecurityHardenCheck {
 
 ---
 
-## 🏛️ System Design & Mobile Architecture (Q-51 – Q-52)
+## 🏛️ System Design & Mobile Architecture (Q-52 – Q-53)
 
 > End-to-end mobile system design: Two-tier LRU memory/disk image caching with coalescing, and Offline-First bi-directional syncing with outbox pattern and LWW conflict resolution.
 
-### `Q-51` — System Design — Scalable LRU Image Caching, Prefetching & Coalescing
+### `Q-52` — System Design — Scalable LRU Image Caching, Prefetching & Coalescing
 
 - **Difficulty:** 🔴 `Advanced`
 - **Category:** `System Design & Mobile Architecture`
@@ -4314,7 +4454,7 @@ actor ImageCacheManager {
 
 ---
 
-### `Q-52` — System Design — Offline-First Feed & Bi-directional Synchronization
+### `Q-53` — System Design — Offline-First Feed & Bi-directional Synchronization
 
 - **Difficulty:** 🔴 `Advanced`
 - **Category:** `System Design & Mobile Architecture`
@@ -4415,11 +4555,11 @@ actor OfflineSyncEngine {
 
 ---
 
-## 🧪 Testing, CI/CD & AI Engineering (Q-53 – Q-60)
+## 🧪 Testing, CI/CD & AI Engineering (Q-54 – Q-61)
 
 > Unit and UI testing with XCTest, protocol mocking and stubbing, TDD/BDD, automated CI/CD pipelines, feature flagging, and hybrid cloud/on-device AI systems.
 
-### `Q-53` — Rehearse the AIAnalyzer walkthrough out loud — cloud/local/hybrid modes, confidence-based fallback
+### `Q-54` — Rehearse the AIAnalyzer walkthrough out loud — cloud/local/hybrid modes, confidence-based fallback
 
 - **Difficulty:** 🔴 `Advanced`
 - **Category:** `Testing, CI/CD & AI Engineering`
@@ -4473,7 +4613,7 @@ class HybridAIAnalyzer {
 
 ---
 
-### `Q-54` — Why did you choose Gemini for cloud and Ollama/Qwen for local?
+### `Q-55` — Why did you choose Gemini for cloud and Ollama/Qwen for local?
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Testing, CI/CD & AI Engineering`
@@ -4531,7 +4671,7 @@ struct GeminiProvider: LLMProvider {
 
 ---
 
-### `Q-55` — How do you validate AI-generated code before merging?
+### `Q-56` — How do you validate AI-generated code before merging?
 
 - **Difficulty:** 🔴 `Advanced`
 - **Category:** `Testing, CI/CD & AI Engineering`
@@ -4591,7 +4731,7 @@ final class AIGeneratedServiceTests: XCTestCase {
 
 ---
 
-### `Q-56` — How building your own AI tool changed how you use Copilot/Cursor day to day
+### `Q-57` — How building your own AI tool changed how you use Copilot/Cursor day to day
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Testing, CI/CD & AI Engineering`
@@ -4647,7 +4787,7 @@ After building my own tool: I use Cursor as a reasoning partner. The specific ch
 
 ---
 
-### `Q-57` — TDD vs BDD — the actual difference
+### `Q-58` — TDD vs BDD — the actual difference
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Testing, CI/CD & AI Engineering`
@@ -4721,7 +4861,7 @@ class BankAccountSpec: QuickSpec {
 
 ---
 
-### `Q-58` — XCTest — writing unit tests and UI tests, mocking and stubbing
+### `Q-59` — XCTest — writing unit tests and UI tests, mocking and stubbing
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Testing, CI/CD & AI Engineering`
@@ -4805,7 +4945,7 @@ final class LoginUITests: XCTestCase {
 
 ---
 
-### `Q-59` — CI/CD pipelines for iOS — what goes into one
+### `Q-60` — CI/CD pipelines for iOS — what goes into one
 
 - **Difficulty:** 🔴 `Advanced`
 - **Category:** `Testing, CI/CD & AI Engineering`
@@ -4877,7 +5017,7 @@ Key interview talking point: A CI pipeline that takes 45 minutes is one nobody w
 
 ---
 
-### `Q-60` — Feature flagging, A/B testing, and remote configuration
+### `Q-61` — Feature flagging, A/B testing, and remote configuration
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Testing, CI/CD & AI Engineering`
@@ -4947,11 +5087,11 @@ struct TransferView: View {
 
 ---
 
-## 👔 Engineering Leadership & Operations (Q-61)
+## 👔 Engineering Leadership & Operations (Q-62)
 
 > Production incident triage, Crashlytics velocity alerts, MetricKit crash loops, blameless post-mortems, and migrating legacy monoliths using the Strangler Fig pattern.
 
-### `Q-61` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
+### `Q-62` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
 
 - **Difficulty:** 🔴 `Advanced`
 - **Category:** `Engineering Leadership & Operations`
@@ -5017,11 +5157,11 @@ final class ModernAccountService: AccountServiceProtocol {
 
 ---
 
-## 🧠 Memory Management (Q-62 – Q-69)
+## 🧠 Memory Management (Q-63 – Q-70)
 
-> ARC strong/weak/unowned, retain cycles, stack vs heap, Copy-on-Write internals, memory warnings & downsampling, the Swift runtime side table, Jetsam OOM survival, and production memory profiling with Instruments and MetricKit.
+> ARC strong/weak/unowned, retain cycles, stack vs heap, Copy-on-Write internals, memory warnings, the Swift runtime side table, Jetsam OOM survival, and production memory profiling with Instruments and MetricKit.
 
-### `Q-62` — How does ARC work? What is the difference between strong, weak, and unowned?
+### `Q-63` — How does ARC work? What is the difference between strong, weak, and unowned?
 
 - **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
@@ -5082,7 +5222,7 @@ class RequestManager {
 
 ---
 
-### `Q-63` — What is a retain cycle? How do you detect and fix them?
+### `Q-64` — What is a retain cycle? How do you detect and fix them?
 
 - **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
@@ -5158,7 +5298,7 @@ func testNoRetainCycle() {
 
 ---
 
-### `Q-64` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
+### `Q-65` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
 
 - **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
@@ -5217,7 +5357,7 @@ struct LargeModel: Describable {
 
 ---
 
-### `Q-65` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
+### `Q-66` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
 
 - **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
@@ -5286,7 +5426,7 @@ print(s2.value)    // "world"
 
 ---
 
-### `Q-66` — How do you handle memory warnings?
+### `Q-67` — How do you handle memory warnings?
 
 - **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
@@ -5457,7 +5597,7 @@ func downsample(url: URL, maxPixel: CGFloat) -> UIImage? {
 
 ---
 
-### `Q-67` — What is the Swift runtime side table? How do weak references work under the hood?
+### `Q-68` — What is the Swift runtime side table? How do weak references work under the hood?
 
 - **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
@@ -5523,7 +5663,7 @@ print(observer?.id ?? "nil")  // "nil"
 
 ---
 
-### `Q-68` — How does Jetsam work? What strategies do you use to survive memory pressure?
+### `Q-69` — How does Jetsam work? What strategies do you use to survive memory pressure?
 
 - **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
@@ -5611,7 +5751,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MXMetricManagerSubscriber
 
 ---
 
-### `Q-69` — How do you profile and debug memory issues in a production iOS app?
+### `Q-70` — How do you profile and debug memory issues in a production iOS app?
 
 - **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
