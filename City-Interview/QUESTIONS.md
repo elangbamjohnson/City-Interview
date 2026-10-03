@@ -1,6 +1,6 @@
 # 📱 iOS Senior & Staff Interview Question Bank
 
-> A comprehensive, senior & staff-level revision suite for 70 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, Memory Management, System Design, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
+> A comprehensive, senior & staff-level revision suite for 71 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, 60/120fps Scroll Hitch Elimination, Memory Management, System Design, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
 
 ## 📊 Overview
 
@@ -12,14 +12,14 @@
 | **SwiftUI & UIKit Layout** | `10` |  |
 | **Combine & Reactive Streams** | `1` | Reactive streams, Publishers, Subscribers, Backpressure, Subject types, Debounce vs Throttle, and cancellation lifecycles. |
 | **Networking, APIs & Background Tasks** | `5` | URLSession abstractions, REST vs GraphQL contract-driven schemas, token refresh interceptors, silent APNs pushes, Notification Service Extensions, BGTaskScheduler, App Suspension & State Restoration. |
-| **Modularity & Launch Performance** | `6` | SPM multi-module boundaries, static vs dynamic linkage launch effects, build-time reduction cascades, binary caching, app thinning, and Instruments profiling. |
+| **Modularity & Launch Performance** | `7` | SPM multi-module boundaries, static vs dynamic linkage launch effects, build-time reduction cascades, binary caching, app thinning, and Instruments profiling. |
 | **Data Persistence & Memory Management** | `4` | Core Data vs SQLite vs Realm vs SwiftData, multi-context concurrency & merging, ARC retain cycles, Heap side tables (weak/unowned), and OS Jetsam OOM survival. |
 | **Security, Auth & Compliance** | `7` | Keychain vs Secure Enclave, SSL Certificate Pinning, biometric auth, Jailbreak & Frida detection, NSFileProtectionComplete, and banking compliance (PCI-DSS, SOX, GDPR). |
 | **System Design & Mobile Architecture** | `2` | End-to-end mobile system design: Two-tier LRU memory/disk image caching with coalescing, and Offline-First bi-directional syncing with outbox pattern and LWW conflict resolution. |
 | **Testing, CI/CD & AI Engineering** | `8` | Unit and UI testing with XCTest, protocol mocking and stubbing, TDD/BDD, automated CI/CD pipelines, feature flagging, and hybrid cloud/on-device AI systems. |
 | **Engineering Leadership & Operations** | `1` | Production incident triage, Crashlytics velocity alerts, MetricKit crash loops, blameless post-mortems, and migrating legacy monoliths using the Strangler Fig pattern. |
 | **Memory Management** | `8` | ARC strong/weak/unowned, retain cycles, stack vs heap, Copy-on-Write internals, memory warnings, the Swift runtime side table, Jetsam OOM survival, and production memory profiling with Instruments and MetricKit. |
-| **Total** | **`70`** | Complete Senior & Staff iOS Interview Curriculum |
+| **Total** | **`71`** | Complete Senior & Staff iOS Interview Curriculum |
 
 ---
 
@@ -3048,7 +3048,7 @@ final class AccountLedgerStore: ObservableObject {
 
 ---
 
-## 📦 Modularity & Launch Performance (Q-35 – Q-40)
+## 📦 Modularity & Launch Performance (Q-35 – Q-41)
 
 > SPM multi-module boundaries, static vs dynamic linkage launch effects, build-time reduction cascades, binary caching, app thinning, and Instruments profiling.
 
@@ -3546,7 +3546,246 @@ actor HeavyBatchProcessor {
 
 ---
 
-### `Q-40` — Swift Package Manager (SPM) and modularization strategies
+### `Q-40` — How do you fix scroll jank and dropped frames?
+
+- **Difficulty:** 🔴 `Advanced`
+- **Category:** `Modularity & Launch Performance`
+
+> [!TIP]
+> **🗣️ Interview Pitch (Say it like this):**  
+> *"Find the late frames with Animation Hitches and Time Profiler, then fix the biggest cause using M-I-L-D-R: Main-thread work, Images, Layout, Drawing, and Redraws."*
+
+#### 📖 Detailed Answer
+
+A screen shows a new picture 60 times a second, or 120 on ProMotion phones. Each picture is a frame, and I have about 16 ms (or 8 ms) to prepare it. If my code takes longer, the frame is late, and the user sees the scroll stutter. That is jank. It shows up most in table views, collection views, and SwiftUI lists, because they build many cells while the user scrolls.
+
+Say it like this:
+"When someone says scrolling is janky, I first check how bad it is and where it happens. I ask which screen, which device, and whether it happens all the time or only on the first scroll. Then I try it on a real, older phone with a Release build, because the Simulator and Debug builds show wrong results.
+
+To find the cause, I open Instruments. I start with Animation Hitches, which shows me which frames were late. Then I use Time Profiler and look at the main thread while I scroll, to see which function is taking the time. For SwiftUI, I also use the SwiftUI instrument, and I add Self._printChanges() to see why a view redraws. I also check Xcode Organizer to see if real users have the same problem.
+
+Then I fix the biggest cause first. These are the common causes in a scrolling list:
+1. Heavy work on the main thread: parsing JSON, formatting dates, or reading files while the cell is being built.
+2. Big images: decoded at full size on the main thread.
+3. Complex layout: too many nested views or Auto Layout constraints.
+4. Expensive drawing: shadows without a shadow path, rounded corners with masks, or lots of transparent views.
+5. SwiftUI: too many redraws or a non-lazy container.
+
+After each fix, I measure again. If the hitch number did not go down, that fix was not the real problem, and I go back to the profiler. At the end, I add a scroll performance test, so the problem does not come back."
+
+How to Fix Each Cause:
+1. Heavy work on the main thread: Do it before the cell is built. Never allocate DateFormatter inside cellForRowAt; format once upfront in the view model and reuse a single static formatter.
+2. Big images: Downsample and load in the background. Use Image I/O CGImageSourceCreateThumbnailAtIndex to decode directly to display size off the main thread. In the cell, load in background, cancel in prepareForReuse, and enable prefetchDataSource.
+3. Complex layout: Make it flatter and cheaper. Use UIStackView or fewer nested views. Set fixed row height (tableView.rowHeight = 88) when possible. If heights vary, use automaticDimension with an accurate estimatedRowHeight.
+4. Expensive drawing: Give the system a shadow path, avoid masks and transparency. Set layer.shadowPath to eliminate dynamic offscreen render passes. Keep cornerRadius without masksToBounds when combined with shadows. Set cell.contentView.isOpaque = true to skip alpha blending.
+5. SwiftUI: Use lazy containers, stable IDs, and eliminate redundant redraws. Replace VStack with LazyVStack so rows build on demand. Keep row views lightweight and debug redraws with Self._printChanges().
+
+Quick Steps to Remember:
+1. Find: Animation Hitches, then Time Profiler on the main thread.
+2. Fix the biggest cause: main thread work, images, layout, drawing, redraws.
+3. Measure again with the same scroll.
+4. Protect with a scroll performance test (XCTOSSignpostMetric.scrollingAndDecelerationMetric).
+
+Good to Mention (Staff-Level Interview Points):
+• Cell Reuse Discipline: Inside cellForRowAt, only bind pre-calculated data; never allocate views, calculate constraints, or perform disk/network I/O.
+• Diffable Data Sources: Use NSDiffableDataSourceSnapshot so updates animate cleanly without calling reloadData() while the user is actively dragging.
+• ProMotion Frame Budget: At 120 Hz, each frame budget drops to 8.3 ms, meaning even small synchronous work causes dropped frames.
+• Core Animation Debug Overlays: Use Instruments / Xcode "Color Blended Layers" and "Color Offscreen-Rendered" to identify transparency and masking bottlenecks directly on screen.
+
+One-liner: Find the late frames with Animation Hitches and Time Profiler, then fix the biggest cause: main thread work, big images, heavy layout, expensive drawing, or too many SwiftUI redraws.
+
+Memory trick: M-I-L-D-R → "Main thread work, Images, Layout, Drawing, Redraws."
+
+#### 💻 Swift Code Example
+
+```swift
+// =========================================================================
+// SENIOR INTERVIEW ARCHITECTURE: 60/120fps Scroll Hitch Elimination (M-I-L-D-R)
+// =========================================================================
+import UIKit
+import SwiftUI
+import ImageIO
+import XCTest
+
+// =========================================================================
+// 1. HEAVY WORK ON MAIN THREAD: Do it before the cell is built
+// =========================================================================
+// SENIOR TALKING POINT:
+// Creating DateFormatter() or NumberFormatter() is extraordinarily expensive (~1-3ms)
+// because it queries system locale databases. Doing it inside cellForRowAt guarantees
+// dropped frames on 120Hz ProMotion screens (budget: 8.3ms per frame).
+
+// ❌ Bad: formatting inside cellForRowAt, runs on every scroll
+// cell.dateLabel.text = DateFormatter().string(from: item.date)
+
+// ✅ Good: format once in the view model, reuse a single formatter
+struct ItemViewData: Identifiable {
+    let id: UUID
+    let title: String
+    let dateText: String
+    let imageURL: URL
+}
+
+enum Formatters {
+    static let date: DateFormatter = {
+        let f = DateFormatter()
+        f.dateStyle = .medium
+        return f
+    }()
+}
+
+// In ViewModel or Background Mapper:
+// let viewData = ItemViewData(id: UUID(),
+//                             title: item.title,
+//                             dateText: Formatters.date.string(from: item.date),
+//                             imageURL: item.imageURL)
+
+// =========================================================================
+// 2. BIG IMAGES: Downsample and load in the background
+// =========================================================================
+// SENIOR TALKING POINT:
+// UIImage(data:) decodes full JPEG/PNG into an uncompressed bitmap on the main thread.
+// CGImageSourceCreateThumbnailAtIndex creates a scaled thumbnail directly
+// and caches it immediately off the main thread, bypassing massive memory allocations.
+func downsample(url: URL, maxPixel: CGFloat) -> UIImage? {
+    let options: [CFString: Any] = [
+        kCGImageSourceCreateThumbnailFromImageAlways: true,
+        kCGImageSourceCreateThumbnailWithTransform: true, // Preserve EXIF rotation
+        kCGImageSourceShouldCacheImmediately: true,      // Decode now, off the main thread
+        kCGImageSourceThumbnailMaxPixelSize: maxPixel
+    ]
+    guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
+          let cg = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary)
+    else { return nil }
+    return UIImage(cgImage: cg)
+}
+
+// In the cell: load in the background, set on main, cancel on reuse
+final class ItemCell: UITableViewCell {
+    private var imageTask: Task<Void, Never>?
+    let customImageView = UIImageView()
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        // Cancel in-flight decode task so recycled cell doesn't process stale work
+        imageTask?.cancel()
+        imageTask = nil
+        customImageView.image = nil
+    }
+
+    func configure(with item: ItemViewData) {
+        imageTask = Task.detached(priority: .userInitiated) { [weak self] in
+            guard let image = downsample(url: item.imageURL, maxPixel: 120) else { return }
+            await MainActor.run {
+                self?.customImageView.image = image
+            }
+        }
+    }
+}
+
+// Also turn on prefetching, so images start loading before the cell appears:
+extension ItemListViewController: UITableViewDataSourcePrefetching {
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        indexPaths.forEach { indexPath in
+            imageLoader.preload(items[indexPath.row].imageURL)
+        }
+    }
+}
+
+// =========================================================================
+// 3. COMPLEX LAYOUT: Make it flatter and cheaper
+// =========================================================================
+// SENIOR TALKING POINT:
+// Auto Layout solves systems of linear equalities using the Cassowary solver.
+// Fixed row height is O(1). If dynamic height is needed, provide estimatedRowHeight
+// to prevent massive table layout recalculations and scrollbar stutter during flings.
+func configureListLayout(tableView: UITableView) {
+    // Use UIStackView or fewer nested views, and fixed heights when possible
+    tableView.rowHeight = 88                       // fixed height is the cheapest
+
+    // If the height must change, use automatic dimension with a full constraint chain
+    tableView.rowHeight = UITableView.automaticDimension
+    tableView.estimatedRowHeight = 88              // give a good estimate
+}
+
+// =========================================================================
+// 4. EXPENSIVE DRAWING: Give the system a shadow path, avoid masks & transparency
+// =========================================================================
+// SENIOR TALKING POINT:
+// Without shadowPath, Core Animation must do an offscreen render pass to discover the
+// layer's silhouette on EVERY frame. Setting shadowPath enables single-pass GPU compositing.
+func optimizeDrawing(cell: UITableViewCell, imageView: UIImageView) {
+    // ❌ Bad: the system must work out the shadow shape on every frame
+    // cell.layer.shadowOpacity = 0.3
+
+    // ✅ Good: tell it the shape, so it is cheap
+    cell.layer.shadowOpacity = 0.3
+    cell.layer.shadowPath = UIBezierPath(roundedRect: cell.bounds, cornerRadius: 8).cgPath
+
+    // Rounded corners: cornerRadius alone is fine. Avoid masksToBounds on many cells with shadows.
+    imageView.layer.cornerRadius = 8
+    imageView.clipsToBounds = true
+
+    // Make views opaque when possible, so the system skips blending
+    cell.contentView.backgroundColor = .systemBackground
+    cell.contentView.isOpaque = true
+}
+
+// =========================================================================
+// 5. SWIFTUI: Lazy container, stable IDs, fewer redraws
+// =========================================================================
+// SENIOR TALKING POINT:
+// Standard VStack instantiates and evaluates body for all children instantly.
+// LazyVStack allocates views on-demand as they approach the visible scroll boundary.
+// Self._printChanges() prints the exact property trigger causing body re-evaluation.
+
+// ❌ Bad: VStack builds every row at once
+// ScrollView { VStack { ForEach(items) { ItemRow(item: $0) } } }
+
+// ✅ Good: lazy builds rows only when needed
+struct FastScrollFeedView: View {
+    let items: [ItemViewData]
+
+    var body: some View {
+        ScrollView {
+            LazyVStack {
+                ForEach(items) { item in
+                    ItemRow(item: item)
+                }
+            }
+        }
+    }
+}
+
+// Row: small, no heavy work inside body, stable id from Identifiable
+struct ItemRow: View {
+    let item: ItemViewData
+    var body: some View {
+        let _ = Self._printChanges()          // why did this row redraw?
+        Text(item.title)
+    }
+}
+
+// =========================================================================
+// 6. REGRESSION GUARD: Automated Scroll Performance Test
+// =========================================================================
+// SENIOR TALKING POINT:
+// XCTOSSignpostMetric.scrollingAndDecelerationMetric measures hitch ratio
+// (ms of late frames per second of animation). Add to CI to prevent regressions.
+final class ScrollPerformanceUITests: XCTestCase {
+    func testScrollPerformance() throws {
+        let app = XCUIApplication()
+        app.launch()
+        measure(metrics: [XCTOSSignpostMetric.scrollingAndDecelerationMetric]) {
+            app.tables.firstMatch.swipeUp(velocity: .fast)
+        }
+    }
+}
+```
+
+---
+
+### `Q-41` — Swift Package Manager (SPM) and modularization strategies
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Modularity & Launch Performance`
@@ -3610,11 +3849,11 @@ import CoreModels
 
 ---
 
-## 💾 Data Persistence & Memory Management (Q-41 – Q-44)
+## 💾 Data Persistence & Memory Management (Q-42 – Q-45)
 
 > Core Data vs SQLite vs Realm vs SwiftData, multi-context concurrency & merging, ARC retain cycles, Heap side tables (weak/unowned), and OS Jetsam OOM survival.
 
-### `Q-41` — Core Data vs SQLite vs Realm — one-line difference
+### `Q-42` — Core Data vs SQLite vs Realm — one-line difference
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Data Persistence & Memory Management`
@@ -3677,7 +3916,7 @@ func fetchLargeTransactions(db: Database) throws -> [TransactionRecord] {
 
 ---
 
-### `Q-42` — ARC and retain cycles — a clear example of a strong reference cycle
+### `Q-43` — ARC and retain cycles — a clear example of a strong reference cycle
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Data Persistence & Memory Management`
@@ -3745,7 +3984,7 @@ onComplete = { [weak self] in
 
 ---
 
-### `Q-43` — Deep Memory Management — Weak vs Unowned, Side Tables, and OS Jetsam OOM Kills
+### `Q-44` — Deep Memory Management — Weak vs Unowned, Side Tables, and OS Jetsam OOM Kills
 
 - **Difficulty:** 🔴 `Advanced`
 - **Category:** `Data Persistence & Memory Management`
@@ -3814,7 +4053,7 @@ final class ReportPrinter {
 
 ---
 
-### `Q-44` — Core Data & SwiftData Concurrency — Multi-Context Architecture and Merging
+### `Q-45` — Core Data & SwiftData Concurrency — Multi-Context Architecture and Merging
 
 - **Difficulty:** 🔴 `Advanced`
 - **Category:** `Data Persistence & Memory Management`
@@ -3883,11 +4122,11 @@ final class AccountSyncService {
 
 ---
 
-## 🔒 Security, Auth & Compliance (Q-45 – Q-51)
+## 🔒 Security, Auth & Compliance (Q-46 – Q-52)
 
 > Keychain vs Secure Enclave, SSL Certificate Pinning, biometric auth, Jailbreak & Frida detection, NSFileProtectionComplete, and banking compliance (PCI-DSS, SOX, GDPR).
 
-### `Q-45` — Certificate pinning — what it is, why it stops MITM attacks
+### `Q-46` — Certificate pinning — what it is, why it stops MITM attacks
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Security, Auth & Compliance`
@@ -3951,7 +4190,7 @@ class PinnedURLSessionDelegate: NSObject, URLSessionDelegate {
 
 ---
 
-### `Q-46` — Secure Enclave vs Keychain — what each one is actually for
+### `Q-47` — Secure Enclave vs Keychain — what each one is actually for
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Security, Auth & Compliance`
@@ -4019,7 +4258,7 @@ func createSecureEnclaveKey() throws -> SecKey {
 
 ---
 
-### `Q-47` — Secure data handling in financial apps — tokenization, biometric auth, session management
+### `Q-48` — Secure data handling in financial apps — tokenization, biometric auth, session management
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Security, Auth & Compliance`
@@ -4087,7 +4326,7 @@ class SessionManager {
 
 ---
 
-### `Q-48` — PCI-DSS — what it protects and who it applies to
+### `Q-49` — PCI-DSS — what it protects and who it applies to
 
 - **Difficulty:** 🟢 `Beginner`
 - **Category:** `Security, Auth & Compliance`
@@ -4146,7 +4385,7 @@ struct SafePaymentRequest: Codable {
 
 ---
 
-### `Q-49` — SOX (Sarbanes-Oxley) — what it's for
+### `Q-50` — SOX (Sarbanes-Oxley) — what it's for
 
 - **Difficulty:** 🟢 `Beginner`
 - **Category:** `Security, Auth & Compliance`
@@ -4216,7 +4455,7 @@ await auditLogger.log(userId: user.id, action: "INITIATE_TRANSFER", resource: "t
 
 ---
 
-### `Q-50` — GDPR — what it protects and where it applies
+### `Q-51` — GDPR — what it protects and where it applies
 
 - **Difficulty:** 🟢 `Beginner`
 - **Category:** `Security, Auth & Compliance`
@@ -4288,7 +4527,7 @@ func handleDeleteMyDataRequest(userId: String) async throws {
 
 ---
 
-### `Q-51` — Application Hardening & Anti-Tampering — Jailbreak, Frida & At-Rest Encryption
+### `Q-52` — Application Hardening & Anti-Tampering — Jailbreak, Frida & At-Rest Encryption
 
 - **Difficulty:** 🔴 `Advanced`
 - **Category:** `Security, Auth & Compliance`
@@ -4367,11 +4606,11 @@ struct AppSecurityHardenCheck {
 
 ---
 
-## 🏛️ System Design & Mobile Architecture (Q-52 – Q-53)
+## 🏛️ System Design & Mobile Architecture (Q-53 – Q-54)
 
 > End-to-end mobile system design: Two-tier LRU memory/disk image caching with coalescing, and Offline-First bi-directional syncing with outbox pattern and LWW conflict resolution.
 
-### `Q-52` — System Design — Scalable LRU Image Caching, Prefetching & Coalescing
+### `Q-53` — System Design — Scalable LRU Image Caching, Prefetching & Coalescing
 
 - **Difficulty:** 🔴 `Advanced`
 - **Category:** `System Design & Mobile Architecture`
@@ -4454,7 +4693,7 @@ actor ImageCacheManager {
 
 ---
 
-### `Q-53` — System Design — Offline-First Feed & Bi-directional Synchronization
+### `Q-54` — System Design — Offline-First Feed & Bi-directional Synchronization
 
 - **Difficulty:** 🔴 `Advanced`
 - **Category:** `System Design & Mobile Architecture`
@@ -4555,11 +4794,11 @@ actor OfflineSyncEngine {
 
 ---
 
-## 🧪 Testing, CI/CD & AI Engineering (Q-54 – Q-61)
+## 🧪 Testing, CI/CD & AI Engineering (Q-55 – Q-62)
 
 > Unit and UI testing with XCTest, protocol mocking and stubbing, TDD/BDD, automated CI/CD pipelines, feature flagging, and hybrid cloud/on-device AI systems.
 
-### `Q-54` — Rehearse the AIAnalyzer walkthrough out loud — cloud/local/hybrid modes, confidence-based fallback
+### `Q-55` — Rehearse the AIAnalyzer walkthrough out loud — cloud/local/hybrid modes, confidence-based fallback
 
 - **Difficulty:** 🔴 `Advanced`
 - **Category:** `Testing, CI/CD & AI Engineering`
@@ -4613,7 +4852,7 @@ class HybridAIAnalyzer {
 
 ---
 
-### `Q-55` — Why did you choose Gemini for cloud and Ollama/Qwen for local?
+### `Q-56` — Why did you choose Gemini for cloud and Ollama/Qwen for local?
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Testing, CI/CD & AI Engineering`
@@ -4671,7 +4910,7 @@ struct GeminiProvider: LLMProvider {
 
 ---
 
-### `Q-56` — How do you validate AI-generated code before merging?
+### `Q-57` — How do you validate AI-generated code before merging?
 
 - **Difficulty:** 🔴 `Advanced`
 - **Category:** `Testing, CI/CD & AI Engineering`
@@ -4731,7 +4970,7 @@ final class AIGeneratedServiceTests: XCTestCase {
 
 ---
 
-### `Q-57` — How building your own AI tool changed how you use Copilot/Cursor day to day
+### `Q-58` — How building your own AI tool changed how you use Copilot/Cursor day to day
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Testing, CI/CD & AI Engineering`
@@ -4787,7 +5026,7 @@ After building my own tool: I use Cursor as a reasoning partner. The specific ch
 
 ---
 
-### `Q-58` — TDD vs BDD — the actual difference
+### `Q-59` — TDD vs BDD — the actual difference
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Testing, CI/CD & AI Engineering`
@@ -4861,7 +5100,7 @@ class BankAccountSpec: QuickSpec {
 
 ---
 
-### `Q-59` — XCTest — writing unit tests and UI tests, mocking and stubbing
+### `Q-60` — XCTest — writing unit tests and UI tests, mocking and stubbing
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Testing, CI/CD & AI Engineering`
@@ -4945,7 +5184,7 @@ final class LoginUITests: XCTestCase {
 
 ---
 
-### `Q-60` — CI/CD pipelines for iOS — what goes into one
+### `Q-61` — CI/CD pipelines for iOS — what goes into one
 
 - **Difficulty:** 🔴 `Advanced`
 - **Category:** `Testing, CI/CD & AI Engineering`
@@ -5017,7 +5256,7 @@ Key interview talking point: A CI pipeline that takes 45 minutes is one nobody w
 
 ---
 
-### `Q-61` — Feature flagging, A/B testing, and remote configuration
+### `Q-62` — Feature flagging, A/B testing, and remote configuration
 
 - **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Testing, CI/CD & AI Engineering`
@@ -5087,11 +5326,11 @@ struct TransferView: View {
 
 ---
 
-## 👔 Engineering Leadership & Operations (Q-62)
+## 👔 Engineering Leadership & Operations (Q-63)
 
 > Production incident triage, Crashlytics velocity alerts, MetricKit crash loops, blameless post-mortems, and migrating legacy monoliths using the Strangler Fig pattern.
 
-### `Q-62` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
+### `Q-63` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
 
 - **Difficulty:** 🔴 `Advanced`
 - **Category:** `Engineering Leadership & Operations`
@@ -5157,11 +5396,11 @@ final class ModernAccountService: AccountServiceProtocol {
 
 ---
 
-## 🧠 Memory Management (Q-63 – Q-70)
+## 🧠 Memory Management (Q-64 – Q-71)
 
 > ARC strong/weak/unowned, retain cycles, stack vs heap, Copy-on-Write internals, memory warnings, the Swift runtime side table, Jetsam OOM survival, and production memory profiling with Instruments and MetricKit.
 
-### `Q-63` — How does ARC work? What is the difference between strong, weak, and unowned?
+### `Q-64` — How does ARC work? What is the difference between strong, weak, and unowned?
 
 - **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
@@ -5222,7 +5461,7 @@ class RequestManager {
 
 ---
 
-### `Q-64` — What is a retain cycle? How do you detect and fix them?
+### `Q-65` — What is a retain cycle? How do you detect and fix them?
 
 - **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
@@ -5298,7 +5537,7 @@ func testNoRetainCycle() {
 
 ---
 
-### `Q-65` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
+### `Q-66` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
 
 - **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
@@ -5357,7 +5596,7 @@ struct LargeModel: Describable {
 
 ---
 
-### `Q-66` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
+### `Q-67` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
 
 - **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
@@ -5426,7 +5665,7 @@ print(s2.value)    // "world"
 
 ---
 
-### `Q-67` — How do you handle memory warnings?
+### `Q-68` — How do you handle memory warnings?
 
 - **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
@@ -5597,7 +5836,7 @@ func downsample(url: URL, maxPixel: CGFloat) -> UIImage? {
 
 ---
 
-### `Q-68` — What is the Swift runtime side table? How do weak references work under the hood?
+### `Q-69` — What is the Swift runtime side table? How do weak references work under the hood?
 
 - **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
@@ -5663,7 +5902,7 @@ print(observer?.id ?? "nil")  // "nil"
 
 ---
 
-### `Q-69` — How does Jetsam work? What strategies do you use to survive memory pressure?
+### `Q-70` — How does Jetsam work? What strategies do you use to survive memory pressure?
 
 - **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
@@ -5751,7 +5990,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MXMetricManagerSubscriber
 
 ---
 
-### `Q-70` — How do you profile and debug memory issues in a production iOS app?
+### `Q-71` — How do you profile and debug memory issues in a production iOS app?
 
 - **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`

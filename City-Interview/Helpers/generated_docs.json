@@ -680,18 +680,30 @@
         "filename": "PerformanceProfiling-TalkingPoints.md"
       },
       {
+        "docId": "autolayout-basics",
+        "title": "Auto Layout Basics — Talking Points",
+        "icon": "📐",
+        "filename": "AutoLayout-TalkingPoints.md"
+      },
+      {
         "docId": "ios-internals",
         "title": "iOS Internals — Interview Talking Points",
         "icon": "⚙️",
         "filename": "iOSInternals-TalkingPoints.md"
       }
     ],
-    "Q-44": [
+    "Q-41": [
       {
-        "docId": "security-comparison",
-        "title": "Security Decision Table (Keychain, Enclave, Pinning)",
-        "filename": "Security-ComparisonNotes.md",
-        "icon": "🛡️"
+        "docId": "performance-profiling",
+        "title": "Performance Profiling & Instruments — Talking Points",
+        "icon": "⏱️",
+        "filename": "PerformanceProfiling-TalkingPoints.md"
+      },
+      {
+        "docId": "ios-internals",
+        "title": "iOS Internals — Interview Talking Points",
+        "icon": "⚙️",
+        "filename": "iOSInternals-TalkingPoints.md"
       }
     ],
     "Q-45": [
@@ -712,10 +724,10 @@
     ],
     "Q-47": [
       {
-        "docId": "leadership-ownership",
-        "title": "Development Lead / Feature Ownership — Talking Points",
-        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
-        "icon": "👔"
+        "docId": "security-comparison",
+        "title": "Security Decision Table (Keychain, Enclave, Pinning)",
+        "filename": "Security-ComparisonNotes.md",
+        "icon": "🛡️"
       }
     ],
     "Q-48": [
@@ -734,7 +746,15 @@
         "icon": "👔"
       }
     ],
-    "Q-57": [
+    "Q-50": [
+      {
+        "docId": "leadership-ownership",
+        "title": "Development Lead / Feature Ownership — Talking Points",
+        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
+        "icon": "👔"
+      }
+    ],
+    "Q-58": [
       {
         "docId": "testing-xctest",
         "title": "Testing, TDD/BDD, and Testability — Talking Points",
@@ -742,7 +762,7 @@
         "icon": "🧪"
       }
     ],
-    "Q-58": [
+    "Q-59": [
       {
         "docId": "repository-pattern",
         "title": "Repository Pattern — Talking Points",
@@ -756,7 +776,7 @@
         "icon": "🧪"
       }
     ],
-    "Q-68": [
+    "Q-69": [
       "performance-profiling",
       "ios-internals"
     ]
