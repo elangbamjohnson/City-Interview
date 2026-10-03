@@ -1,6 +1,6 @@
 # 📱 iOS Senior & Staff Interview Question Bank
 
-> A comprehensive, senior & staff-level revision suite for 71 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, 60/120fps Scroll Hitch Elimination, Memory Management, System Design, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
+> A comprehensive, senior & staff-level revision suite for 71 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, 60/120fps Scroll Hitch Elimination, Memory Management, System Design & Scalable Image Caching, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
 
 ## 📊 Overview
 
@@ -4610,83 +4610,233 @@ struct AppSecurityHardenCheck {
 
 > End-to-end mobile system design: Two-tier LRU memory/disk image caching with coalescing, and Offline-First bi-directional syncing with outbox pattern and LWW conflict resolution.
 
-### `Q-53` — System Design — Scalable LRU Image Caching, Prefetching & Coalescing
+### `Q-53` — How do you load and cache images at scale?
 
 - **Difficulty:** 🔴 `Advanced`
 - **Category:** `System Design & Mobile Architecture`
 
 > [!TIP]
 > **🗣️ Interview Pitch (Say it like this):**  
-> *"My image caching architecture combines an in-memory NSCache with a disk-backed LRU file store, coalesces duplicate requests through an in-flight task map, and cancels pending downloads in prepareForReuse to ensure 60fps scrolling."*
+> *"Check memory, then disk, then network; shrink images to the display size; share and cancel downloads; and load in the background with prefetching."*
 
 #### 📖 Detailed Answer
 
-Designing an image downloading and caching library (akin to Kingfisher or SDWebImage) is one of the most common senior iOS system design interview prompts:
+Apps like shopping, social, and news show hundreds of images in lists and grids. If I download and decode every image again each time, the app gets slow, uses a lot of data, and can run out of memory. So the idea is simple: download once, keep a small copy, and reuse it.
 
-• Two-Tier Cache Architecture:
-  1. L1 Memory Cache: Ultra-fast RAM lookup (NSCache<NSURL, UIImage>).
-     - Must configure totalCostLimit (e.g. 25% of physical memory budget) and countLimit.
-     - Automatically evicts items when the system issues UIApplication.didReceiveMemoryWarningNotification.
-  2. L2 Persistent Disk Cache: Preserves decoded files across app relaunches.
-     - Files stored in FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).
-     - Key is SHA256 hash of the URL to prevent invalid file path characters.
-     - Eviction policy: LRU (Least Recently Used) with file access timestamp updates.
+Say it like this:
+"My image loader does four simple things.
 
-• Concurrency & Request Coalescing (Deduplication):
-  - Problem: If a user scrolls fast and 5 table cells request the exact same avatar URL, firing 5 duplicate HTTP requests wastes bandwidth and battery.
-  - Solution: Maintain an active tasks dictionary [URL: [Task]]. If a request is already in-flight, await the existing task instead of creating a new network request!
+First, it uses two caches. A memory cache for fast access while the app is open, and a disk cache so images are still there after the app restarts. I check memory first, then disk, and only then go to the network.
 
-• Cell Reuse & Cancellation:
-  - Table/Collection cells are recycled rapidly.
-  - When prepareForReuse() is called on a cell, cancel its pending download task using task.cancel() to free up network bandwidth for visible cells.
+Second, it makes images smaller. A photo can be 4000 pixels wide, but the screen shows it at 100 points. I downsample it to the display size, so it uses much less memory.
 
-• Prefetching:
-  - Implement UICollectionViewDataSourcePrefetching to initiate downloads for images 5-10 rows ahead of the visible viewport.
+Third, it avoids duplicate work. If three cells ask for the same URL, I make only one download and share the result. When a cell scrolls away, I cancel its download.
+
+Fourth, it loads in the background. Download and decode happen off the main thread, and I set the image on the main thread. I also prefetch images for cells that are about to appear, so scrolling feels smooth.
+
+In a real project, I can use a library like Kingfisher or Nuke, because they already do all of this well. In an interview, I explain that I know how it works inside, and I only build my own if there is a special need."
+
+The 4 Core Pillars of Image Caching at Scale:
+1. Two-Tier Caching (Memory & Disk):
+   - Memory Cache (L1): Instant RAM lookup using NSCache<NSURL, UIImage>. Configure countLimit (e.g. 200 items) and totalCostLimit (~100 MB). NSCache automatically evicts items under memory pressure and is natively thread-safe.
+   - Disk Cache (L2): Persistent storage using URLCache (configured on URLSessionConfiguration) or a dedicated directory in Library/Caches. Preserves downloaded images across app restarts.
+2. Image Downsampling (Image I/O):
+   - Avoid UIImage(data:), which decompresses the full 12MP–48MP bitmap in memory.
+   - Use Image I/O CGImageSourceCreateThumbnailAtIndex with kCGImageSourceShouldCacheImmediately: true to downscale directly to the target point dimensions off the main thread.
+3. Request Coalescing & Cancellation:
+   - Coalescing: Maintain an active inFlight dictionary [URL: Task<UIImage?, Never>] inside a Swift actor. If multiple cells request the same avatar or product URL, share the identical Task.
+   - Cancellation: In prepareForReuse(), cancel the cell's active Task so scrolled-away rows stop consuming network bandwidth.
+4. Background Execution & Prefetching:
+   - Network I/O and thumbnail decoding run asynchronously on cooperative background threads.
+   - Use UICollectionViewDataSourcePrefetching (prefetchItemsAt) to start downloading images 5–10 rows before they scroll into the visible viewport.
+
+Quick steps to remember:
+1. Cache in two layers: memory first, then disk, then network.
+2. Shrink: downsample to the display size.
+3. Share: one download for many requests, cancel when not needed.
+4. Background: download and decode off the main thread.
+5. Prefetch: start loading before the cell appears.
+
+Good to mention (Staff-Level Interview Points):
+• Byte Cost in Memory: A decoded bitmap consumes width × height × 4 bytes in RAM regardless of compressed file size. A 4000×3000 photo is ~48 MB in memory!
+• NSCache vs Dictionary: NSCache auto-evicts items on memory warnings, does not copy keys, and is thread-safe without manual NSLocking.
+• Compound Cache Keys: Include pixel dimensions in cache keys (e.g. "url_w300_h300") so thumbnails and full-size images don't overwrite each other.
+• Server-Side Resizing & Modern Formats: Recommend dynamic CDN query parameters (?w=300&fmt=webp) and modern formats like HEIC or WebP to save cellular bandwidth.
+• Visual Polish: Provide placeholder images and subtle crossfade animations to eliminate jarring visual pops during fast scrolling.
+• SwiftUI AsyncImage Limitations: AsyncImage lacks persistent disk caching; for production feed lists, use Nuke, Kingfisher, or a custom actor-based pipeline.
+• Disk Cache Eviction: Enforce maximum disk quota and LRU (Least Recently Used) cleanup based on access timestamps so disk usage doesn't balloon.
+
+One-liner: Check memory, then disk, then network; shrink images to the display size; share and cancel downloads; and load in the background with prefetching.
+
+Memory trick: C-S-S-B-P → "Cache two layers, Shrink, Share, Background, Prefetch."
 
 #### 💻 Swift Code Example
 
 ```swift
-// MARK: - Interview Concept: Scalable Image Cache with Request Coalescing
+// =========================================================================
+// SENIOR INTERVIEW ARCHITECTURE: Scalable Image Loading & Caching Pipeline (C-S-S-B-P)
+// =========================================================================
 import UIKit
+import ImageIO
 
-actor ImageCacheManager {
-    static let shared = ImageCacheManager()
+// =========================================================================
+// 1. TWO-TIER CACHE: Memory (NSCache) & Disk (URLCache / File System)
+// =========================================================================
+// SENIOR TALKING POINT:
+// Decoded bitmaps in memory cost width × height × 4 bytes (RGBA8888).
+// A 4000×3000 photo is ~48 MB in RAM!
+// NSCache automatically purges objects on UIApplication.didReceiveMemoryWarningNotification
+// and is natively thread-safe without requiring locks.
+final class ImageCacheConfiguration {
+    static let shared = ImageCacheConfiguration()
 
-    // L1 In-Memory Cache
-    private let memoryCache = NSCache<NSURL, UIImage>()
-    // In-flight request deduplication map
-    private var inFlightTasks: [URL: Task<UIImage, Error>] = [:]
+    // L1: Memory Cache with count and byte cost limits
+    let memoryCache: NSCache<NSURL, UIImage> = {
+        let cache = NSCache<NSURL, UIImage>()
+        cache.countLimit = 200                    // Max 200 images in RAM
+        cache.totalCostLimit = 100 * 1024 * 1024  // ~100 MB RAM budget
+        return cache
+    }()
 
-    init() {
-        memoryCache.totalCostLimit = 1024 * 1024 * 100 // 100 MB Limit
-    }
+    // L2: Disk Cache using URLCache on URLSessionConfiguration
+    let customSession: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.urlCache = URLCache(
+            memoryCapacity: 20_000_000,           // 20 MB RAM buffer
+            diskCapacity: 200_000_000,            // 200 MB on-disk persistence
+            diskPath: "scaled_images_cache"
+        )
+        config.requestCachePolicy = .returnCacheDataElseLoad
+        return URLSession(configuration: config)
+    }()
+}
 
-    func fetchImage(from url: URL) async throws -> UIImage {
-        // 1. Check L1 Memory Cache
-        if let cachedImage = memoryCache.object(forKey: url as NSURL) {
-            return cachedImage
+// =========================================================================
+// 2. IMAGE I/O DOWNSAMPLING: Decode Directly to Display Geometry
+// =========================================================================
+// SENIOR TALKING POINT:
+// UIImage(data:) decodes full-resolution JPEG/PNG into an uncompressed bitmap
+// on the main thread, spiking memory and causing scroll hitches.
+// Image I/O CGImageSourceCreateThumbnailAtIndex creates a pre-scaled thumbnail
+// and forces decoding off the main thread via kCGImageSourceShouldCacheImmediately.
+func downsample(data: Data, maxPixel: CGFloat) -> UIImage? {
+    let options: [CFString: Any] = [
+        kCGImageSourceCreateThumbnailFromImageAlways: true,
+        kCGImageSourceCreateThumbnailWithTransform: true,  // Respect EXIF rotation
+        kCGImageSourceShouldCacheImmediately: true,      // Force background decode
+        kCGImageSourceThumbnailMaxPixelSize: maxPixel      // Scale down to screen dimensions
+    ]
+    guard let source = CGImageSourceCreateWithData(data as CFData, nil),
+          let cgImage = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary)
+    else { return nil }
+    return UIImage(cgImage: cgImage)
+}
+
+// =========================================================================
+// 3. THREAD-SAFE LOADER & REQUEST COALESCING: Swift Actor
+// =========================================================================
+// SENIOR TALKING POINT:
+// Request Coalescing prevents duplicate downloads when 5 cells request the same URL.
+// We maintain an inFlight dictionary [URL: Task] inside an actor boundary
+// so concurrent requests await the identical background Task.
+actor ImageLoader {
+    static let shared = ImageLoader()
+    private let cache = ImageCacheConfiguration.shared.memoryCache
+    private var inFlight: [URL: Task<UIImage?, Never>] = [:]
+
+    func image(for url: URL, maxPixel: CGFloat) async -> UIImage? {
+        // Step 1: Check L1 Memory Cache (Fastest RAM path)
+        if let cached = cache.object(forKey: url as NSURL) {
+            return cached
         }
 
-        // 2. Request Coalescing: If already downloading, await existing task!
-        if let ongoingTask = inFlightTasks[url] {
-            return try await ongoingTask.value
+        // Step 2: Request Coalescing — if already downloading, await that existing task!
+        if let ongoingTask = inFlight[url] {
+            return await ongoingTask.value
         }
 
-        // 3. Initiate new download
-        let task = Task<UIImage, Error> {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            guard let image = UIImage(data: data) else {
-                throw URLError(.cannotDecodeContentData)
-            }
-            // Store in L1 cache (cost = byte count)
-            self.memoryCache.setObject(image, forKey: url as NSURL, cost: data.count)
+        // Step 3: Initiate single download, downsample, and store
+        let task = Task<UIImage?, Never> {
+            guard let (data, _) = try? await ImageCacheConfiguration.shared.customSession.data(from: url),
+                  let image = downsample(data: data, maxPixel: maxPixel)
+            else { return nil }
             return image
         }
 
-        inFlightTasks[url] = task
-        defer { inFlightTasks[url] = nil } // Clear completed task
+        inFlight[url] = task
+        let image = await task.value
+        inFlight[url] = nil // Clear deduplication map once finished
 
-        return try await task.value
+        // Cache the downscaled decoded bitmap in memory
+        if let image {
+            let cost = Int(image.size.width * image.size.height * 4)
+            cache.setObject(image, forKey: url as NSURL, cost: cost)
+        }
+        return image
+    }
+}
+
+// =========================================================================
+// 4. CELL REUSE & TASK CANCELLATION: Prevent Stale Work
+// =========================================================================
+// SENIOR TALKING POINT:
+// As cells are recycled, in-flight image tasks MUST be cancelled in prepareForReuse().
+// Otherwise, stale downloads consume network bandwidth and overwrite new cell content.
+final class ProductCell: UICollectionViewCell {
+    static let reuseIdentifier = "ProductCell"
+    private let imageView = UIImageView()
+    private var loadTask: Task<Void, Never>?
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        contentView.addSubview(imageView)
+        imageView.frame = contentView.bounds
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+    }
+    
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    func configure(url: URL, loader: ImageLoader = .shared) {
+        imageView.image = nil // Clear previous image immediately
+        
+        loadTask = Task {
+            let image = await loader.image(for: url, maxPixel: 300)
+            // Verify task was not cancelled while cell was recycled
+            if !Task.isCancelled {
+                await MainActor.run {
+                    self.imageView.image = image
+                }
+            }
+        }
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        loadTask?.cancel()  // Cell scrolled offscreen: stop downloading immediately!
+        loadTask = nil
+        imageView.image = nil
+    }
+}
+
+// =========================================================================
+// 5. PREFETCHING PIPELINE: Smooth 120Hz Scrolling
+// =========================================================================
+// SENIOR TALKING POINT:
+// UICollectionViewDataSourcePrefetching starts downloads 5-10 rows ahead of the visible viewport.
+// When cells scroll onto the screen, the image is already decoded in memory.
+extension ProductFeedViewController: UICollectionViewDataSourcePrefetching {
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        for indexPath in indexPaths {
+            let imageURL = products[indexPath.item].thumbnailURL
+            Task {
+                _ = await ImageLoader.shared.image(for: imageURL, maxPixel: 300)
+            }
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
+        // Optional: Cancel low-priority prefetch tasks if user changes direction
     }
 }
 ```

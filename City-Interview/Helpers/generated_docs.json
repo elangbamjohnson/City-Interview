@@ -779,6 +779,20 @@
     "Q-69": [
       "performance-profiling",
       "ios-internals"
+    ],
+    "Q-53": [
+      {
+        "docId": "networking-architecture",
+        "title": "Networking Architecture Decision Table & 4 Pillars",
+        "icon": "🌐",
+        "filename": "NetworkingArchitecture-DecisionTable.md"
+      },
+      {
+        "docId": "performance-profiling",
+        "title": "Performance Profiling & Instruments — Talking Points",
+        "icon": "⏱️",
+        "filename": "PerformanceProfiling-TalkingPoints.md"
+      }
     ]
   }
 }
