@@ -1,6 +1,6 @@
 # 📱 iOS Senior & Staff Interview Question Bank
 
-> A comprehensive, senior & staff-level revision suite for 73 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, 60/120fps Scroll Hitch Elimination, Scalable Image Caching, Keychain Secrets Management, Production Crash Log Triage & Symbolication, Memory Management, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
+> A comprehensive, senior & staff-level revision suite for 74 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, 60/120fps Scroll Hitch Elimination, Scalable Image Caching, Keychain Secrets Management, OAuth 2.0 PKCE & Token Rotation, Production Crash Log Triage & Symbolication, Memory Management, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
 
 ## 📊 Overview
 
@@ -14,12 +14,12 @@
 | **Networking, APIs & Background Tasks** | `5` | URLSession abstractions, REST vs GraphQL contract-driven schemas, token refresh interceptors, silent APNs pushes, Notification Service Extensions, BGTaskScheduler, App Suspension & State Restoration. |
 | **Modularity & Launch Performance** | `7` | SPM multi-module boundaries, static vs dynamic linkage launch effects, build-time reduction cascades, binary caching, app thinning, and Instruments profiling. |
 | **Data Persistence & Memory Management** | `4` | Core Data vs SQLite vs Realm vs SwiftData, multi-context concurrency & merging, ARC retain cycles, Heap side tables (weak/unowned), and OS Jetsam OOM survival. |
-| **Security, Auth & Compliance** | `8` | Keychain vs Secure Enclave, token storage CRUD, SSL Certificate Pinning, biometric auth, Jailbreak & Frida detection, NSFileProtectionComplete, and banking compliance (PCI-DSS, SOX, GDPR). |
+| **Security, Auth & Compliance** | `9` | Keychain vs Secure Enclave, token storage CRUD, OAuth 2.0 PKCE & token rotation, SSL Certificate Pinning, biometric auth, Jailbreak & Frida detection, NSFileProtectionComplete, and banking compliance (PCI-DSS, SOX, GDPR). |
 | **System Design & Mobile Architecture** | `2` | End-to-end mobile system design: Two-tier LRU memory/disk image caching with coalescing, and Offline-First bi-directional syncing with outbox pattern and LWW conflict resolution. |
 | **Testing, CI/CD & AI Engineering** | `8` | Unit and UI testing with XCTest, protocol mocking and stubbing, TDD/BDD, automated CI/CD pipelines, feature flagging, and hybrid cloud/on-device AI systems. |
 | **Engineering Leadership & Operations** | `2` | Production incident triage, crash log analysis & dSYM symbolication, Crashlytics velocity alerts, MetricKit crash loops, blameless post-mortems, and migrating legacy monoliths using the Strangler Fig pattern. |
 | **Memory Management** | `8` | ARC strong/weak/unowned, retain cycles, stack vs heap, Copy-on-Write internals, memory warnings, the Swift runtime side table, Jetsam OOM survival, and production memory profiling with Instruments and MetricKit. |
-| **Total** | **`73`** | Complete Senior & Staff iOS Interview Curriculum |
+| **Total** | **`74`** | Complete Senior & Staff iOS Interview Curriculum |
 
 ---
 
@@ -4077,9 +4077,9 @@ final class AccountSyncService {
 
 ---
 
-## 🔒 Security, Auth & Compliance (Q-46 – Q-53)
+## 🔒 Security, Auth & Compliance (Q-46 – Q-54)
 
-> Keychain vs Secure Enclave, token storage CRUD, SSL Certificate Pinning, biometric auth, Jailbreak & Frida detection, NSFileProtectionComplete, and banking compliance (PCI-DSS, SOX, GDPR).
+> Keychain vs Secure Enclave, token storage CRUD, OAuth 2.0 PKCE & token rotation, SSL Certificate Pinning, biometric auth, Jailbreak & Frida detection, NSFileProtectionComplete, and banking compliance (PCI-DSS, SOX, GDPR).
 
 ### `Q-46` — Certificate pinning — what it is, why it stops MITM attacks
 
@@ -4337,7 +4337,332 @@ struct TokenStore {
 
 ---
 
-### `Q-48` — Secure Enclave vs Keychain — what each one is actually for
+### `Q-48` — Explain a safe login flow: OAuth 2.0, refresh tokens, and token rotation
+
+- **Category:** `Security, Auth & Compliance`
+
+> [!TIP]
+> **🗣️ Interview Pitch (Say it like this):**  
+> *"Log in through the system browser with the code flow and PKCE, use a short-lived access token for the API, and use a rotating refresh token, stored in the Keychain, to renew it one refresh at a time."*
+
+#### 📖 Detailed Answer
+
+This is how an app logs a user in without ever seeing their password. You see it in "Sign in with Google", banking apps, and any app with its own login server. The user logs in on the login server's page, and the app only receives tokens.
+
+• OAuth 2.0: the standard way to give an app limited access to a user's account.
+• Access token: a short-lived token (5 to 15 minutes) that the app sends to the API on every call.
+• Refresh token: a longer-lived token used only to get a new access token, so the user stays logged in.
+• Token rotation: every refresh gives a new refresh token, and the old one stops working.
+• PKCE: a small extra step (Proof Key for Code Exchange) that makes the authorization code flow safe on mobile devices.
+
+Say it like this:
+"For a mobile app, I use the Authorization Code flow with PKCE. I open the login page in a system browser using ASWebAuthenticationSession, so my app never sees the password. The user logs in and agrees to the permissions. The server then sends my app back a one-time code. My app trades that code for an access token and a refresh token.
+
+PKCE protects that trade. Before login, my app makes a random secret and sends only its hash. When I trade the code, I send the original secret. If another app steals the code, it cannot use it, because it does not have the secret.
+
+After that, I send the access token in the header of every API call. It expires quickly, so if someone steals it, they can use it only for a short time. When it expires, I use the refresh token to get a new one, without asking the user to log in again.
+
+With rotation, each refresh returns a new refresh token, and the old one is dead. If a thief uses an old refresh token after I already used it, the server sees the same token twice, knows it was stolen, and ends the whole session. In my app, I allow only one refresh at a time, because two refreshes together would look like theft.
+
+Both tokens are stored in the Keychain. On logout, I tell the server to revoke the token and delete everything locally."
+
+The flow in one picture:
+```text
+ App                  System Browser          Login Server              API
+  |                         |                       |                     |
+  | 1. open login page ---->|---------------------->|                     |
+  |    (with PKCE hash)     |                       |                     |
+  |                         | 2. user logs in       |                     |
+  |                         |    (app never sees the password)            |
+  |                                                 |                     |
+  | 3. redirect back with a one-time CODE <---------|                     |
+  |                                                 |                     |
+  | 4. send CODE + PKCE secret -------------------->|                     |
+  | 5. access token + refresh token <---------------|                     |
+  |    (save both in Keychain)                      |                     |
+  |                                                                       |
+  | 6. call API with access token ----------------------------------->    |
+  |                                                                       |
+  | 7. access token expired                                               |
+  |    send refresh token ------------------------->|                     |
+  |    NEW access token + NEW refresh token <-------|                     |
+  |    (old refresh token is now dead = rotation)                         |
+```
+
+Quick steps to remember:
+1. Login in the system browser: the app never sees the password.
+2. Code: the server sends a one-time code, and PKCE protects it.
+3. Tokens: trade the code for an access token and a refresh token, store both in the Keychain.
+4. Use: access token in the Authorization header.
+5. Refresh: when it expires, use the refresh token. Each refresh gives a new refresh token (rotation).
+6. One at a time: only one refresh runs at once (single-flight via Actor).
+7. Logout: revoke on the server, delete locally from Keychain.
+
+Good to mention (Staff-Level Interview Points):
+• Short-Lived vs. Long-Lived: Access tokens are short-lived (5-15 mins) and refresh tokens are long-lived. The short lifetime limits the attack window if an access token leaks in transit or memory.
+• Reuse Detection in Token Rotation: The main security benefit of rotation is theft detection. If an attacker uses an old, already-rotated refresh token, the server detects token reuse, flags the session as compromised, and revokes all tokens issued in that lineage.
+• OIDC vs. OAuth 2.0: OpenID Connect (OIDC) sits on top of OAuth. It adds an ID token (JWT) specifying *who* the user is (identity/authentication). OAuth 2.0 alone specifies *what* the app may do (delegated authorization/scopes).
+• Deprecated Anti-Patterns: Avoid the Implicit Flow (tokens exposed in redirect URL fragments) and Resource Owner Password Credentials Grant (where the mobile app handles raw usernames and passwords).
+• Sandboxed Authentication: Always use ASWebAuthenticationSession, never a custom in-app WKWebView (which could log keystrokes or bypass Apple Face ID/Passkey autofill).
+• Zero Token Leakage: Never log tokens to OSLog/Console, and never embed them as query parameters in GET request URLs (always use Authorization: Bearer <token> headers).
+
+One-liner: Log in through the system browser with the code flow and PKCE, use a short-lived access token for the API, and use a rotating refresh token, stored in the Keychain, to renew it one refresh at a time.
+
+Memory trick: B-C-T-U-R → "Browser login, Code, Tokens in Keychain, Use the access token, Refresh with rotation."
+
+#### 💻 Swift Code Example
+
+```swift
+// =========================================================================
+// SENIOR INTERVIEW ARCHITECTURE: Safe Login Flow (OAuth 2.0 + PKCE + Rotation)
+// =========================================================================
+import Foundation
+import AuthenticationServices
+import Security
+import UIKit
+
+// MARK: - 1. Open the Login Page with PKCE & ASWebAuthenticationSession
+// 💡 SENIOR TALKING POINT:
+// Using ASWebAuthenticationSession provides a sandboxed system browser.
+// The host app CANNOT inspect keystrokes or steal credentials, and benefits
+// from shared Safari session cookies and system Passkey / 2FA autofill.
+
+final class OAuthLoginCoordinator: NSObject, ASWebAuthenticationPresentationContextProviding {
+    private var webAuthSession: ASWebAuthenticationSession?
+    
+    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first(where: { $0.isKeyWindow }) else {
+            return ASPresentationAnchor()
+        }
+        return window
+    }
+    
+    func startLogin(challenge: String, state: String, completion: @escaping (Result<URL, Error>) -> Void) {
+        var comps = URLComponents(string: "https://auth.example.com/authorize")!
+        comps.queryItems = [
+            .init(name: "response_type", value: "code"),              // We request a one-time authorization code
+            .init(name: "client_id", value: "my-ios-app"),            // Registered public client ID
+            .init(name: "redirect_uri", value: "myapp://callback"),   // Custom scheme or Universal Link callback
+            .init(name: "scope", value: "profile offline_access"),    // offline_access requests a refresh token
+            .init(name: "state", value: state),                       // CSRF protection token
+            .init(name: "code_challenge", value: challenge),          // PKCE: SHA-256 hash of the code verifier
+            .init(name: "code_challenge_method", value: "S256")       // RFC 7636 S256 challenge method
+        ]
+        
+        let session = ASWebAuthenticationSession(
+            url: comps.url!,
+            callbackURLScheme: "myapp"
+        ) { callbackURL, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            guard let url = callbackURL else {
+                completion(.failure(AuthError.invalidCallback))
+                return
+            }
+            completion(.success(url))
+        }
+        
+        session.presentationContextProvider = self
+        session.prefersEphemeralWebBrowserSession = false // Allows SSO via Safari session cookies
+        self.webAuthSession = session
+        session.start()
+    }
+}
+
+// MARK: - 2. Trade the One-Time Code for Tokens
+// 💡 SENIOR TALKING POINT:
+// The code_verifier proves this client instance initiated the request.
+// Even if an attacker intercepts the authorization code via URL scheme hijacking,
+// they cannot exchange it without the unhashed secret.
+
+struct TokenResponse: Codable {
+    let access_token: String
+    let refresh_token: String
+    let expires_in: Int
+    let token_type: String
+}
+
+enum AuthError: Error {
+    case loggedOut
+    case invalidCallback
+    case tokenRefreshFailed
+}
+
+func exchange(code: String, verifier: String) async throws {
+    var request = URLRequest(url: URL(string: "https://auth.example.com/token")!)
+    request.httpMethod = "POST"
+    request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+    
+    let bodyString = "grant_type=authorization_code" +
+        "&code=\(code)" +
+        "&redirect_uri=myapp://callback" +
+        "&client_id=my-ios-app" +
+        "&code_verifier=\(verifier)"
+    
+    request.httpBody = Data(bodyString.utf8)
+    
+    let (data, response) = try await URLSession.shared.data(for: request)
+    guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+        throw AuthError.tokenRefreshFailed
+    }
+    
+    let tokens = try JSONDecoder().decode(TokenResponse.self, from: data)
+    TokenStorage.save(tokens) // Store securely in Keychain
+}
+
+// MARK: - 3. Call Protected API with Bearer Access Token
+// 💡 SENIOR TALKING POINT:
+// Tokens must ALWAYS be delivered via Authorization headers, NEVER in URL query params.
+
+func fetchOrders(accessToken: String) async throws -> Data {
+    var request = URLRequest(url: URL(string: "https://api.example.com/orders")!)
+    request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+    let (data, _) = try await URLSession.shared.data(for: request)
+    return data
+}
+
+// MARK: - 4. Token Rotation with Single-Flight Actor
+// 💡 SENIOR TALKING POINT:
+// Concurrency Trap: If 5 parallel network calls encounter an expired access token,
+// they must NOT trigger 5 simultaneous refresh requests. With Token Rotation,
+// the 2nd request using the invalidated refresh token would cause the server to
+// trigger 'Reuse Detection' and revoke the user session!
+// We serialize refreshes using a Swift Actor with task deduplication.
+
+actor TokenManager {
+    private var refreshTask: Task<String, Error>? // In-flight refresh task deduplication
+
+    func validAccessToken() async throws -> String {
+        if let token = TokenStorage.accessToken, !TokenStorage.isExpired {
+            return token // Fast-path: Token is valid in memory/Keychain
+        }
+        
+        // Single-flight pattern: Share ongoing refresh task among all callers
+        if let running = refreshTask {
+            return try await running.value
+        }
+        
+        let task = Task { try await self.refresh() }
+        refreshTask = task
+        defer { refreshTask = nil } // Clear once completed
+        return try await task.value
+    }
+
+    private func refresh() async throws -> String {
+        guard let oldRefresh = TokenStorage.refreshToken else {
+            throw AuthError.loggedOut
+        }
+        
+        var request = URLRequest(url: URL(string: "https://auth.example.com/token")!)
+        request.httpMethod = "POST"
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.httpBody = Data(
+            "grant_type=refresh_token&refresh_token=\(oldRefresh)&client_id=my-ios-app".utf8
+        )
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+            // If the server returns 400/401, token was revoked or reused by an attacker.
+            TokenStorage.clear()
+            throw AuthError.loggedOut
+        }
+        
+        let tokens = try JSONDecoder().decode(TokenResponse.self, from: data)
+        // TOKEN ROTATION: Store the newly issued refresh token; the previous one is invalidated
+        TokenStorage.save(tokens)
+        return tokens.access_token
+    }
+}
+
+// MARK: - 5. Keychain Token Storage & Expiry Checking
+enum TokenStorage {
+    private static let accessKey = "com.citi.retailbanking.accessToken"
+    private static let refreshKey = "com.citi.retailbanking.refreshToken"
+    private static let expiryKey = "com.citi.retailbanking.tokenExpiry"
+    
+    static var accessToken: String? {
+        readKeychain(key: accessKey)
+    }
+    
+    static var refreshToken: String? {
+        readKeychain(key: refreshKey)
+    }
+    
+    static var isExpired: Bool {
+        guard let expiryString = readKeychain(key: expiryKey),
+              let timestamp = Double(expiryString) else { return true }
+        return Date().timeIntervalSince1970 >= (timestamp - 30) // 30-second buffer
+    }
+    
+    static func save(_ response: TokenResponse) {
+        saveKeychain(key: accessKey, value: response.access_token)
+        saveKeychain(key: refreshKey, value: response.refresh_token)
+        let expiry = Date().addingTimeInterval(Double(response.expires_in)).timeIntervalSince1970
+        saveKeychain(key: expiryKey, value: String(expiry))
+    }
+    
+    static func clear() {
+        deleteKeychain(key: accessKey)
+        deleteKeychain(key: refreshKey)
+        deleteKeychain(key: expiryKey)
+    }
+    
+    // MARK: - Low-level SecItem Helpers
+    private static func saveKeychain(key: String, value: String) {
+        guard let data = value.data(using: .utf8) else { return }
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: key,
+            kSecValueData as String: data,
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
+        ]
+        SecItemDelete(query as CFDictionary)
+        SecItemAdd(query as CFDictionary, nil)
+    }
+    
+    private static func readKeychain(key: String) -> String? {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: key,
+            kSecReturnData as String: true,
+            kSecMatchLimit as String: kSecMatchLimitOne
+        ]
+        var item: AnyObject?
+        if SecItemCopyMatching(query as CFDictionary, &item) == errSecSuccess,
+           let data = item as? Data {
+            return String(data: data, encoding: .utf8)
+        }
+        return nil
+    }
+    
+    private static func deleteKeychain(key: String) {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: key
+        ]
+        SecItemDelete(query as CFDictionary)
+    }
+}
+
+// MARK: - 6. Secure Logout with Server-Side Revocation
+func logout() async {
+    if let refresh = TokenStorage.refreshToken {
+        var request = URLRequest(url: URL(string: "https://auth.example.com/revoke")!)
+        request.httpMethod = "POST"
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.httpBody = Data("token=\(refresh)&client_id=my-ios-app".utf8)
+        _ = try? await URLSession.shared.data(for: request) // Best effort revocation on backend
+    }
+    TokenStorage.clear() // Wipe tokens from local device Keychain
+}
+```
+
+---
+
+### `Q-49` — Secure Enclave vs Keychain — what each one is actually for
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -4404,7 +4729,7 @@ func createSecureEnclaveKey() throws -> SecKey {
 
 ---
 
-### `Q-49` — Secure data handling in financial apps — tokenization, biometric auth, session management
+### `Q-50` — Secure data handling in financial apps — tokenization, biometric auth, session management
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -4471,7 +4796,7 @@ class SessionManager {
 
 ---
 
-### `Q-50` — PCI-DSS — what it protects and who it applies to
+### `Q-51` — PCI-DSS — what it protects and who it applies to
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -4529,7 +4854,7 @@ struct SafePaymentRequest: Codable {
 
 ---
 
-### `Q-51` — SOX (Sarbanes-Oxley) — what it's for
+### `Q-52` — SOX (Sarbanes-Oxley) — what it's for
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -4598,7 +4923,7 @@ await auditLogger.log(userId: user.id, action: "INITIATE_TRANSFER", resource: "t
 
 ---
 
-### `Q-52` — GDPR — what it protects and where it applies
+### `Q-53` — GDPR — what it protects and where it applies
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -4669,7 +4994,7 @@ func handleDeleteMyDataRequest(userId: String) async throws {
 
 ---
 
-### `Q-53` — Application Hardening & Anti-Tampering — Jailbreak, Frida & At-Rest Encryption
+### `Q-54` — Application Hardening & Anti-Tampering — Jailbreak, Frida & At-Rest Encryption
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -4747,11 +5072,11 @@ struct AppSecurityHardenCheck {
 
 ---
 
-## 🏛️ System Design & Mobile Architecture (Q-54 – Q-55)
+## 🏛️ System Design & Mobile Architecture (Q-55 – Q-56)
 
 > End-to-end mobile system design: Two-tier LRU memory/disk image caching with coalescing, and Offline-First bi-directional syncing with outbox pattern and LWW conflict resolution.
 
-### `Q-54` — How do you load and cache images at scale?
+### `Q-55` — How do you load and cache images at scale?
 
 - **Category:** `System Design & Mobile Architecture`
 
@@ -4983,7 +5308,7 @@ extension ProductFeedViewController: UICollectionViewDataSourcePrefetching {
 
 ---
 
-### `Q-55` — System Design — Offline-First Feed & Bi-directional Synchronization
+### `Q-56` — System Design — Offline-First Feed & Bi-directional Synchronization
 
 - **Category:** `System Design & Mobile Architecture`
 
@@ -5083,11 +5408,11 @@ actor OfflineSyncEngine {
 
 ---
 
-## 🧪 Testing, CI/CD & AI Engineering (Q-56 – Q-63)
+## 🧪 Testing, CI/CD & AI Engineering (Q-57 – Q-64)
 
 > Unit and UI testing with XCTest, protocol mocking and stubbing, TDD/BDD, automated CI/CD pipelines, feature flagging, and hybrid cloud/on-device AI systems.
 
-### `Q-56` — Rehearse the AIAnalyzer walkthrough out loud — cloud/local/hybrid modes, confidence-based fallback
+### `Q-57` — Rehearse the AIAnalyzer walkthrough out loud — cloud/local/hybrid modes, confidence-based fallback
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -5140,7 +5465,7 @@ class HybridAIAnalyzer {
 
 ---
 
-### `Q-57` — Why did you choose Gemini for cloud and Ollama/Qwen for local?
+### `Q-58` — Why did you choose Gemini for cloud and Ollama/Qwen for local?
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -5197,7 +5522,7 @@ struct GeminiProvider: LLMProvider {
 
 ---
 
-### `Q-58` — How do you validate AI-generated code before merging?
+### `Q-59` — How do you validate AI-generated code before merging?
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -5256,7 +5581,7 @@ final class AIGeneratedServiceTests: XCTestCase {
 
 ---
 
-### `Q-59` — How building your own AI tool changed how you use Copilot/Cursor day to day
+### `Q-60` — How building your own AI tool changed how you use Copilot/Cursor day to day
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -5311,7 +5636,7 @@ After building my own tool: I use Cursor as a reasoning partner. The specific ch
 
 ---
 
-### `Q-60` — TDD vs BDD — the actual difference
+### `Q-61` — TDD vs BDD — the actual difference
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -5384,7 +5709,7 @@ class BankAccountSpec: QuickSpec {
 
 ---
 
-### `Q-61` — XCTest — writing unit tests and UI tests, mocking and stubbing
+### `Q-62` — XCTest — writing unit tests and UI tests, mocking and stubbing
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -5467,7 +5792,7 @@ final class LoginUITests: XCTestCase {
 
 ---
 
-### `Q-62` — CI/CD pipelines for iOS — what goes into one
+### `Q-63` — CI/CD pipelines for iOS — what goes into one
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -5538,7 +5863,7 @@ Key interview talking point: A CI pipeline that takes 45 minutes is one nobody w
 
 ---
 
-### `Q-63` — Feature flagging, A/B testing, and remote configuration
+### `Q-64` — Feature flagging, A/B testing, and remote configuration
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -5607,11 +5932,11 @@ struct TransferView: View {
 
 ---
 
-## 👔 Engineering Leadership & Operations (Q-64 – Q-65)
+## 👔 Engineering Leadership & Operations (Q-65 – Q-66)
 
 > Production incident triage, crash log analysis & dSYM symbolication, Crashlytics velocity alerts, MetricKit crash loops, blameless post-mortems, and migrating legacy monoliths using the Strangler Fig pattern.
 
-### `Q-64` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
+### `Q-65` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -5676,7 +6001,7 @@ final class ModernAccountService: AccountServiceProtocol {
 
 ---
 
-### `Q-65` — How do you read a crash log? How do you symbolicate it?
+### `Q-66` — How do you read a crash log? How do you symbolicate it?
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -5873,11 +6198,11 @@ final class BreadcrumbTracker {
 
 ---
 
-## 🧠 Memory Management (Q-66 – Q-73)
+## 🧠 Memory Management (Q-67 – Q-74)
 
 > ARC strong/weak/unowned, retain cycles, stack vs heap, Copy-on-Write internals, memory warnings, the Swift runtime side table, Jetsam OOM survival, and production memory profiling with Instruments and MetricKit.
 
-### `Q-66` — How does ARC work? What is the difference between strong, weak, and unowned?
+### `Q-67` — How does ARC work? What is the difference between strong, weak, and unowned?
 
 - **Category:** `Memory Management`
 
@@ -5937,7 +6262,7 @@ class RequestManager {
 
 ---
 
-### `Q-67` — What is a retain cycle? How do you detect and fix them?
+### `Q-68` — What is a retain cycle? How do you detect and fix them?
 
 - **Category:** `Memory Management`
 
@@ -6012,7 +6337,7 @@ func testNoRetainCycle() {
 
 ---
 
-### `Q-68` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
+### `Q-69` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
 
 - **Category:** `Memory Management`
 
@@ -6070,7 +6395,7 @@ struct LargeModel: Describable {
 
 ---
 
-### `Q-69` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
+### `Q-70` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
 
 - **Category:** `Memory Management`
 
@@ -6138,7 +6463,7 @@ print(s2.value)    // "world"
 
 ---
 
-### `Q-70` — How do you handle memory warnings?
+### `Q-71` — How do you handle memory warnings?
 
 - **Category:** `Memory Management`
 
@@ -6308,7 +6633,7 @@ func downsample(url: URL, maxPixel: CGFloat) -> UIImage? {
 
 ---
 
-### `Q-71` — What is the Swift runtime side table? How do weak references work under the hood?
+### `Q-72` — What is the Swift runtime side table? How do weak references work under the hood?
 
 - **Category:** `Memory Management`
 
@@ -6373,7 +6698,7 @@ print(observer?.id ?? "nil")  // "nil"
 
 ---
 
-### `Q-72` — How does Jetsam work? What strategies do you use to survive memory pressure?
+### `Q-73` — How does Jetsam work? What strategies do you use to survive memory pressure?
 
 - **Category:** `Memory Management`
 
@@ -6460,7 +6785,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MXMetricManagerSubscriber
 
 ---
 
-### `Q-73` — How do you profile and debug memory issues in a production iOS app?
+### `Q-74` — How do you profile and debug memory issues in a production iOS app?
 
 - **Category:** `Memory Management`
 

@@ -736,14 +736,20 @@
         "title": "Security Decision Table (Keychain, Enclave, Pinning)",
         "icon": "🔒",
         "filename": "SecurityDecisionTable.md"
+      },
+      {
+        "docId": "networking-architecture",
+        "title": "Networking Architecture & Design Patterns",
+        "icon": "🌐",
+        "filename": "NetworkingArchitecture.md"
       }
     ],
     "Q-49": [
       {
-        "docId": "leadership-ownership",
-        "title": "Development Lead / Feature Ownership — Talking Points",
-        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
-        "icon": "👔"
+        "docId": "security-comparison",
+        "title": "Security Decision Table (Keychain, Enclave, Pinning)",
+        "icon": "🔒",
+        "filename": "SecurityDecisionTable.md"
       }
     ],
     "Q-50": [
@@ -762,7 +768,15 @@
         "icon": "👔"
       }
     ],
-    "Q-54": [
+    "Q-52": [
+      {
+        "docId": "leadership-ownership",
+        "title": "Development Lead / Feature Ownership — Talking Points",
+        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
+        "icon": "👔"
+      }
+    ],
+    "Q-55": [
       {
         "docId": "networking-architecture",
         "title": "Networking Architecture Decision Table & 4 Pillars",
@@ -776,7 +790,7 @@
         "filename": "PerformanceProfiling-TalkingPoints.md"
       }
     ],
-    "Q-59": [
+    "Q-60": [
       {
         "docId": "testing-xctest",
         "title": "Testing, TDD/BDD, and Testability — Talking Points",
@@ -784,7 +798,7 @@
         "icon": "🧪"
       }
     ],
-    "Q-60": [
+    "Q-61": [
       {
         "docId": "repository-pattern",
         "title": "Repository Pattern — Talking Points",
@@ -798,7 +812,7 @@
         "icon": "🧪"
       }
     ],
-    "Q-65": [
+    "Q-66": [
       {
         "docId": "leadership-ownership",
         "title": "Development Lead / Feature Ownership — Talking Points",
@@ -812,7 +826,7 @@
         "filename": "PerformanceProfiling-TalkingPoints.md"
       }
     ],
-    "Q-71": [
+    "Q-72": [
       "performance-profiling",
       "ios-internals"
     ]

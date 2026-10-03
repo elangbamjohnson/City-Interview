@@ -24,12 +24,20 @@ class QuestionStore: ObservableObject {
         questions = load("questions.json")
     }
     
+    // MARK: - 📚 Dynamic Category Projection
+    // 💡 SENIOR INTERVIEW TALKING POINTS:
+    // Dynamically extracting distinct categories preserves single-source-of-truth (SSOT)
+    // from questions.json and eliminates silent desynchronization when questions or topics are added.
     var categories: [String] {
-        // Maintain the order of tiers
-        ["Tier 1 — Must know cold",
-         "Tier 2 — Your differentiator",
-         "Tier 3 — Know the concept",
-         "Tier 4 — Just enough to not go blank"]
+        var seen = Set<String>()
+        var result: [String] = []
+        for q in questions {
+            if !seen.contains(q.category) {
+                seen.insert(q.category)
+                result.append(q.category)
+            }
+        }
+        return result
     }
     
     func questions(for category: String) -> [InterviewQuestion] {
