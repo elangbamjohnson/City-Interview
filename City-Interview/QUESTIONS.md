@@ -29,7 +29,6 @@
 
 ### `Q-01` — MVC vs MVVM vs Clean Architecture — tradeoffs
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Architecture & Design Patterns`
 
 > [!TIP]
@@ -84,7 +83,6 @@ struct ProfileView: View {
 
 ### `Q-02` — VIPER — the 5 components and why teams choose it
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Architecture & Design Patterns`
 
 > [!TIP]
@@ -143,7 +141,6 @@ class ProfileRouter: ProfileRouterProtocol {
 
 ### `Q-03` — Dependency Injection — constructor vs property injection, why it helps testing
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Architecture & Design Patterns`
 
 > [!TIP]
@@ -198,7 +195,6 @@ let testVM = ProfileViewModel(network: MockNetworkService()) // test
 
 ### `Q-04` — SOLID principles
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Architecture & Design Patterns`
 
 > [!TIP]
@@ -252,7 +248,6 @@ class ProfileViewModel {
 
 ### `Q-05` — MVVM-C (Coordinator pattern) — why enterprise apps use it
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Architecture & Design Patterns`
 
 > [!TIP]
@@ -330,7 +325,6 @@ class AppCoordinator: Coordinator {
 
 ### `Q-06` — GCD vs Swift Concurrency — when to use which, and why
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Swift Concurrency & Multithreading`
 
 > [!TIP]
@@ -372,7 +366,6 @@ Task {
 
 ### `Q-07` — How do Swift actors actually prevent data races?
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Swift Concurrency & Multithreading`
 
 > [!TIP]
@@ -428,7 +421,6 @@ class ProfileViewModel: ObservableObject {
 
 ### `Q-08` — What is nonisolated? When do you use it?
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Swift Concurrency & Multithreading`
 
 > [!TIP]
@@ -521,7 +513,6 @@ final class ProfileViewModel {
 
 ### `Q-09` — async/await, structured concurrency, task groups
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Swift Concurrency & Multithreading`
 
 > [!TIP]
@@ -568,7 +559,6 @@ func fetchImages(urls: [URL]) async throws -> [UIImage] {
 
 ### `Q-10` — Race conditions vs deadlocks — definitions + a real example of each
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Swift Concurrency & Multithreading`
 
 > [!TIP]
@@ -622,7 +612,6 @@ let lockA = NSLock(), lockB = NSLock()
 
 ### `Q-11` — OperationQueue / Operation — basic concept
 
-- **Difficulty:** 🟢 `Beginner`
 - **Category:** `Swift Concurrency & Multithreading`
 
 > [!TIP]
@@ -668,7 +657,6 @@ func processAndUpload() async throws {
 
 ### `Q-12` — Thread-safe code using synchronization primitives — locks, mutexes, atomic operations
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Swift Concurrency & Multithreading`
 
 > [!TIP]
@@ -732,7 +720,6 @@ actor ActorCache<K: Hashable, V> {
 
 ### `Q-13` — Protocol-Oriented Programming in Swift — What problem does it solve?
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Core Swift & Language Internals`
 
 > [!TIP]
@@ -803,7 +790,6 @@ let test = ProfileViewModel(service: MockService())
 
 ### `Q-14` — App lifecycle and Run Loops — what happens from launch to termination
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Core Swift & Language Internals`
 
 > [!TIP]
@@ -862,7 +848,6 @@ Task.detached(priority: .userInitiated) {
 
 ### `Q-15` — Core Swift Mechanics — Stack vs Heap, Value vs Reference Semantics, and Copy-on-Write (CoW)
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Core Swift & Language Internals`
 
 > [!TIP]
@@ -939,7 +924,6 @@ listB.append(4)   // CoW kicks in here: listB allocates its own copy; listA rema
 
 ### `Q-16` — Swift Method Dispatch — Static, Witness Table, V-Table, and Message Dispatch
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Core Swift & Language Internals`
 
 > [!TIP]
@@ -1010,7 +994,6 @@ class SecurityMonitor: NSObject {
 
 ### `Q-17` — Generics & Type Erasure — some vs any, Existential Containers, and Memory Overhead
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Core Swift & Language Internals`
 
 > [!TIP]
@@ -1080,7 +1063,6 @@ func processMultipleMethods(methods: [any PaymentMethod]) {
 
 ### `Q-18` — Property Wrappers & Swift 5.9+ Macros — @propertyWrapper, wrappedValue, projectedValue, and @Observable
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Core Swift & Language Internals`
 
 > [!TIP]
@@ -1153,7 +1135,6 @@ final class AccountStore {
 
 ### `Q-19` — UIKit and SwiftUI interoperability — UIHostingController and UIViewRepresentable
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `SwiftUI & UIKit Layout`
 
 > [!TIP]
@@ -1215,7 +1196,6 @@ navigationController.pushViewController(hosting, animated: true)
 
 ### `Q-20` — SwiftUI vs UIKit: how do you decide for a large app?
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `SwiftUI & UIKit Layout`
 
 > [!TIP]
@@ -1300,7 +1280,6 @@ struct MapContainer: UIViewRepresentable {
 
 ### `Q-21` — How does Auto Layout work?
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `SwiftUI & UIKit Layout`
 
 > [!TIP]
@@ -1449,7 +1428,6 @@ final class ProfileHeaderCard: UIView {
 
 ### `Q-22` — Auto Layout, Dynamic Type, and Accessibility (a11y)
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `SwiftUI & UIKit Layout`
 
 > [!TIP]
@@ -1522,7 +1500,6 @@ struct BalanceView: View {
 
 ### `Q-23` — How do you handle iPad, split view, and adaptive layouts?
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `SwiftUI & UIKit Layout`
 
 > [!TIP]
@@ -1715,7 +1692,6 @@ struct ActionButtonsGroup: View {
 
 ### `Q-24` — How do you handle localization?
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `SwiftUI & UIKit Layout`
 
 > [!TIP]
@@ -1900,7 +1876,6 @@ struct AccountSummaryRow: View {
 
 ### `Q-25` — What do UICollectionViewDiffableDataSource and compositional layout give you?
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `SwiftUI & UIKit Layout`
 
 > [!TIP]
@@ -2034,7 +2009,6 @@ final class ProductsViewController: UIViewController {
 
 ### `Q-26` — Decomposing complex screens into reusable, composable UI components
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `SwiftUI & UIKit Layout`
 
 > [!TIP]
@@ -2105,7 +2079,6 @@ struct TransactionHistoryView: View {
 
 ### `Q-27` — Modern SwiftUI Rendering Engine — ViewGraph, AttributeGraph, Structural vs Explicit Identity
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `SwiftUI & UIKit Layout`
 
 > [!TIP]
@@ -2178,7 +2151,6 @@ struct UserBannerView: View {
 
 ### `Q-28` — What are property wrappers? How do @State, @Binding, and @Published work inside?
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `SwiftUI & UIKit Layout`
 
 > [!TIP]
@@ -2342,7 +2314,6 @@ struct ChildCounterControl: View {
 
 ### `Q-29` — Combine Framework & Reactive Streams — Publishers, Subjects, Backpressure, and Operators
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Combine & Reactive Streams`
 
 > [!TIP]
@@ -2424,7 +2395,6 @@ final class LiveSearchViewModel {
 
 ### `Q-30` — URLSession and building a networking layer — how would you architect one?
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Networking, APIs & Background Tasks`
 
 > [!TIP]
@@ -2501,7 +2471,6 @@ class MockAPIClient: APIClientProtocol {
 
 ### `Q-31` — REST and GraphQL API integration — contract-driven development
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Networking, APIs & Background Tasks`
 
 > [!TIP]
@@ -2560,7 +2529,6 @@ func fetchTransactions(accountId: String) async throws -> [Transaction] {
 
 ### `Q-32` — Push Notifications & Background Tasks — APNs Extensions & BGTaskScheduler
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Networking, APIs & Background Tasks`
 
 > [!TIP]
@@ -2631,7 +2599,6 @@ class NotificationService: UNNotificationServiceExtension {
 
 ### `Q-33` — What does background execution allow?
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Networking, APIs & Background Tasks`
 
 > [!TIP]
@@ -2849,7 +2816,6 @@ final class VoIPPushHandler: NSObject, PKPushRegistryDelegate {
 
 ### `Q-34` — What happens when the app is suspended or terminated? How do you save state?
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Networking, APIs & Background Tasks`
 
 > [!TIP]
@@ -3054,7 +3020,6 @@ final class AccountLedgerStore: ObservableObject {
 
 ### `Q-35` — How do you reduce build time in a multi-module app?
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Modularity & Launch Performance`
 
 > [!TIP]
@@ -3112,7 +3077,6 @@ let package = Package(
 
 ### `Q-36` — Static vs dynamic frameworks. What is the effect on launch?
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Modularity & Launch Performance`
 
 > [!TIP]
@@ -3166,7 +3130,6 @@ let package = Package(
 
 ### `Q-37` — How do you control app size?
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Modularity & Launch Performance`
 
 > [!TIP]
@@ -3228,7 +3191,6 @@ func loadTutorialContent() async throws {
 
 ### `Q-38` — Your app is slow. How do you find the cause? Walk me through the steps.
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Modularity & Launch Performance`
 
 > [!TIP]
@@ -3408,7 +3370,6 @@ final class LaunchPerformanceTests: XCTestCase {
 
 ### `Q-39` — Which Instruments tools do you use? What are their purposes?
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Modularity & Launch Performance`
 
 > [!TIP]
@@ -3548,7 +3509,6 @@ actor HeavyBatchProcessor {
 
 ### `Q-40` — How do you fix scroll jank and dropped frames?
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Modularity & Launch Performance`
 
 > [!TIP]
@@ -3787,7 +3747,6 @@ final class ScrollPerformanceUITests: XCTestCase {
 
 ### `Q-41` — Swift Package Manager (SPM) and modularization strategies
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Modularity & Launch Performance`
 
 > [!TIP]
@@ -3855,7 +3814,6 @@ import CoreModels
 
 ### `Q-42` — Core Data vs SQLite vs Realm — one-line difference
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Data Persistence & Memory Management`
 
 > [!TIP]
@@ -3918,7 +3876,6 @@ func fetchLargeTransactions(db: Database) throws -> [TransactionRecord] {
 
 ### `Q-43` — ARC and retain cycles — a clear example of a strong reference cycle
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Data Persistence & Memory Management`
 
 > [!TIP]
@@ -3986,7 +3943,6 @@ onComplete = { [weak self] in
 
 ### `Q-44` — Deep Memory Management — Weak vs Unowned, Side Tables, and OS Jetsam OOM Kills
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Data Persistence & Memory Management`
 
 > [!TIP]
@@ -4055,7 +4011,6 @@ final class ReportPrinter {
 
 ### `Q-45` — Core Data & SwiftData Concurrency — Multi-Context Architecture and Merging
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Data Persistence & Memory Management`
 
 > [!TIP]
@@ -4128,7 +4083,6 @@ final class AccountSyncService {
 
 ### `Q-46` — Certificate pinning — what it is, why it stops MITM attacks
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Security, Auth & Compliance`
 
 > [!TIP]
@@ -4192,7 +4146,6 @@ class PinnedURLSessionDelegate: NSObject, URLSessionDelegate {
 
 ### `Q-47` — Secure Enclave vs Keychain — what each one is actually for
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Security, Auth & Compliance`
 
 > [!TIP]
@@ -4260,7 +4213,6 @@ func createSecureEnclaveKey() throws -> SecKey {
 
 ### `Q-48` — Secure data handling in financial apps — tokenization, biometric auth, session management
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Security, Auth & Compliance`
 
 > [!TIP]
@@ -4328,7 +4280,6 @@ class SessionManager {
 
 ### `Q-49` — PCI-DSS — what it protects and who it applies to
 
-- **Difficulty:** 🟢 `Beginner`
 - **Category:** `Security, Auth & Compliance`
 
 > [!TIP]
@@ -4387,7 +4338,6 @@ struct SafePaymentRequest: Codable {
 
 ### `Q-50` — SOX (Sarbanes-Oxley) — what it's for
 
-- **Difficulty:** 🟢 `Beginner`
 - **Category:** `Security, Auth & Compliance`
 
 > [!TIP]
@@ -4457,7 +4407,6 @@ await auditLogger.log(userId: user.id, action: "INITIATE_TRANSFER", resource: "t
 
 ### `Q-51` — GDPR — what it protects and where it applies
 
-- **Difficulty:** 🟢 `Beginner`
 - **Category:** `Security, Auth & Compliance`
 
 > [!TIP]
@@ -4529,7 +4478,6 @@ func handleDeleteMyDataRequest(userId: String) async throws {
 
 ### `Q-52` — Application Hardening & Anti-Tampering — Jailbreak, Frida & At-Rest Encryption
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Security, Auth & Compliance`
 
 > [!TIP]
@@ -4612,7 +4560,6 @@ struct AppSecurityHardenCheck {
 
 ### `Q-53` — How do you load and cache images at scale?
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `System Design & Mobile Architecture`
 
 > [!TIP]
@@ -4845,7 +4792,6 @@ extension ProductFeedViewController: UICollectionViewDataSourcePrefetching {
 
 ### `Q-54` — System Design — Offline-First Feed & Bi-directional Synchronization
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `System Design & Mobile Architecture`
 
 > [!TIP]
@@ -4950,7 +4896,6 @@ actor OfflineSyncEngine {
 
 ### `Q-55` — Rehearse the AIAnalyzer walkthrough out loud — cloud/local/hybrid modes, confidence-based fallback
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Testing, CI/CD & AI Engineering`
 
 > [!TIP]
@@ -5004,7 +4949,6 @@ class HybridAIAnalyzer {
 
 ### `Q-56` — Why did you choose Gemini for cloud and Ollama/Qwen for local?
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Testing, CI/CD & AI Engineering`
 
 > [!TIP]
@@ -5062,7 +5006,6 @@ struct GeminiProvider: LLMProvider {
 
 ### `Q-57` — How do you validate AI-generated code before merging?
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Testing, CI/CD & AI Engineering`
 
 > [!TIP]
@@ -5122,7 +5065,6 @@ final class AIGeneratedServiceTests: XCTestCase {
 
 ### `Q-58` — How building your own AI tool changed how you use Copilot/Cursor day to day
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Testing, CI/CD & AI Engineering`
 
 > [!TIP]
@@ -5178,7 +5120,6 @@ After building my own tool: I use Cursor as a reasoning partner. The specific ch
 
 ### `Q-59` — TDD vs BDD — the actual difference
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Testing, CI/CD & AI Engineering`
 
 > [!TIP]
@@ -5252,7 +5193,6 @@ class BankAccountSpec: QuickSpec {
 
 ### `Q-60` — XCTest — writing unit tests and UI tests, mocking and stubbing
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Testing, CI/CD & AI Engineering`
 
 > [!TIP]
@@ -5336,7 +5276,6 @@ final class LoginUITests: XCTestCase {
 
 ### `Q-61` — CI/CD pipelines for iOS — what goes into one
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Testing, CI/CD & AI Engineering`
 
 > [!TIP]
@@ -5408,7 +5347,6 @@ Key interview talking point: A CI pipeline that takes 45 minutes is one nobody w
 
 ### `Q-62` — Feature flagging, A/B testing, and remote configuration
 
-- **Difficulty:** 🔵 `Intermediate`
 - **Category:** `Testing, CI/CD & AI Engineering`
 
 > [!TIP]
@@ -5482,7 +5420,6 @@ struct TransferView: View {
 
 ### `Q-63` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
 
-- **Difficulty:** 🔴 `Advanced`
 - **Category:** `Engineering Leadership & Operations`
 
 > [!TIP]
@@ -5552,7 +5489,6 @@ final class ModernAccountService: AccountServiceProtocol {
 
 ### `Q-64` — How does ARC work? What is the difference between strong, weak, and unowned?
 
-- **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
 
 > [!TIP]
@@ -5613,7 +5549,6 @@ class RequestManager {
 
 ### `Q-65` — What is a retain cycle? How do you detect and fix them?
 
-- **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
 
 > [!TIP]
@@ -5689,7 +5624,6 @@ func testNoRetainCycle() {
 
 ### `Q-66` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
 
-- **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
 
 > [!TIP]
@@ -5748,7 +5682,6 @@ struct LargeModel: Describable {
 
 ### `Q-67` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
 
-- **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
 
 > [!TIP]
@@ -5817,7 +5750,6 @@ print(s2.value)    // "world"
 
 ### `Q-68` — How do you handle memory warnings?
 
-- **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
 
 > [!TIP]
@@ -5988,7 +5920,6 @@ func downsample(url: URL, maxPixel: CGFloat) -> UIImage? {
 
 ### `Q-69` — What is the Swift runtime side table? How do weak references work under the hood?
 
-- **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
 
 > [!TIP]
@@ -6054,7 +5985,6 @@ print(observer?.id ?? "nil")  // "nil"
 
 ### `Q-70` — How does Jetsam work? What strategies do you use to survive memory pressure?
 
-- **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
 
 > [!TIP]
@@ -6142,7 +6072,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MXMetricManagerSubscriber
 
 ### `Q-71` — How do you profile and debug memory issues in a production iOS app?
 
-- **Difficulty:** 🟣 `Staff`
 - **Category:** `Memory Management`
 
 > [!TIP]

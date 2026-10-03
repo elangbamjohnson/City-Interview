@@ -281,7 +281,7 @@
       position: relative;
       flex: 1;
       min-width: 200px;
-      max-width: 360px;
+      max-width: 460px;
     }
 
     .cmd-search-icon {
@@ -1851,17 +1851,6 @@
 
       <div class="cmd-divider"></div>
 
-      <!-- Difficulty filter pills -->
-      <div class="cmd-tier-pills" id="cmdTierPills">
-        <button class="cmd-tier-pill active" data-diff="all" title="Show all questions">All (71)</button>
-        <button class="cmd-tier-pill" data-diff="Staff" title="Filter Staff level questions">Staff (8)</button>
-        <button class="cmd-tier-pill" data-diff="Advanced" title="Filter Advanced questions">Advanced (32)</button>
-        <button class="cmd-tier-pill" data-diff="Intermediate" title="Filter Intermediate questions">Intermediate (27)</button>
-        <button class="cmd-tier-pill" data-diff="Beginner" title="Filter Beginner questions">Beginner (4)</button>
-      </div>
-
-      <div class="cmd-divider"></div>
-
       <!-- Global expand / collapse actions -->
       <div class="cmd-action-group">
         <button class="cmd-btn" id="cmdCollapseAllBtn" onclick="toggleAllCategories()" title="Keyboard: C">
@@ -1960,13 +1949,6 @@
 
         <!-- Controls Row -->
         <div class="controls-row">
-          <!-- Difficulty Filter Pills -->
-          <div class="pill-group" id="tierPills">
-            <button class="filter-pill active" data-diff="all">All Difficulties (71)</button>
-            <button class="filter-pill" data-diff="Advanced">Advanced (32)</button>
-            <button class="filter-pill" data-diff="Intermediate">Intermediate (27)</button>
-            <button class="filter-pill" data-diff="Beginner">Beginner (4)</button>
-          </div>
 
           <!-- Global Expand/Shrink Action Buttons -->
           <div class="global-actions">
@@ -1986,7 +1968,7 @@
       <!-- Empty State -->
       <div class="empty-state" id="emptyState" style="display: none;">
         <h3>No questions matched your search</h3>
-        <p>Try searching for a different keyword or resetting your difficulty filter.</p>
+        <p>Try searching for a different keyword.</p>
       </div>
 
       <footer>
@@ -2047,8 +2029,7 @@
     });
 
     // State
-    let currentDifficulty = 'all';
-    let searchQuery = '';
+        let searchQuery = '';
     let sidebarFilterQuery = '';
     let allAnswersExpanded = false;
     let allCategoriesShrunk = false;
@@ -2492,12 +2473,6 @@ function highlightSwift(rawCode) {
       // 2. Unhide questions of this section in the index
       sidebarSectionOpenState[topicInfo.id] = true;
 
-      if (currentDifficulty !== 'all' && qObj && qObj.difficulty !== currentDifficulty) {
-        currentDifficulty = 'all';
-        document.querySelectorAll('.filter-pill, .cmd-tier-pill').forEach(b => {
-          b.classList.toggle('active', b.dataset.diff === 'all');
-        });
-      }
 
       if (searchQuery) {
         searchQuery = '';
@@ -2716,9 +2691,6 @@ function highlightSwift(rawCode) {
         const topicDocs = (topic.docIds || []).map(id => MODULE_DOCS.find(d => d.id === id)).filter(Boolean);
 
         const filteredQuestions = topicQuestions.filter(q => {
-          const matchesDiff = (currentDifficulty === 'all' || q.difficulty === currentDifficulty);
-          if (!matchesDiff) return false;
-
           if (!query) return true;
           return q.question.toLowerCase().includes(query) ||
                  q.id.toLowerCase().includes(query) ||
@@ -2775,7 +2747,6 @@ function highlightSwift(rawCode) {
         let questionsHTML = '';
         filteredQuestions.forEach(q => {
           const isReviewed = reviewedIDs.has(q.id);
-          const diffClass = `badge-diff-${q.difficulty.toLowerCase()}`;
 
           let pitchHTML = '';
           if (q.interviewSentence) {
@@ -2820,7 +2791,6 @@ function highlightSwift(rawCode) {
                 <div class="card-badges">
                   <span class="badge badge-id">${q.id}</span>
                   <span class="badge badge-category">${escapeHtml(q.category)}</span>
-                  <span class="badge ${diffClass}">${q.difficulty}</span>
                 </div>
                 <label class="card-check-wrap" onclick="event.stopPropagation()">
                   <input type="checkbox" ${isReviewed ? 'checked' : ''} onchange="toggleReviewed('${q.id}', this.checked)">
@@ -2917,27 +2887,10 @@ function highlightSwift(rawCode) {
       });
     }
 
-    if (tierPills) {
-      tierPills.addEventListener('click', (e) => {
-        const btn = e.target.closest('.filter-pill');
-        if (!btn) return;
-        tierPills.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentDifficulty = btn.dataset.diff;
-        const cmdTierPills = document.getElementById('cmdTierPills');
-        if (cmdTierPills) {
-          cmdTierPills.querySelectorAll('.cmd-tier-pill').forEach(b =>
-            b.classList.toggle('active', b.dataset.diff === currentDifficulty)
-          );
-        }
-        window.renderTopicsAndQuestions();
-      });
-    }
 
     // Command Bar Controls
     const cmdSearchInput = document.getElementById('cmdSearchInput');
     const cmdSearchClear = document.getElementById('cmdSearchClear');
-    const cmdTierPills = document.getElementById('cmdTierPills');
     const cmdSidebarBtn = document.getElementById('cmdSidebarBtn');
     const cmdThemeBtn = document.getElementById('cmdThemeBtn');
     const cmdResetBtn = document.getElementById('cmdResetProgressBtn');
@@ -2967,21 +2920,6 @@ function highlightSwift(rawCode) {
       });
     }
 
-    if (cmdTierPills) {
-      cmdTierPills.addEventListener('click', (e) => {
-        const btn = e.target.closest('.cmd-tier-pill');
-        if (!btn) return;
-        cmdTierPills.querySelectorAll('.cmd-tier-pill').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentDifficulty = btn.dataset.diff;
-        if (tierPills) {
-          tierPills.querySelectorAll('.filter-pill').forEach(b =>
-            b.classList.toggle('active', b.dataset.diff === currentDifficulty)
-          );
-        }
-        window.renderTopicsAndQuestions();
-      });
-    }
 
     if (cmdSidebarBtn) {
       cmdSidebarBtn.addEventListener('click', () => {
