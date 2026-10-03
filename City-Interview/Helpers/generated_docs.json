@@ -655,12 +655,8 @@
       }
     ],
     "Q-38": [
-      {
-        "docId": "data-persistence",
-        "title": "Data Persistence & Offline Sync Decision Table",
-        "filename": "DataPersistence-ComparisonNotes.md",
-        "icon": "💾"
-      }
+      "performance-profiling",
+      "ios-internals"
     ],
     "Q-42": [
       {
