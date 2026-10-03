@@ -5,7 +5,30 @@ struct CategoryListView: View {
     
     var body: some View {
         List {
+            // MARK: - Live Keychain Storage Demo (Main Screen)
+            Section(header: Text("Keychain Storage (Live Demo)").font(.system(size: 16, weight: .bold))) {
+                KeychainLiveDemoView()
+                    .listRowInsets(EdgeInsets(top: 8, leading: 10, bottom: 8, trailing: 10))
+                    .listRowBackground(Color.clear)
+            }
+            
             Section(header: Text("Interactive Playgrounds").font(.system(size: 16))) {
+                NavigationLink(destination: KeychainPlaygroundView()) {
+                    HStack {
+                        Image(systemName: "key.fill")
+                            .foregroundColor(.yellow)
+                            .font(.system(size: 24))
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Keychain Storage")
+                                .font(.system(size: 22, weight: .bold))
+                            Text("SecItem CRUD & Token Management")
+                                .font(.system(size: 16))
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .padding(.vertical, 8)
+                }
+                
                 NavigationLink(destination: GCDPlaygroundView()) {
                     HStack {
                         Image(systemName: "play.circle.fill")
