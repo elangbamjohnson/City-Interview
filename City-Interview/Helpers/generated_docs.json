@@ -754,6 +754,20 @@
         "icon": "👔"
       }
     ],
+    "Q-53": [
+      {
+        "docId": "networking-architecture",
+        "title": "Networking Architecture Decision Table & 4 Pillars",
+        "icon": "🌐",
+        "filename": "NetworkingArchitecture-DecisionTable.md"
+      },
+      {
+        "docId": "performance-profiling",
+        "title": "Performance Profiling & Instruments — Talking Points",
+        "icon": "⏱️",
+        "filename": "PerformanceProfiling-TalkingPoints.md"
+      }
+    ],
     "Q-58": [
       {
         "docId": "testing-xctest",
@@ -776,16 +790,12 @@
         "icon": "🧪"
       }
     ],
-    "Q-69": [
-      "performance-profiling",
-      "ios-internals"
-    ],
-    "Q-53": [
+    "Q-64": [
       {
-        "docId": "networking-architecture",
-        "title": "Networking Architecture Decision Table & 4 Pillars",
-        "icon": "🌐",
-        "filename": "NetworkingArchitecture-DecisionTable.md"
+        "docId": "leadership-ownership",
+        "title": "Development Lead / Feature Ownership — Talking Points",
+        "icon": "👔",
+        "filename": "LeadershipOwnership-TalkingPoints.md"
       },
       {
         "docId": "performance-profiling",
@@ -793,6 +803,10 @@
         "icon": "⏱️",
         "filename": "PerformanceProfiling-TalkingPoints.md"
       }
+    ],
+    "Q-70": [
+      "performance-profiling",
+      "ios-internals"
     ]
   }
 }
