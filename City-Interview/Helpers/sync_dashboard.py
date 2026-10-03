@@ -12,7 +12,7 @@ MODULE_METADATA = {
         "title": "Clean Architecture — Interview Cheat Sheet",
         "category": "Architecture",
         "icon": "🧅",
-        "relatedQuestions": ["T1-06"],
+        "relatedQuestions": ["Q-01"],
         "summary": "Entities, Use Cases, Presenters, and data flow in Clean Architecture with Dependency Inversion."
     },
     "Architecture/CoordinatorPattern/Coordinator-README.md": {
@@ -20,7 +20,7 @@ MODULE_METADATA = {
         "title": "Coordinator Pattern — Interview Cheat Sheet",
         "category": "Architecture",
         "icon": "🧭",
-        "relatedQuestions": ["T1-15"],
+        "relatedQuestions": ["Q-05"],
         "summary": "Extracting navigation and routing out of Views/ViewModels. NavigationStack vs Coordinator interview breakdown."
     },
     "Architecture/DependencyInjection/DI-README.md": {
@@ -28,7 +28,7 @@ MODULE_METADATA = {
         "title": "Dependency Injection (DI) — Interview Cheat Sheet",
         "category": "Architecture",
         "icon": "💉",
-        "relatedQuestions": ["T1-08"],
+        "relatedQuestions": ["Q-03"],
         "summary": "Constructor vs property injection, protocol mocking, and container setups for unit testing."
     },
     "Architecture/MVVM/MVVM-TalkingPoints.md": {
@@ -36,7 +36,7 @@ MODULE_METADATA = {
         "title": "MVVM (Model-View-ViewModel) — Talking Points",
         "category": "Architecture",
         "icon": "📐",
-        "relatedQuestions": ["T1-06"],
+        "relatedQuestions": ["Q-01"],
         "summary": "State binding, single source of truth, testability, and avoiding massive view controllers in SwiftUI."
     },
     "Architecture/ModularArchitecture/ModularArchitecture-TalkingPoints.md": {
@@ -44,7 +44,7 @@ MODULE_METADATA = {
         "title": "Modular App Architecture — Talking Points",
         "category": "Architecture",
         "icon": "📦",
-        "relatedQuestions": ["T1-16", "T1-17", "T3-11"],
+        "relatedQuestions": ["Q-26", "Q-27", "Q-30"],
         "summary": "Interface vs Implementation targets, static vs dynamic linkage launch effects, and compile-time isolation."
     },
     "Architecture/RepositoryPattern/RepositoryPattern-TalkingPoints.md": {
@@ -52,7 +52,7 @@ MODULE_METADATA = {
         "title": "Repository Pattern — Talking Points",
         "category": "Architecture",
         "icon": "🗄️",
-        "relatedQuestions": ["T3-07", "T1-10"],
+        "relatedQuestions": ["Q-49", "Q-23"],
         "summary": "Single source of truth abstraction between local databases (Core Data/SQLite) and remote REST/GraphQL APIs."
     },
     "Architecture/SOLIDPrinciples/SOLID-README.md": {
@@ -60,7 +60,7 @@ MODULE_METADATA = {
         "title": "SOLID Principles — Interview Cheat Sheet",
         "category": "Architecture",
         "icon": "🧱",
-        "relatedQuestions": ["T1-09"],
+        "relatedQuestions": ["Q-04"],
         "summary": "Single Responsibility, Open/Closed, Liskov, Interface Segregation, and Dependency Inversion with Swift examples."
     },
     "Architecture/VIPERPattern/VIPER-README.md": {
@@ -68,7 +68,7 @@ MODULE_METADATA = {
         "title": "VIPER Architecture — Interview Cheat Sheet",
         "category": "Architecture",
         "icon": "🐍",
-        "relatedQuestions": ["T1-07"],
+        "relatedQuestions": ["Q-02"],
         "summary": "View, Interactor, Presenter, Entity, Router breakdown for enterprise teams."
     },
     "AutoLayoutBasics/AutoLayoutBasics-TalkingPoints.md": {
@@ -76,7 +76,7 @@ MODULE_METADATA = {
         "title": "Auto Layout Basics — Talking Points",
         "category": "UI & Layout",
         "icon": "📐",
-        "relatedQuestions": ["T3-08"],
+        "relatedQuestions": ["Q-19"],
         "summary": "Cassowary constraint solver, intrinsic content size, hugging vs compression resistance, and UIKit layout passes."
     },
     "ComposableUI/ComposableUI-TalkingPoints.md": {
@@ -84,7 +84,7 @@ MODULE_METADATA = {
         "title": "Composable UI Decomposition — Talking Points",
         "category": "UI & Layout",
         "icon": "🧩",
-        "relatedQuestions": ["T3-09"],
+        "relatedQuestions": ["Q-20"],
         "summary": "Decomposing 500-line monolithic screens into atomic design system components with isolated view models."
     },
     "ConcurrencyIssues/ConcurrencyIssues-ComparisonNotes.md": {
@@ -92,7 +92,7 @@ MODULE_METADATA = {
         "title": "Concurrency Issues Diagnosis Table",
         "category": "Concurrency & Threading",
         "icon": "⚠️",
-        "relatedQuestions": ["T1-04"],
+        "relatedQuestions": ["Q-09"],
         "summary": "Race conditions, deadlocks, livelocks, priority inversions, and thread explosion troubleshooting."
     },
     "DataPersistence/DataPersistence-ComparisonNotes.md": {
@@ -100,7 +100,7 @@ MODULE_METADATA = {
         "title": "Data Persistence & Offline Sync Decision Table",
         "category": "Data & Storage",
         "icon": "💾",
-        "relatedQuestions": ["T3-03"],
+        "relatedQuestions": ["Q-31"],
         "summary": "UserDefaults vs Keychain vs SQLite vs Core Data vs Realm vs SwiftData, plus offline outbox sync patterns."
     },
     "DesignSystem/DesignSystem-TalkingPoints.md": {
@@ -108,7 +108,7 @@ MODULE_METADATA = {
         "title": "Design System & Shared UI Library — Talking Points",
         "category": "UI & Layout",
         "icon": "🎨",
-        "relatedQuestions": ["T3-09"],
+        "relatedQuestions": ["Q-20"],
         "summary": "Typography scales, semantic tokens, snapshot testing, WCAG contrast compliance, and accessibility."
     },
     "Leadership/DevelopmentLeadOwnership-TalkingPoints.md": {
@@ -116,7 +116,7 @@ MODULE_METADATA = {
         "title": "Development Lead / Feature Ownership — Talking Points",
         "category": "Leadership & Process",
         "icon": "👔",
-        "relatedQuestions": ["T4-01", "T4-02", "T4-03"],
+        "relatedQuestions": ["Q-38", "Q-39", "Q-40"],
         "summary": "End-to-end technical leadership, cross-functional alignment, regulatory compliance (PCI-DSS, SOX, GDPR)."
     },
     "Multithreading/Multithreading-README.md": {
@@ -124,7 +124,7 @@ MODULE_METADATA = {
         "title": "iOS Concurrency & GCD Reference",
         "category": "Concurrency & Threading",
         "icon": "⚡",
-        "relatedQuestions": ["T1-01", "T1-02", "T1-03"],
+        "relatedQuestions": ["Q-06", "Q-07", "Q-08"],
         "summary": "GCD queues, DispatchWorkItem, DispatchGroup, Semaphore, barrier flags, and modern Swift Actor migration."
     },
     "Networking/Networking-ComparisonNotes.md": {
@@ -132,7 +132,7 @@ MODULE_METADATA = {
         "title": "Networking Architecture Decision Table & 4 Pillars",
         "category": "Networking & APIs",
         "icon": "🌐",
-        "relatedQuestions": ["T1-10"],
+        "relatedQuestions": ["Q-23"],
         "summary": "Decision table for URLSession vs custom stack vs interceptors, plus retries, auth refresh, caching, cancellation."
     },
     "OperationQueueBasics/OperationQueue-ComparisonNotes.md": {
@@ -140,7 +140,7 @@ MODULE_METADATA = {
         "title": "OperationQueue vs Grand Central Dispatch Decision Table",
         "category": "Concurrency & Threading",
         "icon": "⛓️",
-        "relatedQuestions": ["T1-05"],
+        "relatedQuestions": ["Q-10"],
         "summary": "Dependency graphs, priority, maxConcurrentOperationCount, and cancellation in OperationQueue."
     },
     "PerformanceProfiling/PerformanceProfiling-TalkingPoints.md": {
@@ -148,7 +148,7 @@ MODULE_METADATA = {
         "title": "Performance Profiling & Instruments — Talking Points",
         "category": "Performance & Profiling",
         "icon": "⏱️",
-        "relatedQuestions": ["T3-05", "T2-05"],
+        "relatedQuestions": ["Q-29", "Q-28"],
         "summary": "Time Profiler, Allocations, Leaks, Thread Sanitizer, and memory footprint optimization."
     },
     "Security/Security-ComparisonNotes.md": {
@@ -156,7 +156,7 @@ MODULE_METADATA = {
         "title": "Security Decision Table (Keychain, Enclave, Pinning)",
         "category": "Security & Compliance",
         "icon": "🛡️",
-        "relatedQuestions": ["T3-01", "T3-02", "T3-14"],
+        "relatedQuestions": ["Q-35", "Q-36", "Q-37"],
         "summary": "Keychain vs Secure Enclave vs App Transport Security vs Certificate Pinning vs Biometrics."
     },
     "SwiftUIInteroperability/Interoperability-README.md": {
@@ -164,7 +164,7 @@ MODULE_METADATA = {
         "title": "SwiftUI & UIKit Interoperability — Cheat Sheet",
         "category": "UI & Layout",
         "icon": "🤝",
-        "relatedQuestions": ["T1-14"],
+        "relatedQuestions": ["Q-18"],
         "summary": "UIHostingController, UIViewRepresentable, UIViewControllerRepresentable, Coordinators, and state bridging."
     },
     "SwiftUIStateManagement/StateManagement-README.md": {
@@ -172,7 +172,7 @@ MODULE_METADATA = {
         "title": "SwiftUI State Management — Cheat Sheet",
         "category": "UI & Layout",
         "icon": "🔄",
-        "relatedQuestions": ["T1-06"],
+        "relatedQuestions": ["Q-22", "Q-01"],
         "summary": "@State, @Binding, @StateObject, @ObservedObject, @EnvironmentObject, and iOS 17 @Observable macro."
     },
     "Testing/Testing-TalkingPoints.md": {
@@ -180,7 +180,7 @@ MODULE_METADATA = {
         "title": "Testing, TDD/BDD, and Testability — Talking Points",
         "category": "Testing & Quality",
         "icon": "🧪",
-        "relatedQuestions": ["T3-06", "T3-07"],
+        "relatedQuestions": ["Q-48", "Q-49"],
         "summary": "Unit vs UI testing, mocks vs stubs vs spies, protocol injection, and Given/When/Then BDD methodology."
     },
     "ThreadSafety/ThreadSafety-ComparisonNotes.md": {
@@ -188,7 +188,7 @@ MODULE_METADATA = {
         "title": "Thread Safety Primitives Decision Table",
         "category": "Concurrency & Threading",
         "icon": "🔒",
-        "relatedQuestions": ["T1-11"],
+        "relatedQuestions": ["Q-11"],
         "summary": "Serial DispatchQueue vs NSLock vs NSRecursiveLock vs os_unfair_lock vs Swift Actors."
     },
     "iOSInternals/iOSInternals-TalkingPoints.md": {
@@ -196,7 +196,7 @@ MODULE_METADATA = {
         "title": "iOS Internals — Interview Talking Points",
         "category": "Internals & Lifecycle",
         "icon": "⚙️",
-        "relatedQuestions": ["T1-13"],
+        "relatedQuestions": ["Q-13"],
         "summary": "dyld dynamic linker, UIApplicationMain, Run Loops (kCFRunLoopCommonModes), and watchdog crash prevention."
     }
 }
@@ -219,7 +219,7 @@ TOPIC_CATEGORIES = [
             "solid-principles",
             "viper-pattern"
         ],
-        "questionIds": ["T1-06", "T1-07", "T1-08", "T1-09", "T1-15"]
+        "questionIds": ["Q-01", "Q-02", "Q-03", "Q-04", "Q-05"]
     },
     {
         "id": "concurrency",
@@ -234,7 +234,7 @@ TOPIC_CATEGORIES = [
             "thread-safety",
             "operation-queue"
         ],
-        "questionIds": ["T1-01", "T1-02", "T1-03", "T1-04", "T1-05", "T1-11"]
+        "questionIds": ["Q-06", "Q-07", "Q-08", "Q-09", "Q-10", "Q-11"]
     },
     {
         "id": "advance-swift",
@@ -248,7 +248,7 @@ TOPIC_CATEGORIES = [
             "swiftui-state",
             "swiftui-uikit-interop"
         ],
-        "questionIds": ["T1-12", "T1-13", "T1-14"]
+        "questionIds": ["Q-12", "Q-13", "Q-18"]
     },
     {
         "id": "swift-basics-ui",
@@ -262,7 +262,7 @@ TOPIC_CATEGORIES = [
             "composable-ui",
             "design-system"
         ],
-        "questionIds": ["T3-08", "T3-09"]
+        "questionIds": ["Q-19", "Q-20"]
     },
     {
         "id": "networking",
@@ -274,7 +274,7 @@ TOPIC_CATEGORIES = [
         "docIds": [
             "networking-architecture"
         ],
-        "questionIds": ["T1-10", "T3-12"]
+        "questionIds": ["Q-23", "Q-24"]
     },
     {
         "id": "modularity-performance",
@@ -287,7 +287,7 @@ TOPIC_CATEGORIES = [
             "modular-architecture",
             "performance-profiling"
         ],
-        "questionIds": ["T1-16", "T1-17", "T2-05", "T3-05", "T3-11"]
+        "questionIds": ["Q-26", "Q-27", "Q-28", "Q-29", "Q-30"]
     },
     {
         "id": "data-memory",
@@ -299,7 +299,7 @@ TOPIC_CATEGORIES = [
         "docIds": [
             "data-persistence"
         ],
-        "questionIds": ["T3-03", "T3-04"]
+        "questionIds": ["Q-31", "Q-32"]
     },
     {
         "id": "security-compliance",
@@ -312,7 +312,7 @@ TOPIC_CATEGORIES = [
             "security-comparison",
             "leadership-ownership"
         ],
-        "questionIds": ["T3-01", "T3-02", "T3-14", "T4-01", "T4-02", "T4-03"]
+        "questionIds": ["Q-35", "Q-36", "Q-37", "Q-38", "Q-39", "Q-40"]
     },
     {
         "id": "testing-ci-cd",
@@ -324,7 +324,7 @@ TOPIC_CATEGORIES = [
         "docIds": [
             "testing-xctest"
         ],
-        "questionIds": ["T2-01", "T2-02", "T2-03", "T2-04", "T3-06", "T3-07", "T3-10", "T3-13"]
+        "questionIds": ["Q-44", "Q-45", "Q-46", "Q-47", "Q-48", "Q-49", "Q-50", "Q-51"]
     }
 ]
 
