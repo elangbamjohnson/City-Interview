@@ -5,13 +5,6 @@ struct CategoryListView: View {
     
     var body: some View {
         List {
-            // MARK: - Live Keychain Storage Demo (Main Screen)
-            Section(header: Text("Keychain Storage (Live Demo)").font(.system(size: 16, weight: .bold))) {
-                KeychainLiveDemoView()
-                    .listRowInsets(EdgeInsets(top: 8, leading: 10, bottom: 8, trailing: 10))
-                    .listRowBackground(Color.clear)
-            }
-            
             Section(header: Text("Interactive Playgrounds").font(.system(size: 16))) {
                 NavigationLink(destination: KeychainPlaygroundView()) {
                     HStack {
