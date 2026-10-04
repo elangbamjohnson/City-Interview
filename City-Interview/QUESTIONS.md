@@ -1,6 +1,6 @@
 # 📱 iOS Senior & Staff Interview Question Bank
 
-> A comprehensive, senior & staff-level revision suite for 82 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, 60/120fps Scroll Hitch Elimination, Scalable Image Caching, Keychain Secrets Management, OAuth 2.0 PKCE & Token Rotation, Production Crash Log Triage & Symbolication, Memory Management, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
+> A comprehensive, senior & staff-level revision suite for 83 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, 60/120fps Scroll Hitch Elimination, Scalable Image Caching, Keychain Secrets Management, OAuth 2.0 PKCE & Token Rotation, Production Crash Log Triage & Symbolication, Memory Management, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
 
 ## 📊 Overview
 
@@ -16,10 +16,10 @@
 | **Data Persistence & Memory Management** | `4` | Core Data vs SQLite vs Realm vs SwiftData, multi-context concurrency & merging, ARC retain cycles, Heap side tables (weak/unowned), and OS Jetsam OOM survival. |
 | **Security, Auth & Compliance** | `12` | Keychain vs Secure Enclave, token storage CRUD, OAuth 2.0 PKCE & token rotation, SSL Certificate Pinning, biometric auth, Jailbreak & Frida detection, NSFileProtectionComplete, and banking compliance (PCI-DSS, SOX, GDPR). |
 | **System Design & Mobile Architecture** | `3` | End-to-end mobile system design: Two-tier LRU memory/disk image caching with coalescing, Offline-First bi-directional syncing with outbox pattern, and E-commerce checkout & payment flow (Apple Pay, idempotency, gateway authorization & settlement). |
-| **Testing, CI/CD & AI Engineering** | `10` | Unit and UI testing with XCTest, protocol mocking and stubbing, TDD/BDD, automated CI/CD pipelines, feature flagging, and hybrid cloud/on-device AI systems. |
+| **Testing, CI/CD & AI Engineering** | `11` | Unit and UI testing with XCTest, protocol mocking and stubbing, TDD/BDD, automated CI/CD pipelines, feature flagging, and hybrid cloud/on-device AI systems. |
 | **Engineering Leadership & Operations** | `2` | Production incident triage, crash log analysis & dSYM symbolication, Crashlytics velocity alerts, MetricKit crash loops, blameless post-mortems, and migrating legacy monoliths using the Strangler Fig pattern. |
 | **Memory Management** | `8` | ARC strong/weak/unowned, retain cycles, stack vs heap, Copy-on-Write internals, memory warnings, the Swift runtime side table, Jetsam OOM survival, and production memory profiling with Instruments and MetricKit. |
-| **Total** | **`82`** | Complete Senior & Staff iOS Interview Curriculum |
+| **Total** | **`83`** | Complete Senior & Staff iOS Interview Curriculum |
 
 ---
 
@@ -7005,7 +7005,7 @@ enum PaymentError: LocalizedError {
 
 ---
 
-## 🧪 Testing, CI/CD & AI Engineering (Q-63 – Q-72)
+## 🧪 Testing, CI/CD & AI Engineering (Q-63 – Q-73)
 
 ### `Q-63` — Rehearse the AIAnalyzer walkthrough out loud — cloud/local/hybrid modes, confidence-based fallback
 
@@ -7915,7 +7915,265 @@ final class AppPerformanceTests: XCTestCase {
 
 ---
 
-### `Q-71` — CI/CD pipelines for iOS — what goes into one
+
+---
+
+### `Q-71` — What are mocks, stubs, and fakes? When do you use each?
+
+- **Category:** `Testing, CI/CD & AI Engineering`
+
+> [!TIP]
+> **🗣️ Interview Pitch (Say it like this):**  
+> *"A test double is the umbrella term for test stand-ins: stubs return canned responses to control input, fakes provide lightweight working in-memory implementations to model realistic stateful behavior, and mocks (or spies) record invocations to verify side effects like analytics or logging."*
+
+#### 📖 Detailed Answer
+
+When you test a piece of code, you don't want it to use the real server, the real database, or the real payment system. Those are slow, they cost money, and they give different results each time. So in a test, you replace the real thing with a simple pretend version.
+
+A test double is the general name for any pretend version used in a test. A stand-in means the same thing, just a plainer word. So yes, you can think of it as a placeholder: it sits in the spot where the real object would be, so the code under test does not notice the difference.
+
+Mocks, stubs, and fakes are different kinds of test doubles. They differ in what the pretend version does.
+
+Say it like this:
+
+"A test double is a pretend object that I use in a test instead of the real one. The code I am testing talks to it the same way, usually through a protocol, so the real object can be swapped out.
+
+A stub gives fixed answers. I tell it what to return, like 'return this user' or 'throw this error', and it just does that. It has no logic. I use it when I only need to control what comes into my code.
+
+A fake is a simple but working version of the real thing. The best example is an in-memory database. It really saves and loads data, but it keeps it in a dictionary instead of on disk. I use it when the code needs realistic behavior, like save something and read it back later, but the real thing is too slow or too heavy.
+
+A mock records how it was used, and my test checks that. For example, 'was the analytics event sent once, with this name?' I use it when the important result is a call that goes out and leaves no visible state, like sending an event, a log, or an email.
+
+So the question I ask is: do I need to control the input, do I need realistic behavior, or do I need to check that a call happened? Input is a stub, behavior is a fake, and a call is a mock.
+
+One more point. In everyday Swift talk, people call all of these 'mocks'. That is fine in a team. In an interview, I mention the difference, because it shows I know what each one is for."
+
+The protocol that all three replace
+
+```swift
+protocol UserStore {                                       // describes what the code needs from storage
+    func save(_ user: User)                                // store a user
+    func load(id: Int) -> User?                            // read a user back, or nil if missing
+}
+```
+
+1. Stub: fixed answers
+
+```swift
+struct StubUserService: UserService {                      // a pretend service that returns fixed results
+    var result: Result<User, Error>                        // the test decides success or failure
+
+    func fetchUser() async throws -> User {                // same method as the real service
+        try result.get()                                   // return the chosen user, or throw the chosen error
+    }
+}
+```
+
+2. Fake: a simple working version
+
+```swift
+final class FakeUserStore: UserStore {                     // behaves like real storage, but only in memory
+    private var users: [Int: User] = [:]                   // a dictionary acts as the pretend database
+
+    func save(_ user: User) {                              // same method as the real store
+        users[user.id] = user                              // really keep the user, so it can be read later
+    }
+
+    func load(id: Int) -> User? {                          // same method as the real store
+        users[id]                                          // return what was saved, or nil if nothing was
+    }
+}
+```
+
+3. Mock: records calls so the test can check them
+
+```swift
+final class MockAnalytics: Analytics {                     // a pretend analytics tool that remembers what it received
+    private(set) var events: [String] = []                 // every event name that was sent to it
+
+    func track(_ name: String) {                           // same method as the real analytics
+        events.append(name)                                // just remember it, do not send anything anywhere
+    }
+}
+```
+
+4. How the test uses each one
+
+```swift
+func test_checkout_tracksPurchaseOnce() async {
+    let analytics = MockAnalytics()                        // the mock that will record calls
+    let store = FakeUserStore()                            // the fake that really saves in memory
+    store.save(User(id: 1, name: "Johnson"))               // put data in, like a real database would hold
+
+    let viewModel = CheckoutViewModel(
+        userService: StubUserService(result: .success(User(id: 1, name: "Johnson"))), // stub: controls the input
+        store: store,                                      // fake: realistic storage
+        analytics: analytics                               // mock: records the outgoing call
+    )
+    await viewModel.pay()                                  // run the code under test
+
+    XCTAssertEqual(analytics.events, ["purchase"])         // mock check: the event was sent exactly once
+}
+```
+
+How they compare:
+• Stub: returns fixed answers. Use it to control what goes into your code, such as success, an error, or an empty list.
+• Fake: a simple working version, like an in-memory database. Use it when the code needs realistic behavior but the real thing is too slow or heavy.
+• Mock: records calls and lets the test check them. Use it for results that leave no visible state, like analytics, logging, or sending an email.
+• Test double: the general name for all of the above. It is a placeholder for the real object.
+
+Two more names you may hear:
+• Dummy: an object that is only passed to fill a parameter and is never really used.
+• Spy: like a mock, it records calls. The difference is that the test checks the records afterward, instead of setting expectations first. The MockAnalytics above is technically a spy, and most Swift developers still call it a mock.
+
+When to use them, and when not to:
+• Use a double at real boundaries: the network, the database, the Keychain, the clock, analytics, and payments.
+• Do not use a double for simple value types or your own pure functions. Use the real ones, because that is simpler and more trustworthy.
+• Prefer stubs and fakes over mocks. A test that checks state, like "the name is now Johnson", survives refactoring. A test that checks "this method was called twice" breaks whenever the internal steps change.
+• Keep doubles small. A stub with ten lines of logic is becoming a second implementation, and it can have bugs of its own.
+
+Good to mention (Staff-Level Interview Points):
+• Doubles work because of dependency injection and protocols. Without those, there is no way to swap the real object out.
+• A fake can drift from the real thing. If the real database rejects duplicates and the fake does not, tests pass but production fails. A few integration tests with the real thing catch that.
+• Too many mocks make tests fragile, and they can pass while the app is broken, because the test only proves that the code calls the mock the way the test expects.
+• Swift has no built-in mocking library, so most teams write small doubles by hand, as above. Some use generated mocks (like Cuckoo or Mockingbird), but hand-written ones are easy to read and need no extra tools.
+
+One-liner: A test double is a placeholder for the real object, and a stub gives fixed answers, a fake is a simple working version, and a mock records calls so the test can check them.
+
+Memory trick: S-F-M → "Stub gives answers, Fake works simply, Mock checks calls."
+
+#### 💻 Swift Code Example
+
+```swift
+// =========================================================================
+// 🎭 SENIOR INTERVIEW ARCHITECTURE: Test Doubles (Stubs, Fakes, Mocks & Spies)
+// =========================================================================
+//
+// 💡 SENIOR / STAFF INTERVIEW TALKING POINTS:
+// • Gerard Meszaros Taxonomy: "Test Double" is the overarching generic term.
+//   1. Dummy: Passed to satisfy parameter signatures; never accessed or asserted on.
+//   2. Stub: Returns canned answers to control input pathways (happy path or errors).
+//   3. Fake: Working, lightweight in-memory implementation (e.g., Dictionary-backed store).
+//   4. Spy: Records invocation history, arguments, and call counts for post-action verification.
+//   5. Mock: Pre-programmed with strict expectations and assertions on interaction protocol.
+// • Swift Protocol-Based DI: Because Swift is a statically typed compiled language without
+//   dynamic runtime reflection (like JVM Mockito / C# Moq), test doubles require protocol
+//   abstraction and constructor/dependency injection.
+// • State vs Interaction Verification: Prefer State Verification (asserting final output on
+//   Fakes and Stubs) over Interaction Verification (asserting method call counts on Mocks).
+//   Interaction verification couples tests to private implementation details and causes brittleness.
+
+import Foundation
+import XCTest
+
+// MARK: - 1. Domain Entities & Protocols
+
+struct User: Identifiable, Equatable {
+    let id: Int
+    let name: String
+}
+
+protocol UserService {
+    func fetchUser() async throws -> User
+}
+
+protocol UserStore {
+    func save(_ user: User)
+    func load(id: Int) -> User?
+}
+
+protocol Analytics {
+    func track(_ name: String)
+}
+
+// MARK: - 2. Stub: Fixed Canned Answers (Input Control)
+
+struct StubUserService: UserService {
+    var result: Result<User, Error>
+
+    func fetchUser() async throws -> User {
+        try result.get()
+    }
+}
+
+// MARK: - 3. Fake: Simplified Working Implementation (In-Memory Database)
+
+final class FakeUserStore: UserStore {
+    private var users: [Int: User] = [:]
+
+    func save(_ user: User) {
+        users[user.id] = user
+    }
+
+    func load(id: Int) -> User? {
+        users[id]
+    }
+}
+
+// MARK: - 4. Mock / Spy: Records Invocations for Side-Effect Verification
+
+final class MockAnalytics: Analytics {
+    private(set) var events: [String] = []
+
+    func track(_ name: String) {
+        events.append(name)
+    }
+}
+
+// MARK: - 5. System Under Test (SUT)
+
+final class CheckoutViewModel {
+    private let userService: UserService
+    private let store: UserStore
+    private let analytics: Analytics
+
+    init(userService: UserService, store: UserStore, analytics: Analytics) {
+        self.userService = userService
+        self.store = store
+        self.analytics = analytics
+    }
+
+    func pay() async {
+        guard let user = try? await userService.fetchUser() else { return }
+        store.save(user)
+        analytics.track("purchase")
+    }
+}
+
+// MARK: - 6. XCTest Suite: Clean Orchestration of All Doubles
+
+@MainActor
+final class CheckoutViewModelTests: XCTestCase {
+    func test_checkout_tracksPurchaseOnce() async {
+        // Arrange
+        let mockAnalytics = MockAnalytics() // Mock/Spy: records side-effect calls
+        let fakeStore = FakeUserStore()     // Fake: realistic in-memory persistence
+        let expectedUser = User(id: 1, name: "Johnson")
+        
+        let stubService = StubUserService(result: .success(expectedUser)) // Stub: canned input
+
+        let viewModel = CheckoutViewModel(
+            userService: stubService,
+            store: fakeStore,
+            analytics: mockAnalytics
+        )
+
+        // Act
+        await viewModel.pay()
+
+        // Assert: State verification on fake
+        XCTAssertEqual(fakeStore.load(id: 1), expectedUser, "User should be persisted in store")
+
+        // Assert: Side-effect verification on mock
+        XCTAssertEqual(mockAnalytics.events, ["purchase"], "Analytics event 'purchase' must be tracked once")
+    }
+}
+```
+
+
+---
+
+### `Q-72` — CI/CD pipelines for iOS — what goes into one
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -7986,7 +8244,7 @@ Key interview talking point: A CI pipeline that takes 45 minutes is one nobody w
 
 ---
 
-### `Q-72` — Feature flagging, A/B testing, and remote configuration
+### `Q-73` — Feature flagging, A/B testing, and remote configuration
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -8056,9 +8314,9 @@ struct TransferView: View {
 ---
 
 
-## 👔 Engineering Leadership & Operations (Q-73 – Q-74)
+## 👔 Engineering Leadership & Operations (Q-74 – Q-75)
 
-### `Q-73` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
+### `Q-74` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -8123,7 +8381,7 @@ final class ModernAccountService: AccountServiceProtocol {
 
 ---
 
-### `Q-74` — How do you read a crash log? How do you symbolicate it?
+### `Q-75` — How do you read a crash log? How do you symbolicate it?
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -8321,9 +8579,9 @@ final class BreadcrumbTracker {
 ---
 
 
-## 🧠 Memory Management (Q-75 – Q-82)
+## 🧠 Memory Management (Q-76 – Q-83)
 
-### `Q-75` — How does ARC work? What is the difference between strong, weak, and unowned?
+### `Q-76` — How does ARC work? What is the difference between strong, weak, and unowned?
 
 - **Category:** `Memory Management`
 
@@ -8383,7 +8641,7 @@ class RequestManager {
 
 ---
 
-### `Q-76` — What is a retain cycle? How do you detect and fix them?
+### `Q-77` — What is a retain cycle? How do you detect and fix them?
 
 - **Category:** `Memory Management`
 
@@ -8458,7 +8716,7 @@ func testNoRetainCycle() {
 
 ---
 
-### `Q-77` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
+### `Q-78` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
 
 - **Category:** `Memory Management`
 
@@ -8516,7 +8774,7 @@ struct LargeModel: Describable {
 
 ---
 
-### `Q-78` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
+### `Q-79` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
 
 - **Category:** `Memory Management`
 
@@ -8584,7 +8842,7 @@ print(s2.value)    // "world"
 
 ---
 
-### `Q-79` — How do you handle memory warnings?
+### `Q-80` — How do you handle memory warnings?
 
 - **Category:** `Memory Management`
 
@@ -8754,7 +9012,7 @@ func downsample(url: URL, maxPixel: CGFloat) -> UIImage? {
 
 ---
 
-### `Q-80` — What is the Swift runtime side table? How do weak references work under the hood?
+### `Q-81` — What is the Swift runtime side table? How do weak references work under the hood?
 
 - **Category:** `Memory Management`
 
@@ -8819,7 +9077,7 @@ print(observer?.id ?? "nil")  // "nil"
 
 ---
 
-### `Q-81` — How does Jetsam work? What strategies do you use to survive memory pressure?
+### `Q-82` — How does Jetsam work? What strategies do you use to survive memory pressure?
 
 - **Category:** `Memory Management`
 
@@ -8906,7 +9164,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MXMetricManagerSubscriber
 
 ---
 
-### `Q-82` — How do you profile and debug memory issues in a production iOS app?
+### `Q-83` — How do you profile and debug memory issues in a production iOS app?
 
 - **Category:** `Memory Management`
 

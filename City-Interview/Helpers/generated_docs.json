@@ -834,7 +834,7 @@
         "icon": "🧪"
       }
     ],
-    "Q-74": [
+    "Q-75": [
       {
         "docId": "leadership-ownership",
         "title": "Development Lead / Feature Ownership — Talking Points",
@@ -848,7 +848,7 @@
         "filename": "PerformanceProfiling-TalkingPoints.md"
       }
     ],
-    "Q-80": [
+    "Q-81": [
       "performance-profiling",
       "ios-internals"
     ],
@@ -922,6 +922,20 @@
         "title": "Performance Profiling & Instruments — Talking Points",
         "filename": "PerformanceProfiling-TalkingPoints.md",
         "icon": "⏱️"
+      }
+    ],
+    "Q-71": [
+      {
+        "docId": "testing-xctest",
+        "title": "XCTest, Mocking & UI Testing Guide",
+        "filename": "Testing-TalkingPoints.md",
+        "icon": "🧪"
+      },
+      {
+        "docId": "dependency-injection",
+        "title": "Dependency Injection (Constructor vs Property Injection)",
+        "filename": "DI-README.md",
+        "icon": "💉"
       }
     ]
   }
