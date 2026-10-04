@@ -50,13 +50,38 @@ struct QuestionDetailView: View {
                             }
                         }
                         
-                        VStack(alignment: .leading, spacing: 10) {
+                        if let imageName = question.imageName {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("Architecture Diagram")
+                                    .font(.system(size: 22, weight: .bold))
+                                Image(imageName)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .cornerRadius(12)
+                                    .shadow(color: Color.black.opacity(0.1), radius: 6, x: 0, y: 3)
+                            }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 12) {
                             Text("Explanation")
                                 .font(.system(size: 22, weight: .bold))
                             
-                            Text(question.answer)
-                                .font(.system(size: 20))
-                                .lineSpacing(8)
+                            ForEach(question.answerSegments) { segment in
+                                if segment.isCode {
+                                    ScrollView(.horizontal, showsIndicators: false) {
+                                        Text(segment.content)
+                                            .font(.system(size: 16, design: .monospaced))
+                                            .lineSpacing(4)
+                                            .padding(12)
+                                            .background(Color(UIColor.secondarySystemBackground))
+                                            .cornerRadius(8)
+                                    }
+                                } else {
+                                    Text(segment.content)
+                                        .font(.system(size: 20))
+                                        .lineSpacing(8)
+                                }
+                            }
                         }
                         
                         if let code = question.codeExample {

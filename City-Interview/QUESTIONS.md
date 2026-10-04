@@ -1,31 +1,29 @@
 # 📱 iOS Senior & Staff Interview Question Bank
 
-> A comprehensive, senior & staff-level revision suite for 74 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, 60/120fps Scroll Hitch Elimination, Scalable Image Caching, Keychain Secrets Management, OAuth 2.0 PKCE & Token Rotation, Production Crash Log Triage & Symbolication, Memory Management, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
+> A comprehensive, senior & staff-level revision suite for 81 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, 60/120fps Scroll Hitch Elimination, Scalable Image Caching, Keychain Secrets Management, OAuth 2.0 PKCE & Token Rotation, Production Crash Log Triage & Symbolication, Memory Management, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
 
 ## 📊 Overview
 
 | Category / Topic | Questions | Key Coverage |
 |---|:---:|---|
-| **Architecture & Design Patterns** | `5` |  |
-| **Swift Concurrency & Multithreading** | `7` |  |
-| **Core Swift & Language Internals** | `6` |  |
-| **SwiftUI & UIKit Layout** | `10` |  |
+| **Architecture & Design Patterns** | `5` | Enterprise presentation patterns (MVVM, Clean Architecture, VIPER), Coordinator routing, Dependency Injection, and SOLID principles. |
+| **Swift Concurrency & Multithreading** | `7` | Swift Actors, async/await, Structured Concurrency, Task Groups, synchronization primitives, GCD queues, and race conditions. |
+| **Core Swift & Language Internals** | `6` | Protocol-Oriented Programming, Stack vs Heap & CoW, Method Dispatch (V-table/witness), Generics & some/any existentials, Property Wrappers & Macros, and Run Loops. |
+| **SwiftUI & UIKit Layout** | `10` | Auto Layout Cassowary solver, Dynamic Type, accessibility (a11y), iPad adaptive layouts, internationalization & RTL, UICollectionView diffable data sources & compositional layouts, atomic component decomposition, SwiftUI ViewGraph/AttributeGraph diffing, and UIKit interoperability. |
 | **Combine & Reactive Streams** | `1` | Reactive streams, Publishers, Subscribers, Backpressure, Subject types, Debounce vs Throttle, and cancellation lifecycles. |
-| **Networking, APIs & Background Tasks** | `5` | URLSession abstractions, REST vs GraphQL contract-driven schemas, token refresh interceptors, silent APNs pushes, Notification Service Extensions, BGTaskScheduler, App Suspension & State Restoration. |
+| **Networking, APIs & Background Tasks** | `7` | URLSession abstractions, REST vs GraphQL contract-driven schemas, token refresh interceptors, silent APNs pushes, APNs architecture, VoIP PushKit & CallKit, Notification Service Extensions, and BGTaskScheduler. |
 | **Modularity & Launch Performance** | `7` | SPM multi-module boundaries, static vs dynamic linkage launch effects, build-time reduction cascades, binary caching, app thinning, and Instruments profiling. |
 | **Data Persistence & Memory Management** | `4` | Core Data vs SQLite vs Realm vs SwiftData, multi-context concurrency & merging, ARC retain cycles, Heap side tables (weak/unowned), and OS Jetsam OOM survival. |
-| **Security, Auth & Compliance** | `9` | Keychain vs Secure Enclave, token storage CRUD, OAuth 2.0 PKCE & token rotation, SSL Certificate Pinning, biometric auth, Jailbreak & Frida detection, NSFileProtectionComplete, and banking compliance (PCI-DSS, SOX, GDPR). |
-| **System Design & Mobile Architecture** | `2` | End-to-end mobile system design: Two-tier LRU memory/disk image caching with coalescing, and Offline-First bi-directional syncing with outbox pattern and LWW conflict resolution. |
-| **Testing, CI/CD & AI Engineering** | `8` | Unit and UI testing with XCTest, protocol mocking and stubbing, TDD/BDD, automated CI/CD pipelines, feature flagging, and hybrid cloud/on-device AI systems. |
+| **Security, Auth & Compliance** | `12` | Keychain vs Secure Enclave, token storage CRUD, OAuth 2.0 PKCE & token rotation, SSL Certificate Pinning, biometric auth, Jailbreak & Frida detection, NSFileProtectionComplete, and banking compliance (PCI-DSS, SOX, GDPR). |
+| **System Design & Mobile Architecture** | `3` | End-to-end mobile system design: Two-tier LRU memory/disk image caching with coalescing, Offline-First bi-directional syncing with outbox pattern, and E-commerce checkout & payment flow (Apple Pay, idempotency, gateway authorization & settlement). |
+| **Testing, CI/CD & AI Engineering** | `9` | Unit and UI testing with XCTest, protocol mocking and stubbing, TDD/BDD, automated CI/CD pipelines, feature flagging, and hybrid cloud/on-device AI systems. |
 | **Engineering Leadership & Operations** | `2` | Production incident triage, crash log analysis & dSYM symbolication, Crashlytics velocity alerts, MetricKit crash loops, blameless post-mortems, and migrating legacy monoliths using the Strangler Fig pattern. |
 | **Memory Management** | `8` | ARC strong/weak/unowned, retain cycles, stack vs heap, Copy-on-Write internals, memory warnings, the Swift runtime side table, Jetsam OOM survival, and production memory profiling with Instruments and MetricKit. |
-| **Total** | **`74`** | Complete Senior & Staff iOS Interview Curriculum |
+| **Total** | **`81`** | Complete Senior & Staff iOS Interview Curriculum |
 
 ---
 
 ## 📌 Architecture & Design Patterns (Q-01 – Q-05)
-
-> 
 
 ### `Q-01` — MVC vs MVVM vs Clean Architecture — tradeoffs
 
@@ -319,9 +317,8 @@ class AppCoordinator: Coordinator {
 
 ---
 
-## 📌 Swift Concurrency & Multithreading (Q-06 – Q-12)
 
-> 
+## ⚡ Swift Concurrency & Multithreading (Q-06 – Q-12)
 
 ### `Q-06` — GCD vs Swift Concurrency — when to use which, and why
 
@@ -714,9 +711,8 @@ actor ActorCache<K: Hashable, V> {
 
 ---
 
-## 📌 Core Swift & Language Internals (Q-13 – Q-18)
 
-> 
+## 🚀 Core Swift & Language Internals (Q-13 – Q-18)
 
 ### `Q-13` — Protocol-Oriented Programming in Swift — What problem does it solve?
 
@@ -1129,9 +1125,8 @@ final class AccountStore {
 
 ---
 
-## 📌 SwiftUI & UIKit Layout (Q-19 – Q-28)
 
-> 
+## 🎨 SwiftUI & UIKit Layout (Q-19 – Q-28)
 
 ### `Q-19` — UIKit and SwiftUI interoperability — UIHostingController and UIViewRepresentable
 
@@ -2308,9 +2303,8 @@ struct ChildCounterControl: View {
 
 ---
 
-## 🌊 Combine & Reactive Streams (Q-29)
 
-> Reactive streams, Publishers, Subscribers, Backpressure, Subject types, Debounce vs Throttle, and cancellation lifecycles.
+## 🌊 Combine & Reactive Streams (Q-29)
 
 ### `Q-29` — Combine Framework & Reactive Streams — Publishers, Subjects, Backpressure, and Operators
 
@@ -2389,9 +2383,8 @@ final class LiveSearchViewModel {
 
 ---
 
-## 🌐 Networking, APIs & Background Tasks (Q-30 – Q-34)
 
-> URLSession abstractions, REST vs GraphQL contract-driven schemas, token refresh interceptors, silent APNs pushes, Notification Service Extensions, BGTaskScheduler, App Suspension & State Restoration.
+## 🌐 Networking, APIs & Background Tasks (Q-30 – Q-36)
 
 ### `Q-30` — URLSession and building a networking layer — how would you architect one?
 
@@ -3014,11 +3007,668 @@ final class AccountLedgerStore: ObservableObject {
 
 ---
 
-## 📦 Modularity & Launch Performance (Q-35 – Q-41)
+### `Q-35` — How does APNs work end to end?
 
-> SPM multi-module boundaries, static vs dynamic linkage launch effects, build-time reduction cascades, binary caching, app thinning, and Instruments profiling.
+- **Category:** `Networking, APIs & Background Tasks`
 
-### `Q-35` — How do you reduce build time in a multi-module app?
+> [!TIP]
+> **🗣️ Interview Pitch (Say it like this):**  
+> *"The app gets a device token from APNs and gives it to my server, then my server sends the payload to APNs over HTTP/2, and APNs delivers it to the phone."*
+
+#### 📖 Detailed Answer
+
+APNs (Apple Push Notification service) is Apple's server that delivers push notifications to iPhones. Your app cannot receive a push straight from your own server, because the phone has no open connection to it. Instead, every iPhone keeps one secure, always-on connection to Apple, and all pushes travel through it. This is how chat messages, order updates, and reminders reach a user when the app is closed. It matters for any app with a backend that needs to reach the user.
+
+Say it like this:
+
+"There are three parties: my app, my server, and APNs. The flow has two phases, registration and delivery.
+
+For registration, my app asks the user for permission, then calls registerForRemoteNotifications(). iOS contacts APNs, and APNs returns a device token. That token is an address for this app on this device. My app sends it to my server, and the server stores it with the user's ID. The token can change, for example after a restore or reinstall, so I send it to my server on every launch, and the server updates it.
+
+For delivery, when something happens, my server builds a small JSON payload and sends an HTTP/2 request to APNs, with the device token in the URL. The server proves who it is with an auth key, a .p8 file from my Apple developer account, used to sign a short-lived JWT. The request also carries my app's bundle ID as the apns-topic. APNs checks the request and sends the push to the device over its connection. If the device is offline, APNs holds the push for a while, depending on the expiration I set.
+
+On the phone, iOS shows the alert, or if the payload is a silent push with content-available, it wakes my app for a short time. When the user taps it, my app opens and gets the payload, so I can navigate to the right screen.
+
+When something fails, APNs replies with an error, and I handle it. If the reply says the token is no longer valid, like 410 Unregistered, my server deletes that token, so it stops sending to a dead address."
+
+The flow in one picture:
+
+![APNs End-to-End Architecture & Flow Diagram](Resources/apns_flow_diagram.png)
+
+```
+ REGISTRATION (once per launch)
+ iOS App                      APNs                       My Server
+    | 1. ask permission          |                            |
+    | 2. register -------------->|                            |
+    |<-- 3. device token --------|                            |
+    | 4. send token + user id ------------------------------->| stores it
+
+ DELIVERY (each notification)
+ My Server                    APNs                       iPhone
+    | 5. POST /3/device/<token>  |                            |
+    |    + JWT + payload ------->|                            |
+    |                            | 6. checks, finds device    |
+    |                            |--------------------------->| 7. shows alert
+    |<-- 8. 200 OK or error -----|                            |   or wakes the app
+```
+
+1. Turn on the capability
+
+```
+Xcode > Target > Signing & Capabilities > + Capability > Push Notifications
+// This adds the aps-environment entitlement, without it registration fails
+```
+
+2. Ask permission and register
+
+```swift
+import UserNotifications                                          // gives us the notification permission API
+import UIKit                                                      // gives us UIApplication
+
+func setUpPush() async {
+    let center = UNUserNotificationCenter.current()               // the system notification center
+    let granted = (try? await center.requestAuthorization(        // show the permission popup
+        options: [.alert, .sound, .badge]                         // ask for banners, sound, and badge numbers
+    )) ?? false                                                   // treat an error as "not granted"
+    guard granted else { return }                                 // user said no, stop here
+    await MainActor.run {                                         // this call must run on the main thread
+        UIApplication.shared.registerForRemoteNotifications()     // ask iOS to get a device token from APNs
+    }
+}
+```
+
+3. Receive the device token
+
+```swift
+// AppDelegate
+func application(_ application: UIApplication,
+                 didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+    let token = deviceToken.map { String(format: "%02x", $0) }.joined() // turn the bytes into a hex string
+    Task { try? await api.registerPushToken(token) }              // send it to my server, on every launch
+}
+
+func application(_ application: UIApplication,
+                 didFailToRegisterForRemoteNotificationsWithError error: Error) {
+    print("Push registration failed:", error)                     // for example: no capability, or no network
+}
+```
+
+4. Send the token to my server
+
+```swift
+func registerPushToken(_ token: String, accessToken: String) async throws {
+    var request = URLRequest(url: URL(string: "https://api.myapp.com/push-token")!) // my own endpoint
+    request.httpMethod = "POST"                                   // sending data, so POST
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type") // the body is JSON
+    request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization") // tells the server which user this is
+    request.httpBody = try JSONEncoder().encode(["token": token]) // the device token
+    _ = try await URLSession.shared.data(for: request)            // the server stores token + user id
+}
+```
+
+5. The server sends the push to APNs
+
+```bash
+# JWT is signed with the .p8 key, and includes the Key ID and Team ID
+curl --http2 \
+  --header "authorization: bearer $JWT" \
+  --header "apns-topic: com.mycompany.myapp" \
+  --header "apns-push-type: alert" \
+  --header "apns-priority: 10" \
+  --header "apns-expiration: 0" \
+  --data '{"aps":{"alert":{"title":"Order shipped","body":"Arrives tomorrow"},"sound":"default"},"orderId":"1234"}' \
+  https://api.push.apple.com/3/device/DEVICE_TOKEN
+# For debug builds use api.sandbox.push.apple.com, because sandbox and production tokens are different
+```
+
+6. The payload
+
+```json
+{
+  "aps": {
+    "alert": { "title": "Order shipped", "body": "Arrives tomorrow" },
+    "sound": "default",
+    "badge": 1
+  },
+  "orderId": "1234"
+}
+```
+aps is the part iOS reads: the alert, the sound, and the badge.
+orderId is my own custom data. My app reads it when the user taps the notification.
+The whole payload is limited to 4 KB, so I send an ID and let the app fetch the details.
+
+7. Handle the notification in the app
+
+```swift
+extension AppDelegate: UNUserNotificationCenterDelegate {
+
+    // The app is open: choose whether to still show the banner
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
+        [.banner, .sound]                                         // show a banner even while the app is in the foreground
+    }
+
+    // The user tapped the notification
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse) async {
+        let info = response.notification.request.content.userInfo // the full payload
+        if let orderId = info["orderId"] as? String {             // read my custom value
+            router.openOrder(id: orderId)                         // go straight to the right screen
+        }
+    }
+}
+// Set this early, in didFinishLaunching:
+// UNUserNotificationCenter.current().delegate = self             // so iOS knows where to send these callbacks
+```
+
+8. Silent push (wake the app to fetch data)
+
+```swift
+func application(_ application: UIApplication,
+                 didReceiveRemoteNotification userInfo: [AnyHashable: Any]) async -> UIBackgroundFetchResult {
+    let hasNew = await syncLatestData()                           // fetch fresh data, you get about 30 seconds
+    return hasNew ? .newData : .noData                            // tell iOS what happened
+}
+// The payload is { "aps": { "content-available": 1 } } with apns-push-type: background
+// Silent pushes are not guaranteed, and iOS may delay or drop them (see Q27)
+```
+
+Quick steps to remember:
+
+1. Permission: ask the user, then call registerForRemoteNotifications().
+2. Device token: APNs gives it to the app, and the app sends it to my server.
+3. Server sends: HTTP/2 request to APNs with the token, JWT, topic, and payload.
+4. APNs delivers: to the phone, or holds it if the phone is offline.
+5. App handles: show a banner, handle the tap, or wake silently.
+6. Clean up: delete tokens that APNs reports as invalid.
+
+Good to mention:
+
+• Two environments: sandbox for debug builds, production for TestFlight and App Store builds. A token from one does not work in the other, and this is the most common cause of "push is not arriving".
+• Auth methods: the .p8 token-based key works for all apps and does not expire. The older certificate method expires every year. I prefer the .p8 key.
+• JWT rules: refresh the signed token at least every hour, and not more often than every 20 minutes, or APNs rejects it with TooManyProviderTokenUpdates.
+• Common errors: 400 BadDeviceToken (wrong environment or bad token), 403 InvalidProviderToken (bad JWT), 410 Unregistered (app deleted, delete the token), 429 (too many pushes to one device).
+• Rich notifications: add mutable-content: 1 and a Notification Service Extension to download an image or decrypt content before it is shown.
+• Collapse ID: apns-collapse-id replaces an older notification with a new one, so the user does not see five "new message" banners.
+• No guarantee: APNs is best-effort. Do not use a push as the only way to deliver important data, and always let the app fetch the real data from the server.
+• Do not put private data in the payload. It passes through Apple's servers, so send an ID or an encrypted value.
+• If a user turns off notifications, the token may still be valid, so check the permission with getNotificationSettings() before assuming the user will see the push.
+• VoIP pushes use PushKit and a different topic, and must be reported to CallKit right away.
+
+One-liner: The app gets a device token from APNs and gives it to my server, then my server sends the payload to APNs over HTTP/2, and APNs delivers it to the phone.
+
+Memory trick: P-T-S-D-H → "Permission, Token to my server, Server calls APNs, Delivered to the phone, Handle the tap."
+
+#### 💻 Swift Code Example
+
+```swift
+// =========================================================================
+// 🔔 SENIOR INTERVIEW ARCHITECTURE: Apple Push Notification service (APNs)
+// =========================================================================
+//
+// 💡 INTERVIEW TALKING POINTS (Staff/Senior Level):
+// • Persistent Socket: The device maintains a single persistent, encrypted TCP socket to APNs.
+//   Individual apps do NOT maintain persistent connections, saving cellular radio power and battery.
+// • Device Token Lifecycle: Device tokens are ephemeral per app/device install. Reinstalls,
+//   device restores, or OS upgrades can rotate the token. Always register on launch and synchronize.
+// • Modern HTTP/2 Provider API: Uses Token-based (.p8 JWT) auth. Replaced the legacy binary protocol
+//   and legacy Feedback Service. Inactive tokens return HTTP 410 (Unregistered) immediately.
+// • Notification Service Extension: Intercepts pushes with "mutable-content": 1 before display
+//   for end-to-end decryption (e.g. Signal, WhatsApp) and rich media attachment downloads (images/video).
+
+import Foundation
+import UIKit
+import UserNotifications
+
+// MARK: - 1. Push Notification Coordinator (Clean Architecture)
+
+@MainActor
+final class PushNotificationManager: NSObject, ObservableObject {
+    static let shared = PushNotificationManager()
+    
+    @Published private(set) var isRegistered = false
+    @Published private(set) var currentDeviceToken: String?
+    
+    private let notificationCenter = UNUserNotificationCenter.current()
+    private let backendClient: PushBackendClientProtocol
+    
+    init(backendClient: PushBackendClientProtocol = PushBackendClient()) {
+        self.backendClient = backendClient
+        super.init()
+        notificationCenter.delegate = self
+    }
+    
+    /// Requests user authorization and kicks off remote registration
+    func requestAuthorizationAndRegister() async {
+        do {
+            let options: UNAuthorizationOptions = [.alert, .sound, .badge, .provisional]
+            let granted = try await notificationCenter.requestAuthorization(options: options)
+            
+            guard granted else {
+                print("⚠️ Push notification permission denied by user")
+                return
+            }
+            
+            // 💡 Must be dispatched on MainActor
+            UIApplication.shared.registerForRemoteNotifications()
+            self.isRegistered = true
+        } catch {
+            print("❌ Push authorization error: \(error.localizedDescription)")
+        }
+    }
+    
+    /// Called from AppDelegate when APNs delivers the 32-byte binary token
+    func handleDeviceToken(_ deviceTokenData: Data, userAuthToken: String) async {
+        // Convert binary token bytes to hex string format required by APNs HTTP/2 path
+        let tokenString = deviceTokenData.map { String(format: "%02.2hhx", $0) }.joined()
+        self.currentDeviceToken = tokenString
+        
+        // 💡 Synchronize token with backend provider database
+        do {
+            try await backendClient.updateDeviceToken(tokenString, authToken: userAuthToken)
+            print("✅ Device token successfully synchronized with backend: \(tokenString)")
+        } catch {
+            print("❌ Failed to synchronize device token: \(error)")
+        }
+    }
+}
+
+// MARK: - 2. UNUserNotificationCenterDelegate (Foreground & Interaction)
+
+extension PushNotificationManager: UNUserNotificationCenterDelegate {
+    
+    /// 💡 Triggered when notification arrives while the app is in the FOREGROUND
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification
+    ) async -> UNNotificationPresentationOptions {
+        let userInfo = notification.request.content.userInfo
+        print("📨 Received push in foreground: \(userInfo)")
+        
+        // Return .banner and .sound to display banner even while app is active
+        return [.banner, .sound, .badge]
+    }
+    
+    /// 💡 Triggered when user TAPS on a notification banner or lock screen alert
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse
+    ) async {
+        let userInfo = response.notification.request.content.userInfo
+        
+        if let orderId = userInfo["orderId"] as? String {
+            // Route user directly to feature screen
+            print("🧭 Navigating to order: \(orderId)")
+        }
+    }
+}
+
+// MARK: - 3. Notification Service Extension (Rich Media & Decryption)
+// 💡 Add via: File > New > Target > Notification Service Extension
+
+class NotificationService: UNNotificationServiceExtension {
+    var contentHandler: ((UNNotificationContent) -> Void)?
+    var bestAttemptContent: UNMutableNotificationContent?
+    
+    override func didReceive(
+        _ request: UNNotificationRequest,
+        withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void
+    ) {
+        self.contentHandler = contentHandler
+        bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
+        
+        guard let bestAttemptContent = bestAttemptContent else { return }
+        
+        // 1. Download media attachment (image/video thumbnail)
+        if let attachmentURLString = bestAttemptContent.userInfo["mediaUrl"] as? String,
+           let attachmentURL = URL(string: attachmentURLString) {
+            
+            Task {
+                if let attachment = try? await downloadAttachment(for: attachmentURL) {
+                    bestAttemptContent.attachments = [attachment]
+                }
+                contentHandler(bestAttemptContent)
+            }
+        } else {
+            contentHandler(bestAttemptContent)
+        }
+    }
+    
+    override func serviceExtensionTimeWillExpire() {
+        // Called if extension takes too long (~30s limit). Display fallback content immediately.
+        if let contentHandler = contentHandler, let bestAttemptContent = bestAttemptContent {
+            contentHandler(bestAttemptContent)
+        }
+    }
+    
+    private func downloadAttachment(for url: URL) async throws -> UNNotificationAttachment {
+        let (tempURL, _) = try await URLSession.shared.download(from: url)
+        let uniqueURL = FileManager.default.temporaryDirectory.appendingPathComponent(url.lastPathComponent)
+        try? FileManager.default.removeItem(at: uniqueURL)
+        try FileManager.default.moveItem(at: tempURL, to: uniqueURL)
+        return try UNNotificationAttachment(identifier: "media", url: uniqueURL, options: nil)
+    }
+}
+
+// MARK: - 4. Backend Client Protocol
+
+protocol PushBackendClientProtocol {
+    func updateDeviceToken(_ token: String, authToken: String) async throws
+}
+
+struct PushBackendClient: PushBackendClientProtocol {
+    func updateDeviceToken(_ token: String, authToken: String) async throws {
+        var req = URLRequest(url: URL(string: "https://api.myapp.com/v1/users/device-token")!)
+        req.httpMethod = "POST"
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
+        req.httpBody = try JSONEncoder().encode(["deviceToken": token, "platform": "iOS"])
+        _ = try await URLSession.shared.data(for: req)
+    }
+}
+```
+
+---
+
+### `Q-36` — How does a VoIP call work between two iOS devices?
+
+- **Category:** `Networking, APIs & Background Tasks`
+
+> [!TIP]
+> **🗣️ Interview Pitch (Say it like this):**  
+> *"A VoIP call separates signaling from media: signaling coordinates call setup, PushKit wakes the callee in the background, CallKit manages the native call UI and audio exclusivity, and media streams peer-to-peer via WebRTC using STUN and TURN for NAT traversal."*
+
+#### 📖 Detailed Answer
+
+A VoIP call is a phone call that travels over the internet instead of the mobile network. It is used in apps like WhatsApp, FaceTime, Zoom, and enterprise phone apps. Four systems work together:
+
+• The two apps (caller A and callee B).
+• A signaling server, which sets up and ends the call. It carries only small control messages, such as "A wants to call B", and it does not carry the voice.
+• APNs and PushKit, which wake B's app when it is closed.
+• CallKit, which gives the call the normal iPhone call screen and audio priority.
+
+The voice itself travels in a separate path, directly between the two phones if possible.
+
+Say it like this:
+
+"A VoIP call has two parts: signaling and media. Signaling is the setup conversation. Media is the actual voice. They use different paths.
+
+Before any call, both apps log in to my signaling server, and both send their VoIP push token to it. That is how the server can reach a phone whose app is closed.
+
+When A starts a call, the app tells CallKit, so the system treats it as a real call. Then A sends a call request to the server, with an offer that describes how A can send and receive audio. The server looks up B. If B's app is not running, the server sends a VoIP push through APNs. iOS wakes B's app, and B must report the incoming call to CallKit right away, so the system shows the full call screen. B's app then connects to the server and replies 'ringing', so A hears a ring.
+
+When B accepts, B sends back an answer. Now both phones need a way to reach each other. They find their public addresses with a STUN server, and try a direct connection. If a firewall blocks it, they use a TURN server, which relays the audio. This process is called ICE. Once connected, the voice flows as encrypted audio packets, and CallKit activates the audio session.
+
+During the call, I handle mute, hold, and network changes, such as Wi-Fi to cellular. When someone hangs up, the app sends an end message through the server, tells CallKit, stops the audio, and releases everything."
+
+The flow diagram:
+
+![VoIP Call Architecture & Flow Diagram](Resources/voip_call_flow_diagram.png)
+
+```
+  Caller Device             VoIP Backend Server (SIP/Signaling)             APNs                     iOS Device (Callee)
+       |                                    |                                 |                               |
+       | 1. Incoming call (SIP INVITE)      |                                 |                               |
+       |----------------------------------->|                                 |                               |
+       |                                    | 2. Server sends VoIP push       |                               |
+       |                                    |-------------------------------->| 3. Wakes app via PushKit      |
+       |                                    |                                 |------------------------------>| [PushKit]
+       |                                    |                                 |                               |     |
+       |                                    |                                 |                               | 4. Report to CallKit
+       |                                    |                                 |                               |     v
+       |                                    |                                 |                               | [CallKit Screen]
+       |                                    |                                 |                               |     | 5. User answers
+       |                                    |                                 |                               |     v
+       |                                    |                                 |                               | [AVAudioSession]
+       |<====================================================================================================>|
+       |                   6. Direct Media Stream (WebRTC / DTLS-SRTP / P2P via STUN/TURN)                    |
+```
+
+Step by step
+
+Before any call (setup)
+1. Both users log in. Each app connects to the signaling server and sends its VoIP push token, so the server can wake the phone later.
+
+Starting the call (caller A)
+2. A taps the call button. The app asks CallKit to start an outgoing call. The system now treats it as a real call, with the call UI and audio priority.
+3. A's app creates an offer. It describes which audio codecs A supports and how to reach A's phone.
+4. A sends the call request with the offer to the signaling server.
+
+Reaching the callee (callee B)
+5. The server looks up B. If B's app is open and connected, the server sends the request directly. Usually the app is closed, so the server sends a VoIP push to APNs, using B's VoIP token.
+6. APNs delivers it, and iOS wakes B's app in the background.
+7. B's app must report the incoming call to CallKit immediately. The system then shows the full-screen incoming call UI, even on a locked phone. If the app skips this step, iOS kills it and may stop sending VoIP pushes.
+8. B's app connects to the signaling server and replies "ringing". A hears the ring tone.
+
+Answering
+9. B taps Accept. The app creates an answer, which says which codec B will use, and sends it through the server to A.
+10. Both phones now know how to talk.
+
+Connecting the audio
+11. Each phone finds its public address with a STUN server, and shares its possible routes with the other. This is called ICE.
+12. The phones try the best route first, which is a direct peer-to-peer link. If a firewall or strict network blocks it, they fall back to a TURN server that relays the audio.
+13. The phones set up encryption (DTLS-SRTP) so no one in the middle can listen.
+
+During the call
+14. Voice travels in small encrypted packets in both directions. CallKit activates the audio session, so the microphone and speaker work.
+15. The apps handle mute, hold, speaker, and Bluetooth through CallKit. If the network changes, for example Wi-Fi to cellular, the apps run ICE again to find a new route.
+
+Ending the call
+16. Either user hangs up. That app sends an end message through the signaling server and tells CallKit the call is over.
+17. The other app receives it, ends the call in CallKit, stops the audio, closes the connection, and releases resources.
+
+Other endings to handle:
+• B declines: B sends a reject message, and A shows "declined".
+• B is busy: the server or B's app replies "busy".
+• No answer: the server times out after about 30 to 60 seconds, and both sides record a missed call.
+• Network drops: the call goes into a reconnecting state, then ends after a timeout.
+
+Quick steps to remember:
+1. Register: both apps log in and give the server their VoIP tokens.
+2. Call: A starts via CallKit and sends an offer.
+3. Wake: the server sends a VoIP push, and B reports to CallKit at once.
+4. Answer: B accepts and sends an answer.
+5. Connect: STUN and TURN find a route (ICE), then the voice flows encrypted.
+6. End: a hang-up message through the server, then clean up.
+
+Good to mention (Staff-Level Interview Points):
+• Mandatory CallKit Rule (iOS 13+): Every incoming VoIP push delivered via PKPushRegistry MUST be reported to CallKit using reportNewIncomingCall(with:update:completion:) immediately. iOS gives the app approximately 5 seconds. If this step is omitted, iOS terminates the process immediately and revokes the VoIP push entitlement for the app.
+• PushKit vs Standard APNs: VoIP pushes bypass Do Not Disturb and Low Power Mode, do not display system notification banners by themselves, and wake the app in the background with high priority to prepare the call engine.
+• Signaling vs Media Separation: The signaling channel (SIP over TLS, WebSocket, or gRPC) only exchanges session descriptions (SDP offers/answers). It never carries voice packets, keeping backend server bandwidth negligible.
+• NAT Traversal (STUN, TURN, ICE):
+  - STUN (Session Traversal Utilities for NAT): Discovers public IP and port mappings.
+  - TURN (Traversal Using Relays around NAT): Acts as media relay when symmetric NAT prevents direct peer-to-peer connection.
+  - ICE (Interactive Connectivity Establishment): Systematically probes all candidate address pairs to select the lowest-latency, working connection.
+• AVAudioSession & CallKit Synchronization: Never activate AVAudioSession manually during call setup. Wait for the CXProviderDelegate provider(_:didActivate:) callback to ensure the system has relinquished audio hardware exclusivity to your app.
+• Media Encryption (DTLS-SRTP): Audio and video packets are encrypted end-to-end using Secure Real-Time Transport Protocol (SRTP), with keys exchanged via Datagram Transport Layer Security (DTLS).
+
+One-liner: Signaling sets up the call through the server, PushKit wakes the device, CallKit manages native call UI and audio, and media streams peer-to-peer via WebRTC (ICE/STUN/TURN).
+
+Memory trick: S-P-C-M → "Signaling sets up, PushKit wakes up, CallKit displays, Media flows."
+
+#### 💻 Swift Code Example
+
+```swift
+// =========================================================================
+// 📞 SENIOR INTERVIEW ARCHITECTURE: VoIP Calling with CallKit & PushKit
+// =========================================================================
+//
+// 💡 INTERVIEW TALKING POINTS (Staff/Senior Level):
+// • Separation of Planes: Signaling (Call setup/SIP/WebSocket) vs Media (WebRTC/RTP audio).
+// • Mandatory iOS 13+ CallKit Rule: Every incoming VoIP push from PushKit MUST be reported
+//   to CallKit via `reportNewIncomingCall(with:update:completion:)` immediately.
+//   Failing to report results in iOS terminating the app and revoking PushKit privileges.
+// • Audio Session Exclusivity: Never activate AVAudioSession manually during call setup.
+//   Wait for CXProviderDelegate `provider(_:didActivate:)` callback to guarantee exclusivity.
+// • NAT Traversal (ICE / STUN / TURN):
+//   - STUN: Discovers device public IP:port mapping.
+//   - TURN: Relays media packets when symmetric NAT blocks peer-to-peer UDP.
+//   - ICE: Gathers candidates and negotiates the lowest-latency encrypted path.
+
+import Foundation
+import PushKit
+import CallKit
+import AVFoundation
+
+// MARK: - 1. VoIP Call Manager (PushKit & CallKit Orchestration)
+
+@MainActor
+final class VoIPCallManager: NSObject, ObservableObject {
+    static let shared = VoIPCallManager()
+    
+    // CallKit Controllers
+    private let callController = CXCallController()
+    private var provider: CXProvider!
+    
+    // PushKit Registry
+    private var voipRegistry: PKPushRegistry!
+    
+    // Active Call State
+    @Published private(set) var activeCallUUID: UUID?
+    
+    override init() {
+        super.init()
+        setupCallKit()
+        setupPushKit()
+    }
+    
+    // MARK: - CallKit Setup
+    private func setupCallKit() {
+        let configuration = CXProviderConfiguration(localizedName: "MyBank Talk")
+        configuration.supportsVideo = false
+        configuration.maximumCallGroups = 1
+        configuration.maximumCallsPerCallGroup = 1
+        configuration.supportedHandleTypes = [.generic, .phoneNumber]
+        configuration.iconTemplateImageData = UIImage(systemName: "phone.fill")?.pngData()
+        
+        provider = CXProvider(configuration: configuration)
+        provider.setDelegate(self, queue: nil) // Dispatched on main queue
+    }
+    
+    // MARK: - PushKit Setup
+    private func setupPushKit() {
+        voipRegistry = PKPushRegistry(queue: .main)
+        voipRegistry.delegate = self
+        voipRegistry.desiredPushTypes = [.voIP]
+    }
+    
+    // MARK: - Outgoing Call (Caller A)
+    func startOutgoingCall(to recipient: String) async throws {
+        let uuid = UUID()
+        let handle = CXHandle(type: .generic, value: recipient)
+        let startAction = CXStartCallAction(call: uuid, handle: handle)
+        let transaction = CXTransaction(action: startAction)
+        
+        try await callController.request(transaction)
+        self.activeCallUUID = uuid
+        // App now generates SDP offer and transmits to Signaling Server via WebSocket
+    }
+    
+    // MARK: - End Call
+    func endCurrentCall() async throws {
+        guard let uuid = activeCallUUID else { return }
+        let endAction = CXEndCallAction(call: uuid)
+        let transaction = CXTransaction(action: endAction)
+        
+        try await callController.request(transaction)
+    }
+}
+
+// MARK: - 2. PKPushRegistryDelegate (Receiving VoIP Wakeup)
+
+extension VoIPCallManager: PKPushRegistryDelegate {
+    
+    // 💡 Registered device token for VoIP pushes (distinct from standard APNs token)
+    func pushRegistry(
+        _ registry: PKPushRegistry,
+        didUpdate pushCredentials: PKPushCredentials,
+        for type: PKPushType
+    ) {
+        let hexToken = pushCredentials.token.map { String(format: "%02.2hhx", $0) }.joined()
+        print("📲 VoIP Push Token Updated: \(hexToken)")
+        // Transmit token to Signaling Server: ties user ID to VoIP wakeup token
+    }
+    
+    // ⚠️ CRITICAL INTERVIEW RULE (iOS 13+):
+    // You MUST report the call to CallKit synchronously inside this delegate method.
+    // iOS gives you approximately 5 seconds. If you fail, the process will crash.
+    func pushRegistry(
+        _ registry: PKPushRegistry,
+        didReceiveIncomingPushWith payload: PKPushPayload,
+        for type: PKPushType
+    ) async {
+        guard type == .voIP else { return }
+        
+        let dict = payload.dictionaryPayload
+        let callerName = dict["callerName"] as? String ?? "Unknown Caller"
+        let callUUIDString = dict["callUUID"] as? String ?? UUID().uuidString
+        let callUUID = UUID(uuidString: callUUIDString) ?? UUID()
+        
+        let update = CXCallUpdate()
+        update.remoteHandle = CXHandle(type: .generic, value: callerName)
+        update.localizedCallerName = callerName
+        update.hasVideo = false
+        
+        do {
+            // 💡 Report to CallKit: triggers full-screen native incoming call UI
+            try await provider.reportNewIncomingCall(with: callUUID, update: update)
+            self.activeCallUUID = callUUID
+            
+            // Connect to signaling server and send 'ringing' acknowledgment
+        } catch {
+            print("❌ Failed to report incoming call to CallKit: \(error)")
+        }
+    }
+}
+
+// MARK: - 3. CXProviderDelegate (Handling User Actions from Native Call UI)
+
+extension VoIPCallManager: CXProviderDelegate {
+    
+    func providerDidReset(_ provider: CXProvider) {
+        // Stop audio engine, release WebRTC peer connections
+        activeCallUUID = nil
+    }
+    
+    // User tapped "Accept" on lock screen / banner
+    func provider(_ provider: CXProvider, perform action: CXAnswerCallAction) {
+        // 1. Send SDP answer back to caller via Signaling Server
+        // 2. Start ICE candidate exchange (STUN/TURN)
+        action.fulfill()
+    }
+    
+    // User tapped "Decline" or hung up
+    func provider(_ provider: CXProvider, perform action: CXEndCallAction) {
+        // Send SIP BYE or reject message to signaling server
+        activeCallUUID = nil
+        action.fulfill()
+    }
+    
+    // 💡 AUDIO SESSION ACTIVATION:
+    // CallKit grants high-priority audio hardware access here
+    func provider(_ provider: CXProvider, didActivate audioSession: AVAudioSession) {
+        do {
+            try audioSession.setCategory(.playAndRecord, mode: .voiceChat, options: [.allowBluetooth, .allowBluetoothA2DP])
+            try audioSession.setActive(true)
+            // Start WebRTC audio processing & microphone capture
+        } catch {
+            print("❌ Failed to configure AVAudioSession: \(error)")
+        }
+    }
+    
+    func provider(_ provider: CXProvider, didDeactivate audioSession: AVAudioSession) {
+        // Stop microphone and speaker playback
+        try? audioSession.setActive(false)
+    }
+}
+```
+
+---
+
+
+## 📦 Modularity & Launch Performance (Q-37 – Q-43)
+
+### `Q-37` — How do you reduce build time in a multi-module app?
 
 - **Category:** `Modularity & Launch Performance`
 
@@ -3075,7 +3725,7 @@ let package = Package(
 
 ---
 
-### `Q-36` — Static vs dynamic frameworks. What is the effect on launch?
+### `Q-38` — Static vs dynamic frameworks. What is the effect on launch?
 
 - **Category:** `Modularity & Launch Performance`
 
@@ -3128,7 +3778,7 @@ let package = Package(
 
 ---
 
-### `Q-37` — How do you control app size?
+### `Q-39` — How do you control app size?
 
 - **Category:** `Modularity & Launch Performance`
 
@@ -3189,7 +3839,7 @@ func loadTutorialContent() async throws {
 
 ---
 
-### `Q-38` — Your app is slow. How do you find the cause? Walk me through the steps.
+### `Q-40` — Your app is slow. How do you find the cause? Walk me through the steps.
 
 - **Category:** `Modularity & Launch Performance`
 
@@ -3368,7 +4018,7 @@ final class LaunchPerformanceTests: XCTestCase {
 
 ---
 
-### `Q-39` — Which Instruments tools do you use? What are their purposes?
+### `Q-41` — Which Instruments tools do you use? What are their purposes?
 
 - **Category:** `Modularity & Launch Performance`
 
@@ -3507,7 +4157,7 @@ actor HeavyBatchProcessor {
 
 ---
 
-### `Q-40` — How do you fix scroll jank and dropped frames?
+### `Q-42` — How do you fix scroll jank and dropped frames?
 
 - **Category:** `Modularity & Launch Performance`
 
@@ -3745,7 +4395,7 @@ final class ScrollPerformanceUITests: XCTestCase {
 
 ---
 
-### `Q-41` — Swift Package Manager (SPM) and modularization strategies
+### `Q-43` — Swift Package Manager (SPM) and modularization strategies
 
 - **Category:** `Modularity & Launch Performance`
 
@@ -3808,11 +4458,10 @@ import CoreModels
 
 ---
 
-## 💾 Data Persistence & Memory Management (Q-42 – Q-45)
 
-> Core Data vs SQLite vs Realm vs SwiftData, multi-context concurrency & merging, ARC retain cycles, Heap side tables (weak/unowned), and OS Jetsam OOM survival.
+## 💾 Data Persistence & Memory Management (Q-44 – Q-47)
 
-### `Q-42` — Core Data vs SQLite vs Realm — one-line difference
+### `Q-44` — Core Data vs SQLite vs Realm — one-line difference
 
 - **Category:** `Data Persistence & Memory Management`
 
@@ -3874,7 +4523,7 @@ func fetchLargeTransactions(db: Database) throws -> [TransactionRecord] {
 
 ---
 
-### `Q-43` — ARC and retain cycles — a clear example of a strong reference cycle
+### `Q-45` — ARC and retain cycles — a clear example of a strong reference cycle
 
 - **Category:** `Data Persistence & Memory Management`
 
@@ -3941,7 +4590,7 @@ onComplete = { [weak self] in
 
 ---
 
-### `Q-44` — Deep Memory Management — Weak vs Unowned, Side Tables, and OS Jetsam OOM Kills
+### `Q-46` — Deep Memory Management — Weak vs Unowned, Side Tables, and OS Jetsam OOM Kills
 
 - **Category:** `Data Persistence & Memory Management`
 
@@ -4009,7 +4658,7 @@ final class ReportPrinter {
 
 ---
 
-### `Q-45` — Core Data & SwiftData Concurrency — Multi-Context Architecture and Merging
+### `Q-47` — Core Data & SwiftData Concurrency — Multi-Context Architecture and Merging
 
 - **Category:** `Data Persistence & Memory Management`
 
@@ -4077,11 +4726,10 @@ final class AccountSyncService {
 
 ---
 
-## 🔒 Security, Auth & Compliance (Q-46 – Q-54)
 
-> Keychain vs Secure Enclave, token storage CRUD, OAuth 2.0 PKCE & token rotation, SSL Certificate Pinning, biometric auth, Jailbreak & Frida detection, NSFileProtectionComplete, and banking compliance (PCI-DSS, SOX, GDPR).
+## 🔒 Security, Auth & Compliance (Q-48 – Q-56, Q-79 – Q-81)
 
-### `Q-46` — Certificate pinning — what it is, why it stops MITM attacks
+### `Q-48` — Certificate pinning — what it is, why it stops MITM attacks
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -4144,7 +4792,7 @@ class PinnedURLSessionDelegate: NSObject, URLSessionDelegate {
 
 ---
 
-### `Q-47` — How do you store tokens and secrets on iOS? What goes in Keychain?
+### `Q-49` — How do you store tokens and secrets on iOS? What goes in Keychain?
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -4337,7 +4985,7 @@ struct TokenStore {
 
 ---
 
-### `Q-48` — Explain a safe login flow: OAuth 2.0, refresh tokens, and token rotation
+### `Q-50` — Explain a safe login flow: OAuth 2.0, refresh tokens, and token rotation
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -4662,7 +5310,7 @@ func logout() async {
 
 ---
 
-### `Q-49` — Secure Enclave vs Keychain — what each one is actually for
+### `Q-51` — Secure Enclave vs Keychain — what each one is actually for
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -4729,7 +5377,7 @@ func createSecureEnclaveKey() throws -> SecKey {
 
 ---
 
-### `Q-50` — Secure data handling in financial apps — tokenization, biometric auth, session management
+### `Q-52` — Secure data handling in financial apps — tokenization, biometric auth, session management
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -4796,7 +5444,7 @@ class SessionManager {
 
 ---
 
-### `Q-51` — PCI-DSS — what it protects and who it applies to
+### `Q-53` — PCI-DSS — what it protects and who it applies to
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -4854,7 +5502,7 @@ struct SafePaymentRequest: Codable {
 
 ---
 
-### `Q-52` — SOX (Sarbanes-Oxley) — what it's for
+### `Q-54` — SOX (Sarbanes-Oxley) — what it's for
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -4923,7 +5571,7 @@ await auditLogger.log(userId: user.id, action: "INITIATE_TRANSFER", resource: "t
 
 ---
 
-### `Q-53` — GDPR — what it protects and where it applies
+### `Q-55` — GDPR — what it protects and where it applies
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -4994,7 +5642,7 @@ func handleDeleteMyDataRequest(userId: String) async throws {
 
 ---
 
-### `Q-54` — Application Hardening & Anti-Tampering — Jailbreak, Frida & At-Rest Encryption
+### `Q-56` — Application Hardening & Anti-Tampering — Jailbreak, Frida & At-Rest Encryption
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -5072,11 +5720,674 @@ struct AppSecurityHardenCheck {
 
 ---
 
-## 🏛️ System Design & Mobile Architecture (Q-55 – Q-56)
+### `Q-79` — What is App Transport Security?
 
-> End-to-end mobile system design: Two-tier LRU memory/disk image caching with coalescing, and Offline-First bi-directional syncing with outbox pattern and LWW conflict resolution.
+- **Category:** `Security, Auth & Compliance`
 
-### `Q-55` — How do you load and cache images at scale?
+> [!TIP]
+> **🗣️ Interview Pitch (Say it like this):**  
+> *"ATS is the iOS default that blocks non-HTTPS or weak connections, and the safe way to deal with it is to fix the server and keep any exception small and domain-specific."*
+
+#### 📖 Detailed Answer
+
+App Transport Security (ATS) is an iOS rule that says: your app must talk to servers over secure HTTPS. It is turned on by default for every app, so a plain http:// request is blocked unless you ask for an exception. It protects users from someone reading or changing data on the network, like on public Wi-Fi. You meet it the first time a request to http:// fails with an error in the console, and again whenever you need to talk to a local test server or an old backend.
+
+Say it like this:
+"ATS is a security default in iOS. It forces the networking that my app does through URLSession and web views to use HTTPS with a modern, safe setup. If a server does not meet the rules, the connection fails before any data is sent.
+
+The rules are: the connection must use HTTPS, with TLS 1.2 or newer. The server needs strong ciphers with forward secrecy, which means that even if the server's key leaks later, old recorded traffic still cannot be decrypted. The certificate must be valid, signed with SHA-256 or stronger, with a strong key size. Redirects from HTTPS to HTTP are blocked too.
+
+If I must break one of these rules, I use exceptions in Info.plist, under NSAppTransportSecurity. I try to keep them as small as possible: one domain, only the setting that is needed. For example, for a local dev server I use NSAllowsLocalNetworking, or an exception for that one domain. I avoid NSAllowsArbitraryLoads, which turns ATS off for everything. App Review asks me to explain broad exceptions, so a global switch can also delay a release.
+
+ATS covers the high-level networking, like URLSession and WKWebView. It does not cover low-level sockets, where I must set up TLS myself. And ATS only checks that the connection is secure. It does not check that I am talking to my own server. For that I add certificate pinning, which I can also set up in Info.plist."
+
+Core ATS Specifications & Requirements:
+• Protocol: HTTPS only (plain http:// is rejected before any packet is sent over the wire).
+• Minimum TLS Version: TLS 1.2 or higher (TLS 1.0 and 1.1 are completely disabled by default).
+• Symmetric Ciphers: Strong modern ciphers only (AES-128 or AES-256 with GCM or CBC).
+• Forward Secrecy (PFS): Required via Ephemeral Diffie-Hellman (ECDHE). If a private server key is compromised in the future, past captured traffic cannot be retroactively decrypted.
+• Certificate Digest & Key Size: Must be signed by a trusted root CA in the iOS trust store using SHA-256 or stronger digest with at least a 2048-bit RSA key or 256-bit ECC key.
+• Redirect Enforcement: HTTPS-to-HTTP redirects are blocked by default to prevent SSL-stripping attacks.
+
+The Hierarchy of ATS Exceptions (Info.plist):
+1. Best Practice (Zero Exceptions): Upgrade all endpoints to modern HTTPS with TLS 1.2+. No Info.plist modification needed.
+2. Targeted Domain Exception (NSExceptionDomains): Whitelist only a legacy subdomain with NSExceptionAllowsInsecureHTTPLoads or NSExceptionMinimumTLSVersion.
+3. Local Development (NSAllowsLocalNetworking): Enables connections to Bonjour, .local domains, and RFC 1918 private IPv4/IPv6 ranges without disabling public ATS.
+4. Web-Only Traffic (NSAllowsArbitraryLoadsInWebContent): Allows WKWebView to load non-HTTPS sites without weakening native API security.
+5. The Anti-Pattern (NSAllowsArbitraryLoads): Blanket disables ATS across the entire app. Triggers Apple App Review scrutiny and demands written justification.
+
+Good to mention (Staff-Level Interview Points):
+• ATS Default Since iOS 9: iOS enforces ATS by default on all Apple networking frameworks: URLSession, WebKit (WKWebView), and AVFoundation streaming.
+• Raw Sockets Exception: Low-level BSD sockets (CFSocket, POSIX socket()) bypass ATS; you must configure TLS manually using Network.framework (NWConnection).
+• App Store Review Scrutiny: Broad exceptions (like NSAllowsArbitraryLoads = true) require explicit architectural justification during submission and can delay app approval.
+• Third-Party SDK Danger: A single misconfigured third-party advertising or analytics SDK using HTTP often tempts developers to disable ATS globally. Always audit SDK network traffic and push vendors for HTTPS endpoints.
+• Command-Line Diagnostic: Test any endpoint's ATS compliance directly from macOS terminal using: `nscurl --ats-diagnostics --verbose https://api.yourbank.com`. It tests every ATS rule individually and flags exact cipher/certificate failures.
+• Configuration Splitting: Never ship development ATS exceptions in production! Use build configurations (xcconfig / per-scheme Info.plist) to enable local networking in Debug while maintaining zero exceptions in Release.
+• Defense-in-Depth vs Pinning: ATS guarantees the connection is encrypted with a CA-trusted certificate; Certificate Pinning guarantees the server is genuinely YOUR server, protecting against compromised public CAs.
+
+One-liner: ATS is the iOS default that blocks non-HTTPS or weak connections, and the safe way to deal with it is to fix the server and keep any exception small and domain-specific.
+
+Memory trick: H-T-E → "HTTPS by default, TLS 1.2+ with strong ciphers, Exceptions small and per domain."
+
+#### 💻 Swift Code Example
+
+```swift
+// =========================================================================
+// 🔒 SENIOR INTERVIEW ARCHITECTURE: App Transport Security (ATS)
+// =========================================================================
+//
+// 💡 INTERVIEW TALKING POINTS (Staff/Senior Level):
+// • ATS enforces secure connections (TLS 1.2+, forward secrecy, strong ciphers).
+// • URLSession blocks non-compliant or plaintext HTTP requests before packets leave the device.
+// • Exceptions in Info.plist must follow the Principle of Least Privilege.
+
+// MARK: - 1. What a Blocked Request Looks Like
+// ⚠️ ATS blocks plain HTTP before any network data is transmitted.
+func demonstrateBlockedRequest() async {
+    let url = URL(string: "http://api.example.com/data")!
+    do {
+        let (data, _) = try await URLSession.shared.data(from: url)
+        print("Received: \(data.count) bytes")
+    } catch {
+        // Console error output:
+        // "The resource could not be loaded because the
+        //  App Transport Security policy requires the use of a secure connection."
+        print("❌ ATS Blocked Connection: \(error.localizedDescription)")
+    }
+}
+
+// MARK: - 2. The Right Fix: Secure HTTPS Endpoint
+// ✅ HTTPS with TLS 1.2+ and forward secrecy passes ATS natively with zero configuration.
+func demonstrateSecureRequest() async throws -> Data {
+    let url = URL(string: "https://api.example.com/data")!
+    let (data, response) = try await URLSession.shared.data(from: url)
+    guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+        throw URLError(.badServerResponse)
+    }
+    return data
+}
+
+/*
+// =========================================================================
+// 📄 INFO.PLIST EXCEPTION EXAMPLES (Principle of Least Privilege)
+// =========================================================================
+
+// MARK: - 3. Small Exception for a Single Legacy Domain
+// 💡 SENIOR TALKING POINT:
+// Never use global switches. Narrow down the exception strictly to the domain,
+// and disable subdomain inheritance unless strictly necessary.
+
+<key>NSAppTransportSecurity</key>
+<dict>
+    <key>NSExceptionDomains</key>
+    <dict>
+        <key>legacy.example.com</key>
+        <dict>
+            <!-- Allows plain HTTP only for this specific legacy endpoint -->
+            <key>NSExceptionAllowsInsecureHTTPLoads</key>
+            <true/>
+            <!-- Strict boundary: Do not apply to subdomains -->
+            <key>NSIncludesSubdomains</key>
+            <false/>
+        </dict>
+    </dict>
+</dict>
+
+// MARK: - 4. Local Network for Development & Simulator Testing
+// 💡 SENIOR TALKING POINT:
+// Allows connecting to http://localhost, http://192.168.x.x, or .local Bonjour names
+// without weakening ATS rules for any internet-facing domains.
+
+<key>NSAppTransportSecurity</key>
+<dict>
+    <key>NSAllowsLocalNetworking</key>
+    <true/>
+</dict>
+
+// MARK: - 5. Allow Older TLS or Relax Forward Secrecy for One Domain
+// 💡 SENIOR TALKING POINT:
+// Used only during migration when an old partner server does not support ECDHE (PFS).
+
+<key>NSAppTransportSecurity</key>
+<dict>
+    <key>NSExceptionDomains</key>
+    <dict>
+        <key>partner-old.example.com</key>
+        <dict>
+            <key>NSExceptionMinimumTLSVersion</key>
+            <string>TLSv1.2</string>
+            <!-- Relax Perfect Forward Secrecy (PFS) rule only for this domain -->
+            <key>NSExceptionRequiresForwardSecrecy</key>
+            <false/>
+        </dict>
+    </dict>
+</dict>
+
+// MARK: - 6. The Danger Setting to Avoid in Production
+// ⚠️ RED FLAG IN SENIOR INTERVIEWS:
+// NSAllowsArbitraryLoads turns off ATS for the ENTIRE app.
+// Apple App Review will flag this and require written justification before approval.
+
+<key>NSAppTransportSecurity</key>
+<dict>
+    <!-- ❌ NEVER SHIP THIS IN PRODUCTION BANKING APPS -->
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
+</dict>
+*/
+```
+
+---
+
+### `Q-80` — How do you protect data at rest?
+
+- **Category:** `Security, Auth & Compliance`
+
+> [!TIP]
+> **🗣️ Interview Pitch (Say it like this):**  
+> *"Secrets go in the Keychain, files get one of four protection levels, and I pick the strongest one that still lets my feature work."*
+
+#### 📖 Detailed Answer
+
+"Data at rest" means data saved on the phone's storage: files, databases, caches, and tokens. If someone gets the phone, or a backup, they could try to read it. iOS protects files with Data Protection. Every file is encrypted, and the key for each file is locked by the user's passcode. You choose when that key is available, and that choice is the protection level. This matters for any app that stores user documents, messages, health data, or a local database.
+
+Say it like this:
+
+"First, I decide what I am storing. Tokens, passwords, and keys go in the Keychain. Everything else goes in files or a database, and I give those files a protection level, based on when my app needs to read them.
+
+There are four levels. The strongest one makes the file readable only while the phone is unlocked. The next one lets a file I already opened stay readable after the phone locks, which is good for downloads and background writes. The third makes the file readable any time after the user unlocks the phone once after a restart, which is the default. The last one means no protection.
+
+I choose the strongest level that still lets my feature work. If background work needs the file while the phone is locked, I step down one level, but not to 'none'. For databases, I set the same level on the store. I also exclude cache files from backups, turn on the Data Protection capability in Xcode, and never write secrets to UserDefaults or plain files. If the data is very sensitive, I add my own encryption on top, using CryptoKit, with the key stored in the Keychain."
+
+The 4 levels of protection:
+
+1. Complete (.completeFileProtection)
+The file can be read only while the phone is unlocked. Use it for the most private data, like health or financial records.
+
+```swift
+let url = documentsURL.appendingPathComponent("health.json")   // where the file will be saved
+try data.write(to: url, options: .completeFileProtection)      // readable only while the phone is unlocked
+```
+
+2. Complete Unless Open (.completeFileProtectionUnlessOpen)
+A file you opened while unlocked stays readable even after the phone locks. New files can be created while locked. Use it for downloads or uploads that continue in the background.
+
+```swift
+let url = documentsURL.appendingPathComponent("download.zip")             // where the file will be saved
+try data.write(to: url, options: .completeFileProtectionUnlessOpen)       // a file already open stays usable after lock
+```
+
+3. Until First User Authentication (.completeFileProtectionUntilFirstUserAuthentication)
+The file is locked after a restart, until the user unlocks the phone for the first time. After that it stays readable, even when locked. This is the default level. Use it when background work needs the file, like sync or push handling.
+
+```swift
+let url = documentsURL.appendingPathComponent("messages.db")                           // where the file will be saved
+try data.write(to: url, options: .completeFileProtectionUntilFirstUserAuthentication)  // readable after the first unlock since restart
+```
+
+4. None (.noFileProtection)
+The file is not locked by the passcode at all. Use it only for non-sensitive data that must always be readable, like public content.
+
+```swift
+let url = cachesURL.appendingPathComponent("public-config.json")   // where the file will be saved
+try data.write(to: url, options: .noFileProtection)                // always readable, no protection from the passcode
+```
+
+Change the level of an existing file:
+
+```swift
+try FileManager.default.setAttributes(
+    [.protectionKey: FileProtectionType.complete],    // the new protection level
+    ofItemAtPath: url.path                            // the file that should change
+)
+```
+
+Database and Keychain follow the same idea:
+
+```swift
+// Core Data store: set the level on the store
+let description = NSPersistentStoreDescription()                              // describes where and how the store is saved
+description.setOption(FileProtectionType.complete as NSObject,                // use level 1 for the database file
+                      forKey: NSPersistentStoreFileProtectionKey)             // the key that controls protection
+
+// Keychain item: the same levels, with different names
+let query: [String: Any] = [
+    kSecClass as String: kSecClassGenericPassword,                            // a generic secret
+    kSecAttrAccount as String: "token",                                       // its name
+    kSecValueData as String: Data("secret".utf8),                             // the secret value
+    kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlockedThisDeviceOnly // like level 1, and never leaves this device
+]
+SecItemAdd(query as CFDictionary, nil)                                        // save it
+```
+
+Quick steps to remember:
+
+• Secrets: Keychain.
+• Files and databases: pick a protection level, strongest first.
+• Background work needs the file: step down to level 2 or 3, never to 4 for private data.
+• Very sensitive data: add your own encryption with CryptoKit, key in the Keychain.
+
+Good to mention:
+
+• Turn on the Data Protection capability in Xcode, so the entitlement is set.
+• Check UIApplication.protectedDataDidBecomeAvailableNotification and protectedDataWillBecomeUnavailableNotification to know when protected files become readable or locked.
+• Reading a level 1 file while the phone is locked fails, so background tasks must handle that error and retry later.
+• Mark cache and temporary files with isExcludedFromBackup, so they do not go into iCloud or computer backups.
+• Data Protection protects against someone who has the device but not the passcode. It does not protect against malware running inside your app on an unlocked phone.
+• Never store secrets in UserDefaults, Info.plist, or plain text files.
+
+One-liner: Secrets go in the Keychain, files get one of four protection levels, and I pick the strongest one that still lets my feature work.
+
+Memory trick: C-U-F-N → "Complete, Unless open, First unlock, None: strongest to weakest."
+
+#### 💻 Swift Code Example
+
+```swift
+// =========================================================================
+// 🛡️ SENIOR INTERVIEW ARCHITECTURE: Data Protection at Rest in iOS
+// =========================================================================
+//
+// 💡 INTERVIEW TALKING POINTS (Staff/Senior Level):
+// • Data Protection relies on hardware-backed AES-256 per-file encryption.
+// • Class keys are protected by the user's passcode and hardware UID.
+// • Match the protection level to the operational lifecycle (Interactive vs Background).
+
+import Foundation
+import UIKit
+import CoreData
+import Security
+
+// MARK: - 1. Complete (.completeFileProtection)
+// The file can be read only while the phone is unlocked. Use it for the most private data, like health or financial records.
+let healthURL = documentsURL.appendingPathComponent("health.json")   // where the file will be saved
+try data.write(to: healthURL, options: .completeFileProtection)      // readable only while the phone is unlocked
+
+// MARK: - 2. Complete Unless Open (.completeFileProtectionUnlessOpen)
+// A file you opened while unlocked stays readable even after the phone locks. New files can be created while locked.
+let downloadURL = documentsURL.appendingPathComponent("download.zip")             // where the file will be saved
+try data.write(to: downloadURL, options: .completeFileProtectionUnlessOpen)       // a file already open stays usable after lock
+
+// MARK: - 3. Until First User Authentication (.completeFileProtectionUntilFirstUserAuthentication)
+// The file is locked after a restart, until the user unlocks the phone for the first time. This is the default level.
+let messagesURL = documentsURL.appendingPathComponent("messages.db")                           // where the file will be saved
+try data.write(to: messagesURL, options: .completeFileProtectionUntilFirstUserAuthentication)  // readable after the first unlock since restart
+
+// MARK: - 4. None (.noFileProtection)
+// The file is not locked by the passcode at all. Use it only for non-sensitive data that must always be readable.
+let publicURL = cachesURL.appendingPathComponent("public-config.json")   // where the file will be saved
+try data.write(to: publicURL, options: .noFileProtection)                // always readable, no protection from the passcode
+
+// MARK: - 5. Change the Level of an Existing File
+try FileManager.default.setAttributes(
+    [.protectionKey: FileProtectionType.complete],    // the new protection level
+    ofItemAtPath: url.path                            // the file that should change
+)
+
+// MARK: - 6. Core Data Store Protection
+let description = NSPersistentStoreDescription()                              // describes where and how the store is saved
+description.setOption(FileProtectionType.complete as NSObject,                // use level 1 for the database file
+                      forKey: NSPersistentStoreFileProtectionKey)             // the key that controls protection
+
+// MARK: - 7. Keychain Item Accessibility Level
+let query: [String: Any] = [
+    kSecClass as String: kSecClassGenericPassword,                            // a generic secret
+    kSecAttrAccount as String: "token",                                       // its name
+    kSecValueData as String: Data("secret".utf8),                             // the secret value
+    kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlockedThisDeviceOnly // like level 1, and never leaves this device
+]
+SecItemAdd(query as CFDictionary, nil)                                        // save it
+
+// MARK: - 8. Excluding Caches from Backup
+var resourceValues = URLResourceValues()
+resourceValues.isExcludedFromBackup = true
+var mutableURL = url
+try mutableURL.setResourceValues(resourceValues)
+
+// MARK: - 9. Observing Protected Data Availability
+final class ProtectionObserver {
+    func setup() {
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.protectedDataDidBecomeAvailableNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            print("Protected data is now readable.")
+        }
+    }
+}
+```
+
+---
+
+### `Q-81` — Where do you store an AI API key for an iOS app?
+
+- **Category:** `Security, Auth & Compliance`
+
+> [!TIP]
+> **🗣️ Interview Pitch (Say it like this):**  
+> *"The AI key stays on my server, the app sends the prompt with the user's access token, and the server checks limits, calls the AI provider, and returns only the answer."*
+
+#### 📖 Detailed Answer
+
+An AI API key is a secret that is tied to your billing account. If someone steals it, they can send thousands of requests, and you pay the bill. It is the same case as a payment key, so it follows the same rule from Q44: anything inside the app can be extracted, so the key must not be in the app.
+
+The right approach is a backend proxy. Your own server holds the AI key. The app talks only to your server, and your server talks to the AI provider.
+
+Say it like this:
+
+"I never put the AI key in the app, not in the code, not in Info.plist, not in an xcconfig, and not in the Keychain. The Keychain protects data on a phone I trust, but an attacker can run my app on a jailbroken phone, or unzip it, and read what is shipped inside. So the key lives on my server, in the hosting platform's secret store.
+
+The app sends the user's prompt to my server, with the user's access token. The server checks the token, checks the user's usage limit, and then calls the AI provider with the real key. The provider replies to the server, and the server sends the answer back to the app. The app never sees the key.
+
+This also gives me control. On the server, I can limit how many requests each user can make, cap the prompt size, choose the model, log usage, and stop a user who abuses the service. If the key ever leaks, I rotate it on the server, and no app update is needed. For more protection, I add App Attest, so the server accepts requests only from a genuine copy of my app."
+
+The 6-step Backend Proxy Pattern:
+
+1. The app sends the prompt with the access token
+
+```swift
+struct AIRequest: Encodable {
+    let prompt: String                                            // the text the user typed
+}
+
+struct AIResponse: Decodable {
+    let answer: String                                            // the AI reply, sent back by my server
+}
+
+func askAI(prompt: String, accessToken: String) async throws -> String {
+    var request = URLRequest(url: URL(string: "https://api.myapp.com/ai/chat")!) // MY server, not the AI provider
+    request.httpMethod = "POST"                                   // we are sending data, so POST
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type") // the body is JSON
+    request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization") // proves which user is asking
+    request.httpBody = try JSONEncoder().encode(AIRequest(prompt: prompt)) // only the prompt, no AI key
+
+    let (data, response) = try await URLSession.shared.data(for: request) // send it and wait for the reply
+    guard (response as? HTTPURLResponse)?.statusCode == 200 else {        // stop if the server said no
+        throw URLError(.badServerResponse)                        // for example: 401 not logged in, 429 too many requests
+    }
+    return try JSONDecoder().decode(AIResponse.self, from: data).answer   // read the answer from the reply
+}
+```
+
+2. The server checks who is asking and how much they use
+
+```javascript
+// server.js (Node.js with Express)
+import express from "express";                                    // a small web server library
+
+const app = express();                                            // create the server
+app.use(express.json());                                          // read JSON request bodies
+
+app.post("/ai/chat", async (req, res) => {                        // the endpoint the app calls
+  const user = await verifyAccessToken(req.headers.authorization); // check the token, get the user (or null)
+  if (!user) return res.status(401).json({ error: "Unauthorized" }); // no valid token: stop here
+
+  const prompt = String(req.body.prompt || "").slice(0, 4000);    // cap the prompt size, so one request cannot be huge
+  if (!prompt) return res.status(400).json({ error: "Empty prompt" }); // reject empty prompts
+
+  const allowed = await checkAndCountUsage(user.id);              // each user has a daily limit
+  if (!allowed) return res.status(429).json({ error: "Daily limit reached" }); // too many requests: stop here
+```
+
+3. The server calls the AI provider with the secret key
+
+```javascript
+  const aiReply = await fetch("https://api.ai-provider.com/v1/chat", { // the AI provider's address
+    method: "POST",                                               // sending data, so POST
+    headers: {
+      "Content-Type": "application/json",                         // the body is JSON
+      "Authorization": `Bearer ${process.env.AI_API_KEY}`         // the secret key, read from the server's secret store
+    },
+    body: JSON.stringify({
+      model: "chosen-model-name",                                 // the server picks the model, not the app
+      max_tokens: 500,                                            // the server caps the cost of each answer
+      messages: [{ role: "user", content: prompt }]               // the user's prompt
+    })
+  });
+
+  if (!aiReply.ok) return res.status(502).json({ error: "AI service error" }); // the provider failed: tell the app politely
+  const result = await aiReply.json();                            // read the provider's reply
+```
+
+4. The server sends the answer back to the app
+
+```javascript
+  res.json({ answer: result.text });                              // send only the answer, never the key or raw provider data
+});
+
+app.listen(3000);                                                 // start listening for requests
+```
+
+5. Store the key in the server's secret store, not in the code
+
+```bash
+# Local development only: a .env file that is ignored by Git
+AI_API_KEY=sk-xxxxxxxx                                            # this stays on the developer's machine
+
+# Production: use the hosting platform's secret manager
+# Examples: AWS Secrets Manager, Google Secret Manager, or the host's environment variables
+# The code reads it with process.env.AI_API_KEY, so the key is never in the repo
+```
+
+6. Make sure the request comes from a genuine app (App Attest)
+
+```swift
+import DeviceCheck                                                // gives us App Attest
+import CryptoKit                                                  // gives us SHA256
+
+func signAIRequest(keyId: String, body: Data) async throws -> Data {
+    let hash = Data(SHA256.hash(data: body))                      // hash the request body about to be sent
+    return try await DCAppAttestService.shared.generateAssertion( // sign it with the key created in the Secure Enclave
+        keyId,                                                    // the key that was attested earlier (see Q41)
+        clientDataHash: hash                                      // ties the proof to this exact request
+    )
+}
+// The app sends this assertion in a header, and the server verifies it.
+// The server then knows the request comes from my real app on a real Apple device.
+```
+
+Quick steps to remember:
+
+1. App → server: send the prompt with the user's access token.
+2. Server checks: valid token, usage limit, prompt size.
+3. Server → AI provider: call with the secret key from the server's secret store.
+4. AI provider → server: the server receives the answer.
+5. Server → app: send back only the answer.
+6. Extra protection: App Attest, rate limits, and spending caps.
+
+Good to mention:
+
+• Never ship the key inside the app, even in the Keychain or obfuscated. A skilled attacker can still pull it out, and the bill is yours.
+• Set a spending cap and alerts in the AI provider's dashboard, so a bug or an abuser cannot create a huge bill.
+• Rate limit per user and per device, not only per IP address, because many users share one IP.
+• Let the server choose the model and the limits like max_tokens. If the app sends them, a modified app can ask for the most expensive option.
+• Streaming: for a chat that types out word by word, the server can stream the provider's reply to the app using Server-Sent Events, and the app reads it with URLSession.bytes(for:). The key still stays on the server.
+• Key rotation: if the key leaks, create a new one in the provider's dashboard and update the server's secret store. Apps keep working, with no new release.
+• Do not log the key, and be careful about logging full prompts, because they may contain private user data.
+• Exception: a provider that offers a key built for client apps, with strict limits and restrictions, can be used directly. Even then, check what damage a stolen key can do before choosing it.
+
+One-liner: The AI key stays on my server, the app sends the prompt with the user's access token, and the server checks limits, calls the AI provider, and returns only the answer.
+
+Memory trick: P-R-O-X-Y → "Proxy Relies On eXternal servers, not Your phone."
+
+#### 💻 Swift Code Example
+
+```swift
+// =========================================================================
+// 🛡️ SENIOR INTERVIEW ARCHITECTURE: AI API Key Security & Backend Proxy
+// =========================================================================
+//
+// 💡 INTERVIEW TALKING POINTS (Staff/Senior Level):
+// • Zero Trust on Client: Never ship paid or billing-tied API keys inside an iOS app.
+//   Strings extracted via `strings`, `hopper`, or decrypted IPAs expose your billing account.
+// • Backend Proxy Pattern: The iOS app communicates strictly with your proprietary backend
+//   using user authentication (OAuth JWT) and DeviceCheck/App Attest device assertions.
+// • Defense-in-Depth:
+//   1. Authentication: User access token verifies the identity of the caller.
+//   2. Device Integrity: App Attest verifies the binary is untampered and running on a real Apple device.
+//   3. Rate Limiting: Leaky bucket / sliding window limits per user ID and per device ID.
+//   4. Cost Capping: Server enforces max_tokens, allowed models, and strict prompt character lengths.
+//   5. Streaming UX: Server-Sent Events (SSE) proxy streaming via URLSession.bytes(for:) without exposing keys.
+
+import Foundation
+import DeviceCheck
+import CryptoKit
+
+// MARK: - 1. DTOs (Data Transfer Objects)
+
+struct ChatMessage: Codable {
+    let role: String    // "user", "assistant", "system"
+    let content: String
+}
+
+struct AIProxyRequest: Encodable {
+    let prompt: String
+    // 💡 Notice: model, temperature, and max_tokens are NOT sent by the client.
+    // The server controls all cost-governing parameters to prevent client-side price tampering.
+}
+
+struct AIProxyResponse: Decodable {
+    let answer: String
+    let tokensUsed: Int?
+}
+
+// MARK: - 2. Secure Mobile Client Service
+
+@MainActor
+final class AIService: ObservableObject {
+    private let session: URLSession
+    private let baseURL = URL(string: "https://api.myapp.com/v1/ai")!
+    
+    init(session: URLSession = .shared) {
+        self.session = session
+    }
+    
+    /// Sends a prompt to your secure backend proxy with User Auth and App Attest proof
+    func sendPrompt(
+        prompt: String,
+        userAccessToken: String,
+        attestKeyId: String? = nil
+    ) async throws -> String {
+        // 1. Sanitize prompt on client before sending
+        let sanitized = prompt.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !sanitized.isEmpty else {
+            throw AIServiceError.emptyPrompt
+        }
+        
+        let endpoint = baseURL.appendingPathComponent("chat")
+        var request = URLRequest(url: endpoint)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        // 💡 2. Authenticate the user (proves who is calling and ties billing/quota to user ID)
+        request.setValue("Bearer \(userAccessToken)", forHTTPHeaderField: "Authorization")
+        
+        let bodyPayload = try JSONEncoder().encode(AIProxyRequest(prompt: sanitized))
+        request.httpBody = bodyPayload
+        
+        // 💡 3. App Attest (DCAppAttestService): Hardware-bound proof that request comes from authentic app
+        if let keyId = attestKeyId, DCAppAttestService.shared.isSupported {
+            let clientDataHash = Data(SHA256.hash(data: bodyPayload))
+            let assertion = try await DCAppAttestService.shared.generateAssertion(keyId, clientDataHash: clientDataHash)
+            request.setValue(assertion.base64EncodedString(), forHTTPHeaderField: "X-App-Attest-Assertion")
+            request.setValue(keyId, forHTTPHeaderField: "X-App-Attest-Key-ID")
+        }
+        
+        // 4. Execute network request against YOUR proxy, never OpenAI / Anthropic / Gemini directly
+        let (data, response) = try await session.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw AIServiceError.networkError
+        }
+        
+        switch httpResponse.statusCode {
+        case 200:
+            let decoded = try JSONDecoder().decode(AIProxyResponse.self, from: data)
+            return decoded.answer
+        case 401:
+            throw AIServiceError.unauthorized          // Expired or invalid user token
+        case 429:
+            throw AIServiceError.rateLimitExceeded      // Daily quota reached or too rapid requests
+        case 502:
+            throw AIServiceError.upstreamAIProviderDown // Provider outage handled gracefully
+        default:
+            throw AIServiceError.serverError(statusCode: httpResponse.statusCode)
+        }
+    }
+    
+    /// Server-Sent Events (SSE) Streaming without exposing the upstream AI key
+    func streamPrompt(
+        prompt: String,
+        userAccessToken: String
+    ) -> AsyncThrowingStream<String, Error> {
+        AsyncThrowingStream { continuation in
+            let task = Task {
+                do {
+                    let endpoint = baseURL.appendingPathComponent("stream")
+                    var request = URLRequest(url: endpoint)
+                    request.httpMethod = "POST"
+                    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                    request.setValue("Bearer \(userAccessToken)", forHTTPHeaderField: "Authorization")
+                    request.httpBody = try JSONEncoder().encode(AIProxyRequest(prompt: prompt))
+                    
+                    // 💡 URLSession.bytes(for:) delivers chunks as they arrive from your proxy
+                    let (asyncBytes, response) = try await session.bytes(for: request)
+                    guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
+                        continuation.finish(throwing: AIServiceError.networkError)
+                        return
+                    }
+                    
+                    for try await line in asyncBytes.lines {
+                        // SSE protocol format: "data: <chunk_text>"
+                        if line.hasPrefix("data: ") {
+                            let textChunk = String(line.dropFirst(6))
+                            if textChunk == "[DONE]" {
+                                break
+                            }
+                            continuation.yield(textChunk)
+                        }
+                    }
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
+            continuation.onTermination = { _ in
+                task.cancel()
+            }
+        }
+    }
+}
+
+// MARK: - 3. Service Error Types
+
+enum AIServiceError: LocalizedError {
+    case emptyPrompt
+    case unauthorized
+    case rateLimitExceeded
+    case upstreamAIProviderDown
+    case networkError
+    case serverError(statusCode: Int)
+    
+    var errorDescription: String? {
+        switch self {
+        case .emptyPrompt: return "Prompt cannot be empty."
+        case .unauthorized: return "Session expired. Please log in again."
+        case .rateLimitExceeded: return "Daily AI quota exceeded. Please upgrade or try again tomorrow."
+        case .upstreamAIProviderDown: return "AI service is currently busy. Please try again shortly."
+        case .networkError: return "Network connection error."
+        case .serverError(let code): return "Server returned error code: \(code)."
+        }
+    }
+}
+```
+
+---
+
+
+## 🏛️ System Design & Mobile Architecture (Q-57 – Q-59)
+
+### `Q-57` — How do you load and cache images at scale?
 
 - **Category:** `System Design & Mobile Architecture`
 
@@ -5308,7 +6619,7 @@ extension ProductFeedViewController: UICollectionViewDataSourcePrefetching {
 
 ---
 
-### `Q-56` — System Design — Offline-First Feed & Bi-directional Synchronization
+### `Q-58` — System Design — Offline-First Feed & Bi-directional Synchronization
 
 - **Category:** `System Design & Mobile Architecture`
 
@@ -5408,11 +6719,295 @@ actor OfflineSyncEngine {
 
 ---
 
-## 🧪 Testing, CI/CD & AI Engineering (Q-57 – Q-64)
 
-> Unit and UI testing with XCTest, protocol mocking and stubbing, TDD/BDD, automated CI/CD pipelines, feature flagging, and hybrid cloud/on-device AI systems.
 
-### `Q-57` — Rehearse the AIAnalyzer walkthrough out loud — cloud/local/hybrid modes, confidence-based fallback
+---
+
+### `Q-59` — How does a payment process work in an e-commerce app like Amazon?
+
+- **Category:** `System Design & Mobile Architecture`
+
+> [!TIP]
+> **🗣️ Interview Pitch (Say it like this):**  
+> *"E-commerce payment is a distributed workflow across the iOS app, backend server, payment gateway, acquiring bank, card network, and issuing bank—where the client initiates Apple Pay or tokenization, the backend enforces idempotency and order state transitions, and sensitive card data never touches merchant infrastructure."*
+
+#### 📖 Detailed Answer
+
+In an iOS e-commerce app like Amazon, the checkout and payment process involves the iOS app, backend server, payment gateway, card network, and banks working together.
+
+Let's understand it step by step:
+
+1. Checkout: The user adds products to the cart and proceeds to checkout. The iOS app sends the cart details and delivery address to the backend server.
+
+2. Order creation: The backend validates the products, checks inventory, calculates the final price, including taxes and shipping, and creates a pending order.
+
+3. Payment initiation: The user selects a payment method, such as a credit card, Apple Pay, or Google Pay. For a digital wallet, the wallet authenticates the user and generates a secure payment token.
+
+4. Payment processing: The iOS app sends the payment token to the backend over a secure API. The backend communicates with the payment gateway, which forwards the authorization request through the acquiring bank and card network to the customer's issuing bank.
+
+5. Authorization: The issuing bank checks the available funds, card validity, and potential fraud. It then approves or declines the transaction. The result travels back through the payment network to the payment gateway and backend.
+
+6. Order confirmation: If the payment is successful, the backend verifies the payment result, updates the order status, and confirms the order. The iOS app displays the confirmation to the user. If the payment fails, the app displays an appropriate error and allows the user to retry.
+
+The flow diagram:
+
+![Payment Process Flow Diagram](Resources/payment_process_flow_diagram.png)
+
+```
+ Customer       Wallet (Apple Pay)        Your App             Your Server         Payment Gateway        Acquiring Bank        Card Network        Issuing Bank
+    |                   |                     |                     |                     |                     |                     |                  |
+    | 1. Pays via wallet|                     |                     |                     |                     |                     |                  |
+    |------------------>|                     |                     |                     |                     |                     |                  |
+    |                   | 2. Returns token    |                     |                     |                     |                     |                  |
+    |                   |-------------------->|                     |                     |                     |                     |                  |
+    |                   |                     | 3. Token + order    |                     |                     |                     |                  |
+    |                   |                     |-------------------->|                     |                     |                     |                  |
+    |                   |                     |                     | 4. Charge request   |                     |                     |                  |
+    |                   |                     |                     |-------------------->|                     |                     |                  |
+    |                   |                     |                     |                     | 5. Authorization req|                     |                  |
+    |                   |                     |                     |                     |-------------------->|                     |                  |
+    |                   |                     |                     |                     |                     | 6. Sends to network |                  |
+    |                   |                     |                     |                     |                     |-------------------->|                  |
+    |                   |                     |                     |                     |                     |                     | 7. Routes to bank|
+    |                   |                     |                     |                     |                     |                     |----------------->|
+    |                   |                     |                     |                     |                     |                     |                  | 8. Approves/Declines
+    |<===================================================================================================================================================|
+    | 9. Payment result displayed in iOS app                                                                                                             |
+```
+
+The 8 Core Participants & Their Roles:
+• Customer: Approves the payment and authorizes charges using biometric auth (Face ID / Touch ID).
+• Wallet (Apple Pay / PassKit): Holds the card in the device Secure Element, validates the user biometrically, and generates a single-use payment token / cryptogram.
+• Your App (iOS Client): Presents checkout screens, collects shipping preferences, triggers Apple Pay via PassKit, and relays the token and idempotency key to your backend.
+• Your Server (Backend): Validates cart items, verifies pricing/taxes, manages the order lifecycle state machine, generates idempotency keys, and coordinates with the payment gateway.
+• Payment Gateway (Stripe, Adyen, Razorpay): Decrypts the payment token, issues charges, integrates with banking networks, and returns transaction results.
+• Acquiring Bank (Merchant's Bank): Accepts the processed payment and receives the funds on behalf of the store/merchant.
+• Card Network (Visa, Mastercard, RuPay, Amex): Routes authorization requests and settlement funds between acquiring and issuing banks.
+• Issuing Bank (Customer's Bank): Holds customer funds, checks available balance, performs fraud and 3D Secure risk scoring, and approves or declines the transaction.
+
+The most important architectural concepts:
+
+1. Client-Side Zero-Trust & PCI-DSS Scope Reduction (SAQ A):
+   The iOS app must NEVER directly handle sensitive card details (Primary Account Numbers, CVVs, or expiration dates) or make the final decision about whether a payment succeeded. By using Apple Pay (PassKit) or Payment Gateway SDKs (Stripe/Adyen Elements), raw card data never touches your app's memory or merchant servers. This keeps the application in the minimal PCI-DSS compliance scope (SAQ A).
+
+2. Idempotency Key Pattern:
+   Network failures are inevitable. If a customer taps 'Pay' on an unstable cellular connection, the request might charge the customer but disconnect before returning the HTTP response. The iOS app generates a unique UUID (Idempotency Key) per checkout session. If the user retries or URLSession automatically retransmits, the backend recognizes the idempotency key and returns the original transaction state without double-charging.
+
+3. Two-Phase Payments (Authorize vs. Capture):
+   In e-commerce apps selling physical goods (like Amazon), payments are split into two distinct phases:
+   • Authorization: Placed when checkout completes. Holds/reserves the funds on the customer's card without transferring money.
+   • Capture: Executed only when physical goods are packaged and dispatched from the fulfillment warehouse. If an item is canceled before shipping, the hold is voided with zero processing fees.
+
+4. Asynchronous Webhooks as Source of Truth:
+   Never rely solely on the synchronous client-side API response to finalize an order. If the user force-quits the app or loses signal immediately after approving Face ID, the client may never receive the confirmation. The backend must listen to authenticated payment gateway webhooks (e.g. `payment_intent.succeeded`) to transition the order to Confirmed and trigger fulfillment.
+
+Quick steps to remember:
+1. Cart & Order: App sends cart to server; server validates inventory and creates Pending order.
+2. Tokenize: App requests Apple Pay; Secure Element validates Face ID and yields single-use token.
+3. Server Submission: App sends token + Idempotency-Key header to backend.
+4. Gateway & Routing: Server requests authorization from Payment Gateway; gateway calls Acquiring Bank.
+5. Bank Approval: Card network routes to Issuing Bank; Issuing Bank checks funds and approves.
+6. Confirmation & Capture: Server updates order state to Confirmed; app displays success; warehouse captures funds upon shipping.
+
+Good to mention (Staff-Level Interview Points):
+• 3D Secure 2.0 (SCA / PSD2): Under European Strong Customer Authentication rules, payment gateways can trigger a frictionless 3DS challenge. Apple Pay inherently satisfies 2-factor SCA out of the box because device ownership + biometrics represent knowledge/inherence.
+• Network Tokenization vs PSP Tokenization: Apple Pay uses EMV payment tokens (DPAN) generated by card networks, which do not change when a physical card is reissued due to expiry or loss.
+• Replay Attack Prevention: Apple Pay payment tokens contain a transaction-specific cryptogram signed by the Secure Element. A compromised or intercepted token cannot be replayed for another transaction or merchant.
+
+One-liner: The iOS app handles UI and tokenizes via Apple Pay, the backend enforces idempotency and order state transitions, and the payment gateway coordinates banking authorization without sensitive card data ever touching merchant servers.
+
+Memory trick: C-T-I-G-B-C → "Cart validated, Tokenized by wallet, Idempotency sent to server, Gateway routes, Bank authorizes, Confirm and Capture."
+
+#### 💻 Swift Code Example
+
+```swift
+// =========================================================================
+// 💳 SENIOR INTERVIEW ARCHITECTURE: E-Commerce Payment Flow & Apple Pay
+// =========================================================================
+//
+// 💡 SENIOR / STAFF INTERVIEW TALKING POINTS:
+// • PCI-DSS Scope Reduction (SAQ A): The iOS app never captures or stores raw card
+//   numbers (PAN) or CVVs. Apple Pay (PassKit) uses the device Secure Element to
+//   produce a device-specific cryptogram (DPAN) and dynamic one-time security code.
+// • Idempotency Pattern: Network retries must NEVER cause duplicate billing. Every checkout
+//   payload carries a unique client-generated UUID in the `Idempotency-Key` header.
+// • Authorize vs. Capture: Physical e-commerce apps (like Amazon) authorize funds at checkout
+//   and capture them only upon warehouse dispatch.
+// • Order State Machine: Decouple client UI state from backend order lifecycle.
+
+import Foundation
+import PassKit
+
+// MARK: - 1. Domain Models & Order State Machine
+
+enum OrderStatus: String, Codable {
+    case draft
+    case pendingPayment = "pending_payment"
+    case authorized
+    case captured
+    case failed
+}
+
+struct CheckoutOrder: Codable, Identifiable {
+    let id: String
+    let itemsTotal: Decimal
+    let tax: Decimal
+    let shipping: Decimal
+    let grandTotal: Decimal
+    let currencyCode: String
+    var status: OrderStatus
+}
+
+// MARK: - 2. Apple Pay Coordinator (PassKit Integration)
+
+@MainActor
+final class ApplePayManager: NSObject, ObservableObject {
+    private var paymentCompletion: ((PKPaymentAuthorizationResult) -> Void)?
+    private var pendingTokenHandler: ((PKPaymentToken) async throws -> Bool)?
+    
+    // Check if the user has enrolled payment cards supporting our accepted networks
+    var canMakePayments: Bool {
+        let supportedNetworks: [PKPaymentNetwork] = [.visa, .masterCard, .amex]
+        return PKPaymentAuthorizationController.canMakePayments(usingNetworks: supportedNetworks)
+    }
+    
+    // Present the native Apple Pay sheet
+    func initiateApplePay(
+        for order: CheckoutOrder,
+        onTokenReceived: @escaping (PKPaymentToken) async throws -> Bool
+    ) async throws -> Bool {
+        guard canMakePayments else {
+            throw PaymentError.applePayNotAvailable
+        }
+        
+        self.pendingTokenHandler = onTokenReceived
+        
+        // 1. Build payment request matching merchant ID and currency
+        let request = PKPaymentRequest()
+        request.merchantIdentifier = "merchant.com.citi.ecommerce"
+        request.countryCode = "US"
+        request.currencyCode = order.currencyCode
+        request.supportedNetworks = [.visa, .masterCard, .amex]
+        request.merchantCapabilities = .threeDSecure // Enforce 3D Secure / EMV chip cryptograms
+        
+        // 2. Summary items displayed on Apple Pay sheet
+        request.paymentSummaryItems = [
+            PKPaymentSummaryItem(label: "Items Subtotal", amount: NSDecimalNumber(decimal: order.itemsTotal)),
+            PKPaymentSummaryItem(label: "Estimated Tax", amount: NSDecimalNumber(decimal: order.tax)),
+            PKPaymentSummaryItem(label: "Shipping", amount: NSDecimalNumber(decimal: order.shipping)),
+            PKPaymentSummaryItem(label: "Amazon Store", amount: NSDecimalNumber(decimal: order.grandTotal), type: .final)
+        ]
+        
+        // 3. Present sheet via PKPaymentAuthorizationController
+        let controller = PKPaymentAuthorizationController(paymentRequest: request)
+        controller.delegate = self
+        
+        let presented = await controller.present()
+        guard presented else {
+            throw PaymentError.presentationFailed
+        }
+        
+        return true
+    }
+}
+
+// MARK: - 3. PKPaymentAuthorizationControllerDelegate
+
+extension ApplePayManager: PKPaymentAuthorizationControllerDelegate {
+    
+    // Called when the user authorizes payment with Face ID / Touch ID
+    nonisolated func paymentAuthorizationController(
+        _ controller: PKPaymentAuthorizationController,
+        didAuthorizePayment payment: PKPayment,
+        handler completion: @escaping (PKPaymentAuthorizationResult) -> Void
+    ) {
+        Task { @MainActor in
+            do {
+                // Pass single-use payment token to backend with idempotency key
+                guard let tokenHandler = self.pendingTokenHandler else {
+                    completion(PKPaymentAuthorizationResult(status: .failure, errors: nil))
+                    return
+                }
+                
+                let success = try await tokenHandler(payment.token)
+                if success {
+                    completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
+                } else {
+                    completion(PKPaymentAuthorizationResult(status: .failure, errors: nil))
+                }
+            } catch {
+                completion(PKPaymentAuthorizationResult(status: .failure, errors: [error]))
+            }
+        }
+    }
+    
+    // Called when the payment sheet is dismissed
+    nonisolated func paymentAuthorizationControllerDidFinish(_ controller: PKPaymentAuthorizationController) {
+        controller.dismiss()
+    }
+}
+
+// MARK: - 4. Payment Network Service (Client-to-Backend Orchestration)
+
+final class PaymentNetworkService {
+    private let session: URLSession
+    
+    init(session: URLSession = .shared) {
+        self.session = session
+    }
+    
+    /// Sends the single-use token to backend server with an Idempotency-Key
+    func processPayment(
+        orderID: String,
+        token: PKPaymentToken,
+        idempotencyKey: UUID = UUID()
+    ) async throws -> CheckoutOrder {
+        guard let url = URL(string: "https://api.amazon-store.com/v1/orders/\(orderID)/pay") else {
+            throw PaymentError.invalidURL
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        // 💡 SENIOR TALKING POINT: Idempotency Key guarantees safe retries
+        request.setValue(idempotencyKey.uuidString, forHTTPHeaderField: "Idempotency-Key")
+        
+        // Serialize token payload (contains encrypted payment cryptogram from Secure Element)
+        let tokenDataString = paymentTokenString(from: token)
+        let body: [String: Any] = [
+            "paymentMethod": "apple_pay",
+            "paymentData": tokenDataString
+        ]
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        
+        let (data, response) = try await session.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+            throw PaymentError.serverDeclined
+        }
+        
+        return try JSONDecoder().decode(CheckoutOrder.self, from: data)
+    }
+    
+    private func paymentTokenString(from token: PKPaymentToken) -> String {
+        return token.paymentData.base64EncodedString()
+    }
+}
+
+enum PaymentError: LocalizedError {
+    case applePayNotAvailable
+    case presentationFailed
+    case invalidURL
+    case serverDeclined
+}
+```
+
+
+---
+
+## 🧪 Testing, CI/CD & AI Engineering (Q-60 – Q-68)
+
+### `Q-60` — Rehearse the AIAnalyzer walkthrough out loud — cloud/local/hybrid modes, confidence-based fallback
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -5465,7 +7060,7 @@ class HybridAIAnalyzer {
 
 ---
 
-### `Q-58` — Why did you choose Gemini for cloud and Ollama/Qwen for local?
+### `Q-61` — Why did you choose Gemini for cloud and Ollama/Qwen for local?
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -5522,7 +7117,7 @@ struct GeminiProvider: LLMProvider {
 
 ---
 
-### `Q-59` — How do you validate AI-generated code before merging?
+### `Q-62` — How do you validate AI-generated code before merging?
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -5581,7 +7176,7 @@ final class AIGeneratedServiceTests: XCTestCase {
 
 ---
 
-### `Q-60` — How building your own AI tool changed how you use Copilot/Cursor day to day
+### `Q-63` — How building your own AI tool changed how you use Copilot/Cursor day to day
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -5636,7 +7231,7 @@ After building my own tool: I use Cursor as a reasoning partner. The specific ch
 
 ---
 
-### `Q-61` — TDD vs BDD — the actual difference
+### `Q-64` — TDD vs BDD — the actual difference
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -5709,7 +7304,7 @@ class BankAccountSpec: QuickSpec {
 
 ---
 
-### `Q-62` — XCTest — writing unit tests and UI tests, mocking and stubbing
+### `Q-65` — XCTest — writing unit tests and UI tests, mocking and stubbing
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -5792,7 +7387,247 @@ final class LoginUITests: XCTestCase {
 
 ---
 
-### `Q-63` — CI/CD pipelines for iOS — what goes into one
+
+---
+
+### `Q-66` — How do you write code that is easy to test?
+
+- **Category:** `Testing, CI/CD & AI Engineering`
+
+> [!TIP]
+> **🗣️ Interview Pitch (Say it like this):**  
+> *"Writing testable code relies on four habits: constructor dependency injection over singletons, protocol abstractions at external boundaries, injecting deterministic time and UUID generators, and encapsulating business logic in side-effect-free pure functions."*
+
+#### 📖 Detailed Answer
+
+Code is hard to test when it reaches out to things a test cannot control: the real network, the clock, a database, or a singleton. A test then needs internet, and it gives a different result on each run. So the idea is to give the code its dependencies from outside, so a test can swap in a fake one. This matters most in ViewModels, services, and business rules.
+
+Say it like this:
+
+"I follow four habits.
+
+First, I inject dependencies. The ViewModel receives its service in the initializer, and I avoid singletons like APIClient.shared inside logic, because a test cannot replace them.
+
+Second, I depend on protocols at real boundaries, like the network, the database, and the Keychain. The app passes the real type, and the test passes a small fake that returns success or an error, whatever I choose.
+
+Third, I control time and randomness. If code calls Date() or UUID() directly, the result changes on every run, so I pass them in.
+
+Fourth, I keep business rules in pure functions and keep views thin. A pure function gives the same output for the same input, so it needs no setup.
+
+If a test needs a lot of setup, I change the design, not the test."
+
+1. Inject a protocol instead of using a singleton
+
+```swift
+protocol UserService {                                    // describes only what the ViewModel needs
+    func fetchUser() async throws -> User                 // one method, easy to fake
+}
+
+init(service: UserService) {                              // the dependency comes from outside
+    self.service = service                                // store it, the real app passes the real one
+}
+```
+
+2. A tiny mock for the test
+
+```swift
+struct MockUserService: UserService {                     // a fake that conforms to the same protocol
+    var result: Result<User, Error>                       // the test chooses success or failure
+
+    func fetchUser() async throws -> User {               // same signature as the real service
+        try result.get()                                  // return the user, or throw the error
+    }
+}
+```
+
+3. Control time and IDs
+
+```swift
+init(now: @escaping () -> Date = Date.init,               // the real app uses the real clock by default
+     makeID: @escaping () -> UUID = UUID.init) {          // the real app uses real IDs by default
+    self.now = now                                        // store the clock function
+    self.makeID = makeID                                  // store the ID function, a test passes fixed values
+}
+```
+
+4. Pure function for a business rule
+
+```swift
+func discountedTotal(subtotal: Decimal, percentOff: Decimal) -> Decimal {
+    max(subtotal - subtotal * percentOff / 100, 0)        // depends only on inputs, never goes below zero
+}
+```
+
+5. One test shows the result
+
+```swift
+func test_load_failure_setsError() async {
+    let service = MockUserService(result: .failure(URLError(.notConnectedToInternet))) // a fake that fails
+    let viewModel = ProfileViewModel(service: service)    // inject the fake
+    await viewModel.load()                                // wait for the work, no sleep needed
+    XCTAssertEqual(viewModel.errorMessage, "Could not load profile") // check the visible state
+}
+```
+
+Quick steps to remember:
+• Inject dependencies through the initializer.
+• Protocols only at real boundaries.
+• Control time and randomness by passing them in.
+• Pure functions for rules, thin views for display.
+
+Good to mention:
+• Default parameter values keep production code clean, and tests override them.
+• Test behavior, such as visible state, and not private methods.
+• Do not mock everything. Fake only the boundaries.
+• Never use sleep in tests. Use await, or an injected clock.
+• Avoid global state, because it leaks between tests.
+
+One-liner: Inject dependencies through protocols, control time and randomness, and keep logic in pure functions, so tests are fast and predictable.
+
+Memory trick: I-P-C-S → "Inject, Protocols at boundaries, Control time, Separate logic from UI."
+
+#### 💻 Swift Code Example
+
+```swift
+// =========================================================================
+// 🧪 SENIOR INTERVIEW ARCHITECTURE: Writing Testable iOS Code
+// =========================================================================
+//
+// 💡 SENIOR / STAFF INTERVIEW TALKING POINTS:
+// • Dependency Injection at Boundaries: Inject protocols into initializers rather than
+//   accessing singletons (like URLSession.shared or APIClient.shared) inside logic.
+// • Controlling Non-Determinism (Time & Randomness): Never call `Date()` or `UUID()` directly
+//   inside business logic. Pass closures with default arguments (`now: @escaping () -> Date = Date.init`).
+// • Pure Functions for Business Logic: Extract calculation algorithms into pure functions
+//   (same input -> same output, no side effects) requiring zero mocks or setup.
+// • State Verification over Mock Verification: Assert on observable state (ViewModel properties)
+//   rather than asserting on private implementation details.
+// • Flaky Test Elimination: Never use `Thread.sleep` or hardcoded delays in tests. Use Swift
+//   concurrency `await` or injected deterministic clocks.
+
+import Foundation
+import XCTest
+
+// MARK: - 1. Domain Models
+struct User: Codable, Equatable {
+    let id: UUID
+    let name: String
+    let isPremium: Bool
+}
+
+// MARK: - 2. Protocol Boundaries (The Dependency)
+protocol UserService {
+    func fetchUser() async throws -> User
+}
+
+// MARK: - 3. Testable ViewModel (Dependency Injection & Deterministic Time/ID)
+@MainActor
+final class ProfileViewModel: ObservableObject {
+    @Published private(set) var user: User?
+    @Published private(set) var errorMessage: String?
+    @Published private(set) var lastUpdated: Date?
+    
+    private let service: UserService
+    private let now: () -> Date
+    private let makeID: () -> UUID
+    
+    // 💡 Default parameter values keep production call sites clean: ProfileViewModel(service: RealService())
+    // while unit tests can override every dependency deterministically.
+    init(
+        service: UserService,
+        now: @escaping () -> Date = Date.init,
+        makeID: @escaping () -> UUID = UUID.init
+    ) {
+        self.service = service
+        self.now = now
+        self.makeID = makeID
+    }
+    
+    func load() async {
+        do {
+            let fetchedUser = try await service.fetchUser()
+            self.user = fetchedUser
+            self.lastUpdated = now()
+            self.errorMessage = nil
+        } catch {
+            self.errorMessage = "Could not load profile"
+        }
+    }
+    
+    // 💡 Pure Function: Zero side-effects, 100% deterministic, trivially testable
+    func discountedTotal(subtotal: Decimal, percentOff: Decimal) -> Decimal {
+        max(subtotal - (subtotal * percentOff / 100), 0)
+    }
+}
+
+// MARK: - 4. Lightweight Test Fake (Mock)
+struct MockUserService: UserService {
+    var result: Result<User, Error>
+    
+    func fetchUser() async throws -> User {
+        try result.get()
+    }
+}
+
+// MARK: - 5. Unit Tests (Fast, Deterministic, Zero Network)
+final class ProfileViewModelTests: XCTestCase {
+    
+    func test_load_success_populatesUserAndTimestamp() async {
+        // Arrange: fixed deterministic time and mock user
+        let fixedDate = Date(timeIntervalSince1970: 1700000000)
+        let expectedUser = User(id: UUID(), name: "Jane Doe", isPremium: true)
+        let mockService = MockUserService(result: .success(expectedUser))
+        
+        let viewModel = await ProfileViewModel(
+            service: mockService,
+            now: { fixedDate }
+        )
+        
+        // Act
+        await viewModel.load()
+        
+        // Assert: verify observable public state
+        let loadedUser = await viewModel.user
+        let loadedDate = await viewModel.lastUpdated
+        let error = await viewModel.errorMessage
+        
+        XCTAssertEqual(loadedUser, expectedUser)
+        XCTAssertEqual(loadedDate, fixedDate)
+        XCTAssertNil(error)
+    }
+    
+    func test_load_failure_setsError() async {
+        // Arrange: inject network failure mock
+        let mockService = MockUserService(result: .failure(URLError(.notConnectedToInternet)))
+        let viewModel = await ProfileViewModel(service: mockService)
+        
+        // Act
+        await viewModel.load()
+        
+        // Assert: verify error banner message
+        let error = await viewModel.errorMessage
+        let loadedUser = await viewModel.user
+        
+        XCTAssertEqual(error, "Could not load profile")
+        XCTAssertNil(loadedUser)
+    }
+    
+    func test_discountedTotal_calculatesAccuratelyAndNeverNegative() async {
+        let viewModel = await ProfileViewModel(service: MockUserService(result: .failure(URLError(.cancelled))))
+        
+        let standard = await viewModel.discountedTotal(subtotal: 100, percentOff: 20)
+        let excessive = await viewModel.discountedTotal(subtotal: 50, percentOff: 120)
+        
+        XCTAssertEqual(standard, 80)
+        XCTAssertEqual(excessive, 0)
+    }
+}
+```
+
+
+---
+
+### `Q-67` — CI/CD pipelines for iOS — what goes into one
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -5863,7 +7698,7 @@ Key interview talking point: A CI pipeline that takes 45 minutes is one nobody w
 
 ---
 
-### `Q-64` — Feature flagging, A/B testing, and remote configuration
+### `Q-68` — Feature flagging, A/B testing, and remote configuration
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -5932,11 +7767,10 @@ struct TransferView: View {
 
 ---
 
-## 👔 Engineering Leadership & Operations (Q-65 – Q-66)
 
-> Production incident triage, crash log analysis & dSYM symbolication, Crashlytics velocity alerts, MetricKit crash loops, blameless post-mortems, and migrating legacy monoliths using the Strangler Fig pattern.
+## 👔 Engineering Leadership & Operations (Q-69 – Q-70)
 
-### `Q-65` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
+### `Q-69` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -6001,7 +7835,7 @@ final class ModernAccountService: AccountServiceProtocol {
 
 ---
 
-### `Q-66` — How do you read a crash log? How do you symbolicate it?
+### `Q-70` — How do you read a crash log? How do you symbolicate it?
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -6198,11 +8032,10 @@ final class BreadcrumbTracker {
 
 ---
 
-## 🧠 Memory Management (Q-67 – Q-74)
 
-> ARC strong/weak/unowned, retain cycles, stack vs heap, Copy-on-Write internals, memory warnings, the Swift runtime side table, Jetsam OOM survival, and production memory profiling with Instruments and MetricKit.
+## 🧠 Memory Management (Q-71 – Q-78)
 
-### `Q-67` — How does ARC work? What is the difference between strong, weak, and unowned?
+### `Q-71` — How does ARC work? What is the difference between strong, weak, and unowned?
 
 - **Category:** `Memory Management`
 
@@ -6262,7 +8095,7 @@ class RequestManager {
 
 ---
 
-### `Q-68` — What is a retain cycle? How do you detect and fix them?
+### `Q-72` — What is a retain cycle? How do you detect and fix them?
 
 - **Category:** `Memory Management`
 
@@ -6337,7 +8170,7 @@ func testNoRetainCycle() {
 
 ---
 
-### `Q-69` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
+### `Q-73` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
 
 - **Category:** `Memory Management`
 
@@ -6395,7 +8228,7 @@ struct LargeModel: Describable {
 
 ---
 
-### `Q-70` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
+### `Q-74` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
 
 - **Category:** `Memory Management`
 
@@ -6463,7 +8296,7 @@ print(s2.value)    // "world"
 
 ---
 
-### `Q-71` — How do you handle memory warnings?
+### `Q-75` — How do you handle memory warnings?
 
 - **Category:** `Memory Management`
 
@@ -6633,7 +8466,7 @@ func downsample(url: URL, maxPixel: CGFloat) -> UIImage? {
 
 ---
 
-### `Q-72` — What is the Swift runtime side table? How do weak references work under the hood?
+### `Q-76` — What is the Swift runtime side table? How do weak references work under the hood?
 
 - **Category:** `Memory Management`
 
@@ -6698,7 +8531,7 @@ print(observer?.id ?? "nil")  // "nil"
 
 ---
 
-### `Q-73` — How does Jetsam work? What strategies do you use to survive memory pressure?
+### `Q-77` — How does Jetsam work? What strategies do you use to survive memory pressure?
 
 - **Category:** `Memory Management`
 
@@ -6785,7 +8618,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MXMetricManagerSubscriber
 
 ---
 
-### `Q-74` — How do you profile and debug memory issues in a production iOS app?
+### `Q-78` — How do you profile and debug memory issues in a production iOS app?
 
 - **Category:** `Memory Management`
 
@@ -6859,3 +8692,4 @@ final class FeedViewModelMemoryTests: XCTestCase {
 ```
 
 ---
+

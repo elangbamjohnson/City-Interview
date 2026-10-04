@@ -87,8 +87,8 @@
       "folder": "Architecture/RepositoryPattern",
       "summary": "Single source of truth abstraction between local databases (Core Data/SQLite) and remote REST/GraphQL APIs.",
       "relatedQuestions": [
-        "Q-49",
-        "Q-23"
+        "Q-23",
+        "Q-51"
       ],
       "rawContent": "# Repository Pattern — Interview Talking Points\n\nA quick reference for separating data access logic from ViewModels using the Repository Pattern.\n\n## 1. Core Concepts\n- **Abstraction Layer:** The repository acts as a middleman between the data source (API, CoreData, Cache) and the rest of the application (ViewModel).\n- **Loose Coupling:** The ViewModel has no idea *where* the data comes from, making it totally decoupled from specific frameworks like `URLSession` or `Realm`.\n- **Dependency Inversion (SOLID):** High-level modules (ViewModels) depend on abstractions (Protocols) rather than concrete implementations (API classes).\n- **Testability via Mocking:** Because the ViewModel relies on a Protocol, you can easily inject a `MockProductRepository` during XCTest to return fake data instantly without hitting a real network.\n- **Single Source of Truth:** It centralizes complex data logic (like checking the local cache before falling back to the network API).\n\n## 2. Common Interview Questions\n- **Q: How would you switch your app from URLSession to Firebase?**\n  - A: I would create a new Firebase class conforming to the Repository Protocol and inject it into the ViewModel. The ViewModel remains 100% untouched.\n- **Q: Why mock the repository in Unit Tests?**\n  - A: Real network calls are slow, flaky, and require internet. Mocks make tests fast and deterministic.\n- **Q: How do you handle errors in a mocked repository test?**\n  - A: I configure the mock to deliberately throw an error (e.g. `mock.shouldThrowError = true`) and assert that the ViewModel handles the error state correctly.\n- **Q: Should a Repository return Domain Models or Data Transfer Objects (DTOs)?**\n  - A: A Repository should return clean Domain Models to the ViewModel, handling the mapping from raw API DTOs internally.\n\n## 3. Quick Self-Check\n- [ ] Can I explain how the Repository Pattern satisfies the Dependency Inversion Principle?\n- [ ] Can I write a Mock Repository that returns static array data?\n- [ ] Can I articulate why a ViewModel should never import `URLSession`?\n- [ ] Can I explain the concept of a \"Single Source of Truth\" in data fetching?\n",
       "htmlContent": "<h1 id=\"repository-pattern-interview-talking-points\" class=\"doc-heading doc-h1\">Repository Pattern — Interview Talking Points</h1>\n<p class=\"doc-paragraph\">A quick reference for separating data access logic from ViewModels using the Repository Pattern.</p>\n<h2 id=\"1-core-concepts\" class=\"doc-heading doc-h2\">1. Core Concepts</h2>\n<ul class=\"doc-list\"><li><strong>Abstraction Layer:</strong> The repository acts as a middleman between the data source (API, CoreData, Cache) and the rest of the application (ViewModel).</li><li><strong>Loose Coupling:</strong> The ViewModel has no idea <em>where</em> the data comes from, making it totally decoupled from specific frameworks like <code>URLSession</code> or <code>Realm</code>.</li><li><strong>Dependency Inversion (SOLID):</strong> High-level modules (ViewModels) depend on abstractions (Protocols) rather than concrete implementations (API classes).</li><li><strong>Testability via Mocking:</strong> Because the ViewModel relies on a Protocol, you can easily inject a <code>MockProductRepository</code> during XCTest to return fake data instantly without hitting a real network.</li><li><strong>Single Source of Truth:</strong> It centralizes complex data logic (like checking the local cache before falling back to the network API).</li></ul>\n<h2 id=\"2-common-interview-questions\" class=\"doc-heading doc-h2\">2. Common Interview Questions</h2>\n<ul class=\"doc-list\"><li><strong>Q: How would you switch your app from URLSession to Firebase?</strong></li><li>A: I would create a new Firebase class conforming to the Repository Protocol and inject it into the ViewModel. The ViewModel remains 100% untouched.</li><li><strong>Q: Why mock the repository in Unit Tests?</strong></li><li>A: Real network calls are slow, flaky, and require internet. Mocks make tests fast and deterministic.</li><li><strong>Q: How do you handle errors in a mocked repository test?</strong></li><li>A: I configure the mock to deliberately throw an error (e.g. <code>mock.shouldThrowError = true</code>) and assert that the ViewModel handles the error state correctly.</li><li><strong>Q: Should a Repository return Domain Models or Data Transfer Objects (DTOs)?</strong></li><li>A: A Repository should return clean Domain Models to the ViewModel, handling the mapping from raw API DTOs internally.</li></ul>\n<h2 id=\"3-quick-self-check\" class=\"doc-heading doc-h2\">3. Quick Self-Check</h2>\n<ul class=\"doc-list\"><li>[ ] Can I explain how the Repository Pattern satisfies the Dependency Inversion Principle?</li><li>[ ] Can I write a Mock Repository that returns static array data?</li><li>[ ] Can I articulate why a ViewModel should never import <code>URLSession</code>?</li><li>[ ] Can I explain the concept of a &quot;Single Source of Truth&quot; in data fetching?</li></ul>"
@@ -208,9 +208,9 @@
       "folder": "Leadership",
       "summary": "End-to-end technical leadership, cross-functional alignment, regulatory compliance (PCI-DSS, SOX, GDPR).",
       "relatedQuestions": [
-        "Q-38",
-        "Q-39",
-        "Q-40"
+        "Q-40",
+        "Q-41",
+        "Q-42"
       ],
       "rawContent": "# Development Lead / Feature Ownership — Interview Talking Points\n\nA rehearsal sheet for behavioral questions probing your ability to lead mid-size features end-to-end and support larger initiatives.\n\n## 1. What This Competency Means Day-to-Day\n> **Framing:** \"Being a development lead means I am responsible for the success of the feature from initial requirements to post-launch monitoring, acting as the primary driver who unblocks the team and coordinates with product and design, rather than just pulling JIRA tickets.\"\n\n## 2. Core Themes Interviewers Are Probing For\n- **End-to-End Ownership:** Proving you care about the full lifecycle (design, architecture, testing, rollout, analytics) and not just writing the code.\n- **Handling Ambiguity:** Driving a feature forward even when requirements are unclear, shifting, or undocumented.\n- **Cross-Functional Coordination:** Working smoothly with Product Managers, Designers, Backend Engineers, and QA without having formal authority over them.\n- **Technical Tradeoffs:** Making defensible decisions under time pressure (e.g., choosing technical debt to hit a deadline vs pushing back on scope).\n- **Unblocking the Team:** Being the go-to person when juniors or peers get stuck, and actively mentoring them through complex tasks.\n- **Scaling Yourself:** Delegating pieces of work, reviewing PRs, and supporting massive initiatives where you are a key player but not the sole owner.\n- **Proactive Communication:** Signaling risks, delays, or architectural blockers upward *before* they become an emergency.\n\n## 3. Likely Behavioral Questions & How to Answer Them\n\n1. **\"Tell me about a mid-size feature you led from start to finish. What was your specific role?\"**\n   - *Hint:* Use STAR. Clearly separate \"what I did\" (architecture, delegation, stakeholder syncs) from \"what the team did\" (specific UI tickets).\n2. **\"Describe a time when a project you were leading hit a major roadblock or delay. What did you do?\"**\n   - *Hint:* Focus on your *response* to the crisis. Did you re-negotiate scope with the PM? Did you jump in to unblock a junior dev? Highlight proactive communication.\n3. **\"How do you handle situations where product requirements are vague or constantly changing?\"**\n   - *Hint:* Discuss your process for forcing clarity: writing a tech spec, building a quick prototype, or setting a hard \"code freeze\" cutoff for requirement changes.\n4. **\"Tell me about a technical tradeoff you had to make to hit a deadline. Would you do it differently now?\"**\n   - *Hint:* Describe a specific compromise (e.g., skipping a generic abstraction in favor of hardcoding for v1) and how you documented the tech debt.\n5. **\"How do you keep cross-functional partners (Backend, QA) aligned when you don't manage them?\"**\n   - *Hint:* Emphasize regular syncs, establishing API contracts early, and building empathy instead of just throwing requirements over the wall.\n6. **\"Describe a time you had to push back on a Product Manager or Designer because a feature was too complex.\"**\n   - *Hint:* Show that you didn't just say \"no.\" You said \"no, but...\" by offering a cheaper alternative that achieved 80% of the business goal.\n7. **\"Tell me about a time you supported a massive effort where you weren't the overall lead. How did you contribute?\"**\n   - *Hint:* Focus on how you took ownership of a specific slice of the pie, delivered it reliably, and actively made the primary lead's life easier.\n8. **\"How do you ensure the quality of a feature when delegating work to less experienced engineers?\"**\n   - *Hint:* Mention pairing sessions, strict PR review standards, establishing clear testing guidelines, and creating a safe environment to ask questions.\n9. **\"What happens after your feature ships? Tell me about a time you caught a bug in production.\"**\n   - *Hint:* Prove you own the post-launch lifecycle. Talk about monitoring crash rates, analyzing metrics, or pushing a hotfix.\n\n## 4. Red Flags to Avoid in Your Answer\n- **Saying \"We\" too much:** Taking sole credit for a team effort is bad, but hiding behind \"we\" makes the interviewer wonder what *you* actually did. Say \"The team built X, and *I* was responsible for Y.\"\n- **Over-indexing on coding:** If you only talk about Swift syntax and completely ignore the PM/Design coordination, you sound like a pure executor, not a lead.\n- **No post-launch reality:** Failing to mention monitoring, analytics, or post-launch bugs makes it sound like you just toss code over the wall to QA.\n- **Abstract/Hypothetical answers:** Answering \"I usually do X\" instead of \"On the Checkout project, I did X.\" Always use concrete examples.\n\n## 5. Quick Self-Check\n- [ ] Do I have one concrete mid-size feature example ready, structured in STAR format (Situation, Task, Action, Result)?\n- [ ] Can I clearly separate \"what I did\" from \"what the team did\"?\n- [ ] Do I have a second, different example ready in case of a follow-up question?\n- [ ] Can I confidently speak to a time something went wrong, proving I can handle failure gracefully?\n",
       "htmlContent": "<h1 id=\"development-lead-feature-ownership-interview-talking-points\" class=\"doc-heading doc-h1\">Development Lead / Feature Ownership — Interview Talking Points</h1>\n<p class=\"doc-paragraph\">A rehearsal sheet for behavioral questions probing your ability to lead mid-size features end-to-end and support larger initiatives.</p>\n<h2 id=\"1-what-this-competency-means-day-to-day\" class=\"doc-heading doc-h2\">1. What This Competency Means Day-to-Day</h2>\n<blockquote class=\"doc-blockquote\"><strong>Framing:</strong> &quot;Being a development lead means I am responsible for the success of the feature from initial requirements to post-launch monitoring, acting as the primary driver who unblocks the team and coordinates with product and design, rather than just pulling JIRA tickets.&quot;</blockquote>\n<h2 id=\"2-core-themes-interviewers-are-probing-for\" class=\"doc-heading doc-h2\">2. Core Themes Interviewers Are Probing For</h2>\n<ul class=\"doc-list\"><li><strong>End-to-End Ownership:</strong> Proving you care about the full lifecycle (design, architecture, testing, rollout, analytics) and not just writing the code.</li><li><strong>Handling Ambiguity:</strong> Driving a feature forward even when requirements are unclear, shifting, or undocumented.</li><li><strong>Cross-Functional Coordination:</strong> Working smoothly with Product Managers, Designers, Backend Engineers, and QA without having formal authority over them.</li><li><strong>Technical Tradeoffs:</strong> Making defensible decisions under time pressure (e.g., choosing technical debt to hit a deadline vs pushing back on scope).</li><li><strong>Unblocking the Team:</strong> Being the go-to person when juniors or peers get stuck, and actively mentoring them through complex tasks.</li><li><strong>Scaling Yourself:</strong> Delegating pieces of work, reviewing PRs, and supporting massive initiatives where you are a key player but not the sole owner.</li><li><strong>Proactive Communication:</strong> Signaling risks, delays, or architectural blockers upward <em>before</em> they become an emergency.</li></ul>\n<h2 id=\"3-likely-behavioral-questions-how-to-answer-them\" class=\"doc-heading doc-h2\">3. Likely Behavioral Questions &amp; How to Answer Them</h2>\n<ul class=\"doc-list\"><li><strong>&quot;Tell me about a mid-size feature you led from start to finish. What was your specific role?&quot;</strong></li><li><em>Hint:</em> Use STAR. Clearly separate &quot;what I did&quot; (architecture, delegation, stakeholder syncs) from &quot;what the team did&quot; (specific UI tickets).</li><li><strong>&quot;Describe a time when a project you were leading hit a major roadblock or delay. What did you do?&quot;</strong></li><li><em>Hint:</em> Focus on your <em>response</em> to the crisis. Did you re-negotiate scope with the PM? Did you jump in to unblock a junior dev? Highlight proactive communication.</li><li><strong>&quot;How do you handle situations where product requirements are vague or constantly changing?&quot;</strong></li><li><em>Hint:</em> Discuss your process for forcing clarity: writing a tech spec, building a quick prototype, or setting a hard &quot;code freeze&quot; cutoff for requirement changes.</li><li><strong>&quot;Tell me about a technical tradeoff you had to make to hit a deadline. Would you do it differently now?&quot;</strong></li><li><em>Hint:</em> Describe a specific compromise (e.g., skipping a generic abstraction in favor of hardcoding for v1) and how you documented the tech debt.</li><li><strong>&quot;How do you keep cross-functional partners (Backend, QA) aligned when you don&#x27;t manage them?&quot;</strong></li><li><em>Hint:</em> Emphasize regular syncs, establishing API contracts early, and building empathy instead of just throwing requirements over the wall.</li><li><strong>&quot;Describe a time you had to push back on a Product Manager or Designer because a feature was too complex.&quot;</strong></li><li><em>Hint:</em> Show that you didn&#x27;t just say &quot;no.&quot; You said &quot;no, but...&quot; by offering a cheaper alternative that achieved 80% of the business goal.</li><li><strong>&quot;Tell me about a time you supported a massive effort where you weren&#x27;t the overall lead. How did you contribute?&quot;</strong></li><li><em>Hint:</em> Focus on how you took ownership of a specific slice of the pie, delivered it reliably, and actively made the primary lead&#x27;s life easier.</li><li><strong>&quot;How do you ensure the quality of a feature when delegating work to less experienced engineers?&quot;</strong></li><li><em>Hint:</em> Mention pairing sessions, strict PR review standards, establishing clear testing guidelines, and creating a safe environment to ask questions.</li><li><strong>&quot;What happens after your feature ships? Tell me about a time you caught a bug in production.&quot;</strong></li><li><em>Hint:</em> Prove you own the post-launch lifecycle. Talk about monitoring crash rates, analyzing metrics, or pushing a hotfix.</li></ul>\n<h2 id=\"4-red-flags-to-avoid-in-your-answer\" class=\"doc-heading doc-h2\">4. Red Flags to Avoid in Your Answer</h2>\n<ul class=\"doc-list\"><li><strong>Saying &quot;We&quot; too much:</strong> Taking sole credit for a team effort is bad, but hiding behind &quot;we&quot; makes the interviewer wonder what <em>you</em> actually did. Say &quot;The team built X, and <em>I</em> was responsible for Y.&quot;</li><li><strong>Over-indexing on coding:</strong> If you only talk about Swift syntax and completely ignore the PM/Design coordination, you sound like a pure executor, not a lead.</li><li><strong>No post-launch reality:</strong> Failing to mention monitoring, analytics, or post-launch bugs makes it sound like you just toss code over the wall to QA.</li><li><strong>Abstract/Hypothetical answers:</strong> Answering &quot;I usually do X&quot; instead of &quot;On the Checkout project, I did X.&quot; Always use concrete examples.</li></ul>\n<h2 id=\"5-quick-self-check\" class=\"doc-heading doc-h2\">5. Quick Self-Check</h2>\n<ul class=\"doc-list\"><li>[ ] Do I have one concrete mid-size feature example ready, structured in STAR format (Situation, Task, Action, Result)?</li><li>[ ] Can I clearly separate &quot;what I did&quot; from &quot;what the team did&quot;?</li><li>[ ] Do I have a second, different example ready in case of a follow-up question?</li><li>[ ] Can I confidently speak to a time something went wrong, proving I can handle failure gracefully?</li></ul>"
@@ -272,8 +272,8 @@
       "folder": "PerformanceProfiling",
       "summary": "Time Profiler, Allocations, Leaks, Thread Sanitizer, and memory footprint optimization.",
       "relatedQuestions": [
-        "Q-29",
-        "Q-28"
+        "Q-28",
+        "Q-29"
       ],
       "rawContent": "# Performance Profiling & Instruments — Interview Talking Points\n\nA quick reference for diagnosing and fixing performance bottlenecks, memory leaks, and UI hangs using Xcode Instruments.\n\n## 1. Core Concepts\n- **Time Profiler:** Samples the call stack to show which functions consume the most CPU time. A major spike on the main thread track indicates UI \"hitching.\"\n- **Leaks vs Allocations:** The **Leaks** instrument finds unreachable memory (like retain cycles). The **Allocations** instrument tracks all live memory, which helps you spot logical leaks (like an array that grows infinitely).\n- **Core Animation / Hangs:** Measures dropped frames and UI unresponsiveness. A \"Hang\" occurs when the Main Thread is blocked for > 250ms.\n- **Energy Log:** Tracks battery-draining offenders like unnecessary GPS polling, keeping the network radio alive, or aggressive timers running in the background.\n- **Custom Signposts (`os_signpost`):** Allows you to inject custom markers (e.g., \"Image Download Started/Ended\") directly into the Instruments timeline, so you can map business logic to CPU spikes.\n- **The Golden Rule:** Always profile on a **real device** using the **Release** configuration. The Simulator uses your Mac's CPU and memory, which hides actual performance problems.\n\n## 2. Common Interview Questions\n- **Q: What is the first thing you check when a screen feels laggy?**\n  - A: I check if heavy computation, parsing, or synchronous I/O is accidentally running on the Main Thread instead of a background queue.\n- **Q: What does \"Invert Call Tree\" do in the Time Profiler?**\n  - A: It flips the stack trace upside down so the deepest functions (the ones doing the actual heavy lifting) bubble up to the top of the list, making bottlenecks obvious.\n- **Q: Why should you avoid using `print()` heavily in production?**\n  - A: `print()` performs synchronous I/O and locks. In tight loops, it severely degrades performance and causes CPU spikes.\n- **Q: What causes \"Offscreen Rendering\"?**\n  - A: Combining multiple visual effects (like corner radius, shadows, and masking) forces the GPU to stop and composite the layer in a separate offscreen buffer before displaying it, dropping the frame rate.\n\n## 3. Quick Self-Check\n- [ ] Can I distinguish between a memory leak and a logical leak (unbounded allocation)?\n- [ ] Do I know how to use `DispatchQueue.global().async` to fix a Main Thread hang?\n- [ ] Can I explain why profiling on the Simulator is a bad idea?\n- [ ] Do I understand how `os_signpost` helps correlate business logic to system performance?\n",
       "htmlContent": "<h1 id=\"performance-profiling-instruments-interview-talking-points\" class=\"doc-heading doc-h1\">Performance Profiling &amp; Instruments — Interview Talking Points</h1>\n<p class=\"doc-paragraph\">A quick reference for diagnosing and fixing performance bottlenecks, memory leaks, and UI hangs using Xcode Instruments.</p>\n<h2 id=\"1-core-concepts\" class=\"doc-heading doc-h2\">1. Core Concepts</h2>\n<ul class=\"doc-list\"><li><strong>Time Profiler:</strong> Samples the call stack to show which functions consume the most CPU time. A major spike on the main thread track indicates UI &quot;hitching.&quot;</li><li><strong>Leaks vs Allocations:</strong> The <strong>Leaks</strong> instrument finds unreachable memory (like retain cycles). The <strong>Allocations</strong> instrument tracks all live memory, which helps you spot logical leaks (like an array that grows infinitely).</li><li><strong>Core Animation / Hangs:</strong> Measures dropped frames and UI unresponsiveness. A &quot;Hang&quot; occurs when the Main Thread is blocked for &gt; 250ms.</li><li><strong>Energy Log:</strong> Tracks battery-draining offenders like unnecessary GPS polling, keeping the network radio alive, or aggressive timers running in the background.</li><li><strong>Custom Signposts (<code>os_signpost</code>):</strong> Allows you to inject custom markers (e.g., &quot;Image Download Started/Ended&quot;) directly into the Instruments timeline, so you can map business logic to CPU spikes.</li><li><strong>The Golden Rule:</strong> Always profile on a <strong>real device</strong> using the <strong>Release</strong> configuration. The Simulator uses your Mac&#x27;s CPU and memory, which hides actual performance problems.</li></ul>\n<h2 id=\"2-common-interview-questions\" class=\"doc-heading doc-h2\">2. Common Interview Questions</h2>\n<ul class=\"doc-list\"><li><strong>Q: What is the first thing you check when a screen feels laggy?</strong></li><li>A: I check if heavy computation, parsing, or synchronous I/O is accidentally running on the Main Thread instead of a background queue.</li><li><strong>Q: What does &quot;Invert Call Tree&quot; do in the Time Profiler?</strong></li><li>A: It flips the stack trace upside down so the deepest functions (the ones doing the actual heavy lifting) bubble up to the top of the list, making bottlenecks obvious.</li><li><strong>Q: Why should you avoid using <code>print()</code> heavily in production?</strong></li><li>A: <code>print()</code> performs synchronous I/O and locks. In tight loops, it severely degrades performance and causes CPU spikes.</li><li><strong>Q: What causes &quot;Offscreen Rendering&quot;?</strong></li><li>A: Combining multiple visual effects (like corner radius, shadows, and masking) forces the GPU to stop and composite the layer in a separate offscreen buffer before displaying it, dropping the frame rate.</li></ul>\n<h2 id=\"3-quick-self-check\" class=\"doc-heading doc-h2\">3. Quick Self-Check</h2>\n<ul class=\"doc-list\"><li>[ ] Can I distinguish between a memory leak and a logical leak (unbounded allocation)?</li><li>[ ] Do I know how to use <code>DispatchQueue.global().async</code> to fix a Main Thread hang?</li><li>[ ] Can I explain why profiling on the Simulator is a bad idea?</li><li>[ ] Do I understand how <code>os_signpost</code> helps correlate business logic to system performance?</li></ul>"
@@ -288,9 +288,9 @@
       "folder": "Security",
       "summary": "Keychain vs Secure Enclave vs App Transport Security vs Certificate Pinning vs Biometrics.",
       "relatedQuestions": [
-        "Q-35",
-        "Q-36",
-        "Q-37"
+        "Q-37",
+        "Q-38",
+        "Q-39"
       ],
       "rawContent": "# Security Decision Table\n\nAn interviewer will often give you a scenario and ask you to pick the right security mechanism. Knowing the exact boundary of each tool is what separates Seniors from Juniors.\n\n| Mechanism | What it protects against... | When to use it |\n|---|---|---|\n| **Certificate Pinning** (Data in Transit) | Protects against Man-In-The-Middle (MITM) attacks caused by compromised Root Certificate Authorities or corporate proxies. | Use when communicating with highly sensitive backend APIs (e.g., Banking, Healthcare) where standard HTTPS is not considered enough. |\n| **Secure Enclave** (Hardware Security) | Protects private keys from being extracted from the device's memory, even if the OS is fully jailbroken. | Use when generating cryptographic keys that represent the user's identity (e.g., a key to sign a transaction), gated behind Face ID. |\n| **Data Encryption** (Data at Rest) | Protects raw data (Confidentiality) and proves it hasn't been altered (Integrity). | Use when storing sensitive offline data (e.g. chat history, health logs) in a local database, where the DB itself isn't fully encrypted. |\n\n## 🏆 Quick Rule of Thumb for Interviews:\n> \"Security requires defense in depth. I use Data Encryption (AES) to protect local databases, I secure the AES key inside the Keychain, and if the app handles extreme financial operations, I'd generate an identity key inside the Secure Enclave and use Certificate Pinning for the network layer.\"\n",
       "htmlContent": "<h1 id=\"security-decision-table\" class=\"doc-heading doc-h1\">Security Decision Table</h1>\n<p class=\"doc-paragraph\">An interviewer will often give you a scenario and ask you to pick the right security mechanism. Knowing the exact boundary of each tool is what separates Seniors from Juniors.</p>\n<div class=\"table-responsive\"><table class=\"doc-table\"><thead><tr><th>Mechanism</th><th>What it protects against...</th><th>When to use it</th></tr></thead><tbody><tr><td><strong>Certificate Pinning</strong> (Data in Transit)</td><td>Protects against Man-In-The-Middle (MITM) attacks caused by compromised Root Certificate Authorities or corporate proxies.</td><td>Use when communicating with highly sensitive backend APIs (e.g., Banking, Healthcare) where standard HTTPS is not considered enough.</td></tr><tr><td><strong>Secure Enclave</strong> (Hardware Security)</td><td>Protects private keys from being extracted from the device&#x27;s memory, even if the OS is fully jailbroken.</td><td>Use when generating cryptographic keys that represent the user&#x27;s identity (e.g., a key to sign a transaction), gated behind Face ID.</td></tr><tr><td><strong>Data Encryption</strong> (Data at Rest)</td><td>Protects raw data (Confidentiality) and proves it hasn&#x27;t been altered (Integrity).</td><td>Use when storing sensitive offline data (e.g. chat history, health logs) in a local database, where the DB itself isn&#x27;t fully encrypted.</td></tr></tbody></table></div>\n<h2 id=\"quick-rule-of-thumb-for-interviews\" class=\"doc-heading doc-h2\">🏆 Quick Rule of Thumb for Interviews:</h2>\n<blockquote class=\"doc-blockquote\">&quot;Security requires defense in depth. I use Data Encryption (AES) to protect local databases, I secure the AES key inside the Keychain, and if the app handles extreme financial operations, I&#x27;d generate an identity key inside the Secure Enclave and use Certificate Pinning for the network layer.&quot;</blockquote>"
@@ -320,8 +320,8 @@
       "folder": "SwiftUIStateManagement",
       "summary": "@State, @Binding, @StateObject, @ObservedObject, @EnvironmentObject, and iOS 17 @Observable macro.",
       "relatedQuestions": [
-        "Q-22",
-        "Q-01"
+        "Q-01",
+        "Q-22"
       ],
       "rawContent": "# 🔄 SwiftUI State Management — Interview Cheat Sheet\n\nSwiftUI is a declarative framework. The UI is a function of its state. When the state changes, SwiftUI automatically re-renders the affected views. Understanding which property wrapper to use is a guaranteed interview question.\n\n---\n\n## 1. Value Types (Structs, Strings, Ints, Bools)\n\n### `@State`\n- **What it is:** Local, private state owned by a single View.\n- **When to use:** For simple value types (e.g., `String`, `Int`, `Bool`) that are only used inside that specific view (like a toggle state or a text field input).\n- **Rule of thumb:** Always mark it as `private`.\n\n### `@Binding`\n- **What it is:** A two-way connection to a state owned by another (usually parent) view.\n- **When to use:** When a child view needs to read AND write to a state that lives in its parent.\n- **Rule of thumb:** It does not own the data, it just points to it. You pass a binding using the `$` prefix (e.g., `$parentState`).\n\n---\n\n## 2. Reference Types (Classes conforming to `ObservableObject`)\n\n### `@StateObject` (Introduced in iOS 14)\n- **What it is:** Used to **create** and **own** an instance of an `ObservableObject`.\n- **When to use:** When the view is the one instantiating the class. \n- **Why it's important:** SwiftUI guarantees that the object is not destroyed and recreated when the view re-renders. It keeps the object alive for the lifecycle of the view.\n\n### `@ObservedObject`\n- **What it is:** Used to **observe** an `ObservableObject` that was passed in from the outside.\n- **When to use:** When a child view needs to listen to changes from a class instance that was created by its parent (or a router).\n- **Warning:** Do NOT use `@ObservedObject` to create the initial instance (e.g., `@ObservedObject var vm = ViewModel()`). If the view re-renders, the object will be destroyed and recreated, causing data loss. Always use `@StateObject` for creation.\n\n### `@EnvironmentObject`\n- **What it is:** A shared `ObservableObject` available anywhere in the view hierarchy.\n- **When to use:** For global data (like User Settings, Authentication State, or Themes) that many deeply nested views need access to. \n- **Rule of thumb:** Prevents \"Prop drilling\" (passing data through 5 layers of views just so the 6th layer can use it). It must be injected high up in the tree using `.environmentObject(myObject)`. If a view expects an EnvironmentObject and it hasn't been injected, the app will crash.\n\n---\n\n## 3. Persistent State\n\n### `@AppStorage`\n- **What it is:** A SwiftUI property wrapper over `UserDefaults`.\n- **When to use:** For lightweight, non-sensitive data (like \"Dark Mode Enabled\") that should persist across app launches. It automatically re-renders the view when the value in UserDefaults changes.\n\n---\n\n### 💡 iOS 17+ Modern Update (`@Observable` macro)\nIn iOS 17, Apple introduced the `@Observable` macro, which simplifies state management.\n- You no longer need `@Published` on properties.\n- `@StateObject` and `@ObservedObject` are replaced entirely by just using `@State` and `@Bindable`.\n*(Be ready to mention this in an interview to show you are up-to-date with modern SwiftUI, even if they ask about the older Property Wrappers!)*\n",
       "htmlContent": "<h1 id=\"swiftui-state-management-interview-cheat-sheet\" class=\"doc-heading doc-h1\">🔄 SwiftUI State Management — Interview Cheat Sheet</h1>\n<p class=\"doc-paragraph\">SwiftUI is a declarative framework. The UI is a function of its state. When the state changes, SwiftUI automatically re-renders the affected views. Understanding which property wrapper to use is a guaranteed interview question.</p>\n<hr class=\"doc-divider\">\n<h2 id=\"1-value-types-structs-strings-ints-bools\" class=\"doc-heading doc-h2\">1. Value Types (Structs, Strings, Ints, Bools)</h2>\n<h3 id=\"state\" class=\"doc-heading doc-h3\"><code>@State</code></h3>\n<ul class=\"doc-list\"><li><strong>What it is:</strong> Local, private state owned by a single View.</li><li><strong>When to use:</strong> For simple value types (e.g., <code>String</code>, <code>Int</code>, <code>Bool</code>) that are only used inside that specific view (like a toggle state or a text field input).</li><li><strong>Rule of thumb:</strong> Always mark it as <code>private</code>.</li></ul>\n<h3 id=\"binding\" class=\"doc-heading doc-h3\"><code>@Binding</code></h3>\n<ul class=\"doc-list\"><li><strong>What it is:</strong> A two-way connection to a state owned by another (usually parent) view.</li><li><strong>When to use:</strong> When a child view needs to read AND write to a state that lives in its parent.</li><li><strong>Rule of thumb:</strong> It does not own the data, it just points to it. You pass a binding using the <code>$</code> prefix (e.g., <code>$parentState</code>).</li></ul>\n<hr class=\"doc-divider\">\n<h2 id=\"2-reference-types-classes-conforming-to-observableobject\" class=\"doc-heading doc-h2\">2. Reference Types (Classes conforming to <code>ObservableObject</code>)</h2>\n<h3 id=\"stateobject-introduced-in-ios-14\" class=\"doc-heading doc-h3\"><code>@StateObject</code> (Introduced in iOS 14)</h3>\n<ul class=\"doc-list\"><li><strong>What it is:</strong> Used to <strong>create</strong> and <strong>own</strong> an instance of an <code>ObservableObject</code>.</li><li><strong>When to use:</strong> When the view is the one instantiating the class.</li><li><strong>Why it&#x27;s important:</strong> SwiftUI guarantees that the object is not destroyed and recreated when the view re-renders. It keeps the object alive for the lifecycle of the view.</li></ul>\n<h3 id=\"observedobject\" class=\"doc-heading doc-h3\"><code>@ObservedObject</code></h3>\n<ul class=\"doc-list\"><li><strong>What it is:</strong> Used to <strong>observe</strong> an <code>ObservableObject</code> that was passed in from the outside.</li><li><strong>When to use:</strong> When a child view needs to listen to changes from a class instance that was created by its parent (or a router).</li><li><strong>Warning:</strong> Do NOT use <code>@ObservedObject</code> to create the initial instance (e.g., <code>@ObservedObject var vm = ViewModel()</code>). If the view re-renders, the object will be destroyed and recreated, causing data loss. Always use <code>@StateObject</code> for creation.</li></ul>\n<h3 id=\"environmentobject\" class=\"doc-heading doc-h3\"><code>@EnvironmentObject</code></h3>\n<ul class=\"doc-list\"><li><strong>What it is:</strong> A shared <code>ObservableObject</code> available anywhere in the view hierarchy.</li><li><strong>When to use:</strong> For global data (like User Settings, Authentication State, or Themes) that many deeply nested views need access to.</li><li><strong>Rule of thumb:</strong> Prevents &quot;Prop drilling&quot; (passing data through 5 layers of views just so the 6th layer can use it). It must be injected high up in the tree using <code>.environmentObject(myObject)</code>. If a view expects an EnvironmentObject and it hasn&#x27;t been injected, the app will crash.</li></ul>\n<hr class=\"doc-divider\">\n<h2 id=\"3-persistent-state\" class=\"doc-heading doc-h2\">3. Persistent State</h2>\n<h3 id=\"appstorage\" class=\"doc-heading doc-h3\"><code>@AppStorage</code></h3>\n<ul class=\"doc-list\"><li><strong>What it is:</strong> A SwiftUI property wrapper over <code>UserDefaults</code>.</li><li><strong>When to use:</strong> For lightweight, non-sensitive data (like &quot;Dark Mode Enabled&quot;) that should persist across app launches. It automatically re-renders the view when the value in UserDefaults changes.</li></ul>\n<hr class=\"doc-divider\">\n<h3 id=\"ios-17-modern-update-observable-macro\" class=\"doc-heading doc-h3\">💡 iOS 17+ Modern Update (<code>@Observable</code> macro)</h3>\n<p class=\"doc-paragraph\">In iOS 17, Apple introduced the <code>@Observable</code> macro, which simplifies state management.</p>\n<ul class=\"doc-list\"><li>You no longer need <code>@Published</code> on properties.</li><li><code>@StateObject</code> and <code>@ObservedObject</code> are replaced entirely by just using <code>@State</code> and <code>@Bindable</code>.</li></ul>\n<p class=\"doc-paragraph\"><em>(Be ready to mention this in an interview to show you are up-to-date with modern SwiftUI, even if they ask about the older Property Wrappers!)</em></p>"
@@ -336,8 +336,8 @@
       "folder": "Testing",
       "summary": "Unit vs UI testing, mocks vs stubs vs spies, protocol injection, and Given/When/Then BDD methodology.",
       "relatedQuestions": [
-        "Q-48",
-        "Q-49"
+        "Q-50",
+        "Q-51"
       ],
       "rawContent": "# Testing, TDD/BDD, and Testability — Interview Talking Points\n\nA rehearsal sheet for questions about XCTest, unit/UI testing, TDD/BDD, and mocking/stubbing/testable architecture. This topic often comes up both as a coding exercise (write a test, fix a test) and as a discussion about process. Practice saying this out loud.\n\n## 1. Open with the framing (10 seconds)\n> \"I think of testability as a design decision, not something bolted on after the fact. If a class can't have its dependencies swapped for fakes, it usually can't be unit tested in isolation — so I lean on protocol-based dependency injection from the start, and write tests alongside (or ahead of) the implementation.\"\n\n## 2. XCTest basics — structure to reference\n- **Arrange-Act-Assert:** set up state, perform the action, assert the outcome — keep each test focused on one behavior.\n- **`setUp()` runs before every test method**, not once for the class — this guarantees no shared mutable state leaks between tests.\n- **Naming convention worth stating out loud:** `test_methodName_condition_expectedResult` — makes failures self-explanatory in CI logs without opening the file.\n- **Common assertions to mention:** `XCTAssertEqual`, `XCTAssertTrue/False`, `XCTAssertNil/NotNil`, `XCTAssertThrowsError`.\n\n## 3. Unit tests vs UI tests — the testing pyramid\n> \"I follow the testing pyramid: lots of fast unit tests at the bottom, some integration tests in the middle, and a small number of UI tests at the top covering only critical flows — login, checkout, not every screen.\"\n\n- **XCUITest runs as a separate process** driving the app through the accessibility layer — not the same process as unit tests, which is why it's slower and more brittle.\n- **Match on accessibility identifiers, not visible text** — text breaks across localization; identifiers don't.\n- **Say explicitly:** UI tests are expensive to maintain, so reserve them for flows where a regression would be genuinely costly to miss.\n\n## 4. TDD — red, green, refactor\n> \"Red-green-refactor: write a failing test first, write the minimal code to make it pass, then refactor with the safety net of a passing test. The real value isn't the ritual — it's that writing the test first forces you to think about the API/interface before the implementation.\"\n\nBe honest if asked whether you strictly practice TDD:\n> \"In practice a lot of teams do 'test-alongside' rather than strict TDD — I think what interviewers actually want to hear is that you understand the discipline and can apply it when it adds value (e.g. tricky business logic), not that you dogmatically write every line test-first.\"\n\n## 5. BDD — how it differs from TDD\n- **BDD frames tests as Given/When/Then behavior specs**, often readable by non-engineers (PMs, QA) — less about implementation detail, more about describing expected behavior in plain language.\n- **Common tooling to mention:** **Quick/Nimble** in the Swift ecosystem pairs with this style (`describe`, `context`, `it` blocks).\n- **One-line distinction to have ready:** **TDD is a workflow** (write test → code → refactor); **BDD is a specification style** (describe behavior in a structured, readable format) — they're not mutually exclusive.\n\n## 6. Mock vs Stub vs Fake vs Spy — precise definitions\nInterviewers often probe this exact distinction — have it crisp:\n\n| Term | Definition |\n|---|---|\n| **Stub** | Returns canned data, no verification of how it was called. |\n| **Mock** | Verifies interactions — e.g. asserts `login()` was called exactly once with specific arguments. |\n| **Fake** | A working but simplified implementation (e.g. an in-memory database instead of a real one). |\n| **Spy** | Wraps a real object and records calls made to it, while still delegating to real behavior. |\n\n> \"In Swift, protocol-based dependency injection is what makes any of this possible — there's no reflection-based mocking framework like you'd see in other languages, so you write a protocol, a real implementation, and a hand-written fake/mock conforming to the same protocol.\"\n\n*Worth a one-line mention:* libraries like **Cuckoo** or **Mockingbird** can auto-generate mocks at scale, but hand-written mocks are common and perfectly fine for smaller codebases.\n\n## 7. Testable architecture — the connecting thread\n> \"The pattern that makes everything above possible is constructor injection of protocols instead of concrete types — a ViewModel shouldn't instantiate `URLSession.shared` directly; it should take a `NetworkServiceProtocol` so a test can substitute a mock. This is the same dependency injection principle that shows up in modular architecture — testability and modularity come from the same root discipline: depend on abstractions, not concretions.\"\n\n## 8. A strong closing line if asked to summarize your approach\n> \"I write unit tests close to the code they cover, reserve UI tests for critical flows, structure dependencies behind protocols so they're mockable, and use TDD selectively where it adds the most value — like business logic with several edge cases — rather than treating it as a rule to follow everywhere.\"\n\n---\n\n## Quick self-check before the interview\n- [ ] Can I explain why `setUp()` runs before every test, not once?\n- [ ] Can I explain why UI tests should match on accessibility identifiers, not text?\n- [ ] Can I walk through red-green-refactor with a concrete example?\n- [ ] Can I distinguish mock vs stub vs fake vs spy without hesitating?\n- [ ] Can I explain why protocol-based DI is what makes mocking possible in Swift?\n- [ ] Can I give an honest answer about strict TDD vs test-alongside in practice?\n",
       "htmlContent": "<h1 id=\"testing-tdd-bdd-and-testability-interview-talking-points\" class=\"doc-heading doc-h1\">Testing, TDD/BDD, and Testability — Interview Talking Points</h1>\n<p class=\"doc-paragraph\">A rehearsal sheet for questions about XCTest, unit/UI testing, TDD/BDD, and mocking/stubbing/testable architecture. This topic often comes up both as a coding exercise (write a test, fix a test) and as a discussion about process. Practice saying this out loud.</p>\n<h2 id=\"1-open-with-the-framing-10-seconds\" class=\"doc-heading doc-h2\">1. Open with the framing (10 seconds)</h2>\n<blockquote class=\"doc-blockquote\">&quot;I think of testability as a design decision, not something bolted on after the fact. If a class can&#x27;t have its dependencies swapped for fakes, it usually can&#x27;t be unit tested in isolation — so I lean on protocol-based dependency injection from the start, and write tests alongside (or ahead of) the implementation.&quot;</blockquote>\n<h2 id=\"2-xctest-basics-structure-to-reference\" class=\"doc-heading doc-h2\">2. XCTest basics — structure to reference</h2>\n<ul class=\"doc-list\"><li><strong>Arrange-Act-Assert:</strong> set up state, perform the action, assert the outcome — keep each test focused on one behavior.</li><li><strong><code>setUp()</code> runs before every test method</strong>, not once for the class — this guarantees no shared mutable state leaks between tests.</li><li><strong>Naming convention worth stating out loud:</strong> <code>test_methodName_condition_expectedResult</code> — makes failures self-explanatory in CI logs without opening the file.</li><li><strong>Common assertions to mention:</strong> <code>XCTAssertEqual</code>, <code>XCTAssertTrue/False</code>, <code>XCTAssertNil/NotNil</code>, <code>XCTAssertThrowsError</code>.</li></ul>\n<h2 id=\"3-unit-tests-vs-ui-tests-the-testing-pyramid\" class=\"doc-heading doc-h2\">3. Unit tests vs UI tests — the testing pyramid</h2>\n<blockquote class=\"doc-blockquote\">&quot;I follow the testing pyramid: lots of fast unit tests at the bottom, some integration tests in the middle, and a small number of UI tests at the top covering only critical flows — login, checkout, not every screen.&quot;</blockquote>\n<ul class=\"doc-list\"><li><strong>XCUITest runs as a separate process</strong> driving the app through the accessibility layer — not the same process as unit tests, which is why it&#x27;s slower and more brittle.</li><li><strong>Match on accessibility identifiers, not visible text</strong> — text breaks across localization; identifiers don&#x27;t.</li><li><strong>Say explicitly:</strong> UI tests are expensive to maintain, so reserve them for flows where a regression would be genuinely costly to miss.</li></ul>\n<h2 id=\"4-tdd-red-green-refactor\" class=\"doc-heading doc-h2\">4. TDD — red, green, refactor</h2>\n<blockquote class=\"doc-blockquote\">&quot;Red-green-refactor: write a failing test first, write the minimal code to make it pass, then refactor with the safety net of a passing test. The real value isn&#x27;t the ritual — it&#x27;s that writing the test first forces you to think about the API/interface before the implementation.&quot;</blockquote>\n<p class=\"doc-paragraph\">Be honest if asked whether you strictly practice TDD:</p>\n<blockquote class=\"doc-blockquote\">&quot;In practice a lot of teams do &#x27;test-alongside&#x27; rather than strict TDD — I think what interviewers actually want to hear is that you understand the discipline and can apply it when it adds value (e.g. tricky business logic), not that you dogmatically write every line test-first.&quot;</blockquote>\n<h2 id=\"5-bdd-how-it-differs-from-tdd\" class=\"doc-heading doc-h2\">5. BDD — how it differs from TDD</h2>\n<ul class=\"doc-list\"><li><strong>BDD frames tests as Given/When/Then behavior specs</strong>, often readable by non-engineers (PMs, QA) — less about implementation detail, more about describing expected behavior in plain language.</li><li><strong>Common tooling to mention:</strong> <strong>Quick/Nimble</strong> in the Swift ecosystem pairs with this style (<code>describe</code>, <code>context</code>, <code>it</code> blocks).</li><li><strong>One-line distinction to have ready:</strong> <strong>TDD is a workflow</strong> (write test → code → refactor); <strong>BDD is a specification style</strong> (describe behavior in a structured, readable format) — they&#x27;re not mutually exclusive.</li></ul>\n<h2 id=\"6-mock-vs-stub-vs-fake-vs-spy-precise-definitions\" class=\"doc-heading doc-h2\">6. Mock vs Stub vs Fake vs Spy — precise definitions</h2>\n<p class=\"doc-paragraph\">Interviewers often probe this exact distinction — have it crisp:</p>\n<div class=\"table-responsive\"><table class=\"doc-table\"><thead><tr><th>Term</th><th>Definition</th></tr></thead><tbody><tr><td><strong>Stub</strong></td><td>Returns canned data, no verification of how it was called.</td></tr><tr><td><strong>Mock</strong></td><td>Verifies interactions — e.g. asserts <code>login()</code> was called exactly once with specific arguments.</td></tr><tr><td><strong>Fake</strong></td><td>A working but simplified implementation (e.g. an in-memory database instead of a real one).</td></tr><tr><td><strong>Spy</strong></td><td>Wraps a real object and records calls made to it, while still delegating to real behavior.</td></tr></tbody></table></div>\n<blockquote class=\"doc-blockquote\">&quot;In Swift, protocol-based dependency injection is what makes any of this possible — there&#x27;s no reflection-based mocking framework like you&#x27;d see in other languages, so you write a protocol, a real implementation, and a hand-written fake/mock conforming to the same protocol.&quot;</blockquote>\n<p class=\"doc-paragraph\"><em>Worth a one-line mention:</em> libraries like <strong>Cuckoo</strong> or <strong>Mockingbird</strong> can auto-generate mocks at scale, but hand-written mocks are common and perfectly fine for smaller codebases.</p>\n<h2 id=\"7-testable-architecture-the-connecting-thread\" class=\"doc-heading doc-h2\">7. Testable architecture — the connecting thread</h2>\n<blockquote class=\"doc-blockquote\">&quot;The pattern that makes everything above possible is constructor injection of protocols instead of concrete types — a ViewModel shouldn&#x27;t instantiate <code>URLSession.shared</code> directly; it should take a <code>NetworkServiceProtocol</code> so a test can substitute a mock. This is the same dependency injection principle that shows up in modular architecture — testability and modularity come from the same root discipline: depend on abstractions, not concretions.&quot;</blockquote>\n<h2 id=\"8-a-strong-closing-line-if-asked-to-summarize-your-approach\" class=\"doc-heading doc-h2\">8. A strong closing line if asked to summarize your approach</h2>\n<blockquote class=\"doc-blockquote\">&quot;I write unit tests close to the code they cover, reserve UI tests for critical flows, structure dependencies behind protocols so they&#x27;re mockable, and use TDD selectively where it adds the most value — like business logic with several edge cases — rather than treating it as a rule to follow everywhere.&quot;</blockquote>\n<hr class=\"doc-divider\">\n<h2 id=\"quick-self-check-before-the-interview\" class=\"doc-heading doc-h2\">Quick self-check before the interview</h2>\n<ul class=\"doc-list\"><li>[ ] Can I explain why <code>setUp()</code> runs before every test, not once?</li><li>[ ] Can I explain why UI tests should match on accessibility identifiers, not text?</li><li>[ ] Can I walk through red-green-refactor with a concrete example?</li><li>[ ] Can I distinguish mock vs stub vs fake vs spy without hesitating?</li><li>[ ] Can I explain why protocol-based DI is what makes mocking possible in Swift?</li><li>[ ] Can I give an honest answer about strict TDD vs test-alongside in practice?</li></ul>"
@@ -374,6 +374,28 @@
     }
   ],
   "QUESTION_TO_DOCS": {
+    "Q-80": [
+      {
+        "docId": "security-comparison",
+        "title": "Security Decision Table (Keychain, Enclave, Pinning)",
+        "filename": "Security-ComparisonNotes.md",
+        "icon": "🛡️"
+      },
+      {
+        "docId": "data-persistence",
+        "title": "Data Persistence & Offline Storage",
+        "filename": "DataPersistence-ComparisonNotes.md",
+        "icon": "💾"
+      }
+    ],
+    "Q-79": [
+      {
+        "docId": "security-comparison",
+        "title": "Security Decision Table (Keychain, Enclave, Pinning)",
+        "filename": "Security-ComparisonNotes.md",
+        "icon": "🛡️"
+      }
+    ],
     "Q-01": [
       {
         "docId": "clean-architecture",
@@ -630,23 +652,23 @@
         "filename": "DataPersistence-DecisionTable.md"
       }
     ],
-    "Q-35": [
-      {
-        "docId": "performance-profiling",
-        "title": "Performance Profiling & Instruments — Talking Points",
-        "filename": "PerformanceProfiling-TalkingPoints.md",
-        "icon": "⏱️"
-      }
-    ],
-    "Q-36": [
-      {
-        "docId": "performance-profiling",
-        "title": "Performance Profiling & Instruments — Talking Points",
-        "filename": "PerformanceProfiling-TalkingPoints.md",
-        "icon": "⏱️"
-      }
-    ],
     "Q-37": [
+      {
+        "docId": "performance-profiling",
+        "title": "Performance Profiling & Instruments — Talking Points",
+        "filename": "PerformanceProfiling-TalkingPoints.md",
+        "icon": "⏱️"
+      }
+    ],
+    "Q-38": [
+      {
+        "docId": "performance-profiling",
+        "title": "Performance Profiling & Instruments — Talking Points",
+        "filename": "PerformanceProfiling-TalkingPoints.md",
+        "icon": "⏱️"
+      }
+    ],
+    "Q-39": [
       {
         "docId": "modular-architecture",
         "title": "Modular App Architecture — Talking Points",
@@ -654,11 +676,11 @@
         "icon": "📦"
       }
     ],
-    "Q-38": [
+    "Q-40": [
       "performance-profiling",
       "ios-internals"
     ],
-    "Q-39": [
+    "Q-41": [
       {
         "docId": "performance-profiling",
         "title": "Performance Profiling & Instruments — Talking Points",
@@ -672,7 +694,7 @@
         "filename": "iOSInternals-TalkingPoints.md"
       }
     ],
-    "Q-40": [
+    "Q-42": [
       {
         "docId": "performance-profiling",
         "title": "Performance Profiling & Instruments — Talking Points",
@@ -692,7 +714,7 @@
         "filename": "iOSInternals-TalkingPoints.md"
       }
     ],
-    "Q-41": [
+    "Q-43": [
       {
         "docId": "performance-profiling",
         "title": "Performance Profiling & Instruments — Talking Points",
@@ -706,23 +728,23 @@
         "filename": "iOSInternals-TalkingPoints.md"
       }
     ],
-    "Q-45": [
-      {
-        "docId": "security-comparison",
-        "title": "Security Decision Table (Keychain, Enclave, Pinning)",
-        "filename": "Security-ComparisonNotes.md",
-        "icon": "🛡️"
-      }
-    ],
-    "Q-46": [
-      {
-        "docId": "security-comparison",
-        "title": "Security Decision Table (Keychain, Enclave, Pinning)",
-        "filename": "Security-ComparisonNotes.md",
-        "icon": "🛡️"
-      }
-    ],
     "Q-47": [
+      {
+        "docId": "security-comparison",
+        "title": "Security Decision Table (Keychain, Enclave, Pinning)",
+        "filename": "Security-ComparisonNotes.md",
+        "icon": "🛡️"
+      }
+    ],
+    "Q-48": [
+      {
+        "docId": "security-comparison",
+        "title": "Security Decision Table (Keychain, Enclave, Pinning)",
+        "filename": "Security-ComparisonNotes.md",
+        "icon": "🛡️"
+      }
+    ],
+    "Q-49": [
       {
         "docId": "security-comparison",
         "title": "Security Decision Table (Keychain, Enclave, Pinning)",
@@ -730,7 +752,7 @@
         "filename": "SecurityDecisionTable.md"
       }
     ],
-    "Q-48": [
+    "Q-50": [
       {
         "docId": "security-comparison",
         "title": "Security Decision Table (Keychain, Enclave, Pinning)",
@@ -744,28 +766,12 @@
         "filename": "NetworkingArchitecture.md"
       }
     ],
-    "Q-49": [
+    "Q-51": [
       {
         "docId": "security-comparison",
         "title": "Security Decision Table (Keychain, Enclave, Pinning)",
         "icon": "🔒",
         "filename": "SecurityDecisionTable.md"
-      }
-    ],
-    "Q-50": [
-      {
-        "docId": "leadership-ownership",
-        "title": "Development Lead / Feature Ownership — Talking Points",
-        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
-        "icon": "👔"
-      }
-    ],
-    "Q-51": [
-      {
-        "docId": "leadership-ownership",
-        "title": "Development Lead / Feature Ownership — Talking Points",
-        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
-        "icon": "👔"
       }
     ],
     "Q-52": [
@@ -776,7 +782,23 @@
         "icon": "👔"
       }
     ],
-    "Q-55": [
+    "Q-53": [
+      {
+        "docId": "leadership-ownership",
+        "title": "Development Lead / Feature Ownership — Talking Points",
+        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
+        "icon": "👔"
+      }
+    ],
+    "Q-54": [
+      {
+        "docId": "leadership-ownership",
+        "title": "Development Lead / Feature Ownership — Talking Points",
+        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
+        "icon": "👔"
+      }
+    ],
+    "Q-57": [
       {
         "docId": "networking-architecture",
         "title": "Networking Architecture Decision Table & 4 Pillars",
@@ -790,7 +812,7 @@
         "filename": "PerformanceProfiling-TalkingPoints.md"
       }
     ],
-    "Q-60": [
+    "Q-63": [
       {
         "docId": "testing-xctest",
         "title": "Testing, TDD/BDD, and Testability — Talking Points",
@@ -798,7 +820,7 @@
         "icon": "🧪"
       }
     ],
-    "Q-61": [
+    "Q-64": [
       {
         "docId": "repository-pattern",
         "title": "Repository Pattern — Talking Points",
@@ -812,7 +834,7 @@
         "icon": "🧪"
       }
     ],
-    "Q-66": [
+    "Q-70": [
       {
         "docId": "leadership-ownership",
         "title": "Development Lead / Feature Ownership — Talking Points",
@@ -826,9 +848,67 @@
         "filename": "PerformanceProfiling-TalkingPoints.md"
       }
     ],
-    "Q-72": [
+    "Q-76": [
       "performance-profiling",
       "ios-internals"
+    ],
+    "Q-81": [
+      {
+        "docId": "security-comparison",
+        "title": "Security Decision Table (Keychain, Enclave, Pinning)",
+        "filename": "Security-ComparisonNotes.md",
+        "icon": "🛡️"
+      },
+      {
+        "docId": "networking-architecture",
+        "title": "Networking Architecture Decision Table & 4 Pillars",
+        "filename": "Networking-ComparisonNotes.md",
+        "icon": "🌐"
+      }
+    ],
+    "Q-35": [
+      {
+        "docId": "networking-architecture",
+        "title": "Networking Architecture Decision Table & 4 Pillars",
+        "filename": "Networking-ComparisonNotes.md",
+        "icon": "🌐"
+      }
+    ],
+    "Q-36": [
+      {
+        "docId": "networking-architecture",
+        "title": "Networking Architecture Decision Table & 4 Pillars",
+        "filename": "Networking-ComparisonNotes.md",
+        "icon": "🌐"
+      }
+    ],
+    "Q-59": [
+      {
+        "docId": "security-comparison",
+        "title": "Security Decision Table (Keychain, Enclave, Pinning)",
+        "filename": "Security-ComparisonNotes.md",
+        "icon": "🛡️"
+      },
+      {
+        "docId": "networking-architecture",
+        "title": "Networking Architecture Decision Table & 4 Pillars",
+        "filename": "Networking-ComparisonNotes.md",
+        "icon": "🌐"
+      }
+    ],
+    "Q-66": [
+      {
+        "docId": "testing-xctest",
+        "title": "XCTest, Mocking & UI Testing Guide",
+        "filename": "Testing-TalkingPoints.md",
+        "icon": "🧪"
+      },
+      {
+        "docId": "dependency-injection",
+        "title": "Dependency Injection (Constructor vs Property Injection)",
+        "filename": "DI-README.md",
+        "icon": "💉"
+      }
     ]
   }
 }
