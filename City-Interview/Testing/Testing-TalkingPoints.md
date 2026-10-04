@@ -11,12 +11,14 @@ A rehearsal sheet for questions about XCTest, unit/UI testing, TDD/BDD, and mock
 - **Naming convention worth stating out loud:** `test_methodName_condition_expectedResult` — makes failures self-explanatory in CI logs without opening the file.
 - **Common assertions to mention:** `XCTAssertEqual`, `XCTAssertTrue/False`, `XCTAssertNil/NotNil`, `XCTAssertThrowsError`.
 
-## 3. Unit tests vs UI tests — the testing pyramid
-> "I follow the testing pyramid: lots of fast unit tests at the bottom, some integration tests in the middle, and a small number of UI tests at the top covering only critical flows — login, checkout, not every screen."
+## 3. The 5 Testing Tiers — Unit vs Integration vs UI vs Snapshot vs Performance
+> "I structure testing as a pyramid: lots of fast unit tests at the bottom, integration tests validating real layers with stubbed network protocols in the middle, and a minimal set of UI tests covering critical user journeys at the top. Snapshot and performance tests guard visuals and speed where they matter most."
 
-- **XCUITest runs as a separate process** driving the app through the accessibility layer — not the same process as unit tests, which is why it's slower and more brittle.
-- **Match on accessibility identifiers, not visible text** — text breaks across localization; identifiers don't.
-- **Say explicitly:** UI tests are expensive to maintain, so reserve them for flows where a regression would be genuinely costly to miss.
+- **Unit Tests:** Fast, isolated verification of business rules, ViewModel state, and edge cases with injected mocks.
+- **Integration Tests:** Verifies real layers work together (e.g. real `UserRepository` + real `JSONDecoder` with `StubURLProtocol` intercepting network traffic).
+- **UI Tests (XCUITest):** Runs as a separate process driving the app through the accessibility layer — slow and prone to flakiness, so reserve for critical journeys (login, checkout). Match on `accessibilityIdentifier` (never localized text) and use `waitForExistence(timeout:)` instead of `Thread.sleep`.
+- **Snapshot Tests:** Compares rendered views (using Point-Free's `SnapshotTesting`) against saved reference images. Protects against accidental visual regressions across Light/Dark mode and Dynamic Type.
+- **Performance Tests:** Measures hot paths (JSON decoding, image filtering) and app launch time via `measure(metrics: [XCTClockMetric(), XCTMemoryMetric(), XCTApplicationLaunchMetric()])` against saved baselines.
 
 ## 4. TDD — red, green, refactor
 > "Red-green-refactor: write a failing test first, write the minimal code to make it pass, then refactor with the safety net of a passing test. The real value isn't the ritual — it's that writing the test first forces you to think about the API/interface before the implementation."
