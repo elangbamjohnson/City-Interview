@@ -8173,76 +8173,275 @@ final class CheckoutViewModelTests: XCTestCase {
 
 ---
 
-### `Q-72` — CI/CD pipelines for iOS — what goes into one
+### `Q-72` — How do you build a CI/CD pipeline for an iOS app with GitHub Actions?
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
 > [!TIP]
 > **🗣️ Interview Pitch (Say it like this):**  
-> *"A CI pipeline for iOS should lint, build, test, analyze, sign, and distribute automatically on every PR — I have used Fastlane for automation and GitHub Actions or Bitrise as the runner, with parallel simulator testing to keep it under 15 minutes."*
+> *"I structure iOS CI/CD into two GitHub Actions workflows: a fast PR workflow (linting, compilation, unit tests) gating branch merges via branch protection, and a post-merge release workflow chaining test, Fastlane match signing, artifact archiving, and TestFlight deployment via App Store Connect API keys."*
 
 #### 📖 Detailed Answer
 
-CI/CD (Continuous Integration / Continuous Delivery) automates the process of verifying, building, and shipping code so that every change is safe, consistent, and deliverable.
+CI (continuous integration) means every change is built and tested automatically. CD (continuous delivery) means a passing build is packaged and sent out without manual steps. For iOS, the runner must be a Mac, because Xcode only runs on macOS. GitHub Actions reads YAML files in `.github/workflows/`, and each file is a workflow made of jobs. Here the work splits into two workflows: one that checks pull requests, and one that releases after a merge.
 
-A typical iOS CI/CD pipeline in order:
-1. Trigger: PR opened or code pushed to main.
-2. Lint: SwiftLint enforces code style rules. Fail early on style violations.
-3. Build: xcodebuild compiles the project. Catches compile errors before tests run.
-4. Unit Tests: xcodebuild test runs the full test suite. Code coverage report generated.
-5. UI Tests: Runs critical user flow UI tests on simulators.
-6. Static Analysis: SonarQube or xcodebuild analyze for deeper code quality checks.
-7. Archive + Sign: xcodebuild archive creates the IPA, then sign it.
-8. Distribute: Upload to TestFlight or an internal distribution tool.
-9. Size check: Validate the IPA has not grown past a threshold.
-10. Notify: Slack/email the team with pass/fail status.
+Say it like this:
 
-Common tool choices:
-• Fastlane: Automates steps 3-8 with Ruby-based lanes.
-• GitHub Actions / Bitrise / Xcode Cloud: The CI runner.
-• Match (Fastlane): Centralizes code signing certificates in a shared encrypted Git repo.
+"I use two workflows. The first runs on every pull request. It lints, builds, and runs the unit tests. Branch protection on main requires this check to pass, so broken code cannot be merged.
 
-Key interview talking point: A CI pipeline that takes 45 minutes is one nobody waits for. Parallel test execution across multiple simulators and build caching keep it under 15 minutes.
+The second runs when a pull request is merged. A merge is a push to main, so I trigger on push. It has three jobs that run one after another, using needs. Job one runs the full tests, including UI tests, and saves the results. Job two runs only if the tests passed. It signs the app, archives it, exports the IPA, and uploads the IPA and the dSYM files as artifacts. Job three runs only if the build passed. It downloads that same IPA and uploads it to TestFlight. I deploy the exact file I built and tested, and I do not rebuild it.
 
-#### 💻 Swift Code Example
+Signing is the hard part in CI. I use fastlane match, which keeps the certificates and profiles in an encrypted private repo. For uploading, I use an App Store Connect API key, so there is no Apple ID password and no two-factor prompt. All secrets live in GitHub Secrets and never in the repo. The last job sends a Slack message with the result. TestFlight is automatic, but the App Store release stays manual, with an approval step."
 
-```swift
-# Fastfile — Fastlane automation for iOS CI/CD
+![GitHub Actions CI/CD Architecture Flowchart](Resources/github_actions_cicd_flow_diagram.png)
 
-# lane :ci_check do  (runs on every Pull Request)
-#   swiftlint(config_file: ".swiftlint.yml", strict: true)
-#
-#   run_tests(
-#     scheme: "MyBankApp",
-#     devices: ["iPhone 16", "iPhone SE (3rd generation)"],  # parallel!
-#     result_bundle: true,
-#     code_coverage: true
-#   )
-#
-#   xcov(scheme: "MyBankApp", minimum_coverage_percentage: 80.0)
-# end
+1. Workflow 1: check every pull request (.github/workflows/pr.yml)
 
-# lane :beta do  (nightly build to TestFlight)
-#   match(type: "appstore", readonly: true)  # sync certs from encrypted Git repo
-#   increment_build_number(build_number: ENV["BUILD_NUMBER"])
-#   gym(scheme: "MyBankApp", configuration: "Release", export_method: "app-store")
-#   upload_to_testflight(skip_waiting_for_build_processing: true)
-#   slack(message: "Beta uploaded!", channel: "#ios-builds")
-# end
-
-# GitHub Actions: .github/workflows/ios-ci.yml
-# on:
-#   pull_request:
-#     branches: [main]
-# jobs:
-#   test:
-#     runs-on: macos-14
-#     steps:
-#       - uses: actions/checkout@v4
-#       - run: bundle exec fastlane ci_check
+```yaml
+name: PR checks                              # the name shown on the pull request
+on:
+  pull_request:                              # run on every pull request
+    branches: [main]                         # that targets the main branch
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}  # one run per pull request
+  cancel-in-progress: true                   # cancel the old run when a new commit is pushed
+jobs:
+  checks:
+    runs-on: macos-latest                    # iOS builds need a Mac runner
+    timeout-minutes: 30                      # stop a stuck job instead of paying for it
+    steps:
+      - uses: actions/checkout@v4            # download the code
+      - uses: maxim-lobanov/setup-xcode@v1   # choose the Xcode version
+        with:
+          xcode-version: latest-stable       # or pin a version, so builds stay repeatable
+      - run: brew install swiftlint          # install the linter
+      - run: swiftlint --strict              # fail the check when there are lint warnings
+      # Build and run only the unit tests here, so feedback stays fast
+      # Use a simulator name that exists on the runner's Xcode version
+      - run: |
+          xcodebuild test -scheme MyApp -destination 'platform=iOS Simulator,name=iPhone 16' -only-testing:MyAppTests
 ```
 
----
+2. Workflow 2, trigger and Job 1: test (.github/workflows/release.yml)
+
+```yaml
+name: Release                                # workflow name
+on:
+  push:
+    branches: [main]                         # a merged pull request creates a push to main
+concurrency:
+  group: release                             # only one release runs at a time
+  cancel-in-progress: false                  # never cancel a release that is already running
+jobs:
+  test:                                      # job 1
+    runs-on: macos-latest                    # Mac runner
+    steps:
+      - uses: actions/checkout@v4            # download the code
+      - uses: maxim-lobanov/setup-xcode@v1   # choose the Xcode version
+        with:
+          xcode-version: latest-stable       # same version in every job
+      # Run all tests, unit and UI, and save a result bundle with coverage
+      - run: |
+          xcodebuild test -scheme MyApp -destination 'platform=iOS Simulator,name=iPhone 16' -resultBundlePath TestResults.xcresult -enableCodeCoverage YES
+      - uses: actions/upload-artifact@v4     # keep the test report
+        if: always()                         # upload it even when tests fail, so you can read why
+        with:
+          name: test-results                 # the artifact name
+          path: TestResults.xcresult         # the file to keep
+```
+
+3. Job 2: build, sign, and save artifacts
+
+```yaml
+  build:                                     # job 2
+    needs: test                              # runs only if the test job passed
+    runs-on: macos-latest                    # Mac runner
+    steps:
+      - uses: actions/checkout@v4            # download the code
+      - uses: maxim-lobanov/setup-xcode@v1   # choose the Xcode version
+        with:
+          xcode-version: latest-stable       # same version as the test job
+      - uses: ruby/setup-ruby@v1             # install Ruby, which fastlane needs
+        with:
+          bundler-cache: true                # cache the gems, so the next run is faster
+      - run: bundle exec fastlane build      # sign, archive, and export the IPA
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}               # decrypts the signing files in the match repo
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_AUTH }} # lets the job read the private match repo
+          BUILD_NUMBER: ${{ github.run_number }}                      # a unique number that always goes up
+      - uses: actions/upload-artifact@v4     # keep the build for the next job and for later
+        with:
+          name: app-build                    # the artifact name
+          path: |                            # the files to keep
+            build/MyApp.ipa
+            build/MyApp.app.dSYM.zip
+```
+
+4. Job 3: deploy to TestFlight, and Job 4: notify
+
+```yaml
+  deploy:                                    # job 3
+    needs: build                             # runs only if the build job passed
+    runs-on: macos-latest                    # Mac runner, fastlane upload works best here
+    environment: testflight                  # an environment can require a manual approval
+    steps:
+      - uses: actions/checkout@v4            # download the code, because the Fastfile is in the repo
+      - uses: ruby/setup-ruby@v1             # install Ruby for fastlane
+        with:
+          bundler-cache: true                # cache the gems
+      - uses: actions/download-artifact@v4   # get the exact IPA that the build job made
+        with:
+          name: app-build                    # the artifact from job 2
+          path: build                        # put the files in the build folder
+      - run: bundle exec fastlane deploy     # upload the IPA to TestFlight
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}             # App Store Connect API key id
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}       # App Store Connect issuer id
+          ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}   # the .p8 key, stored as base64 text
+
+  notify:                                    # job 4
+    needs: [test, build, deploy]             # wait for all the jobs
+    if: always()                             # run even when an earlier job failed
+    runs-on: ubuntu-latest                   # no Mac needed here, and Linux is cheaper
+    steps:
+      # Post the result of the deploy job to Slack
+      - run: |
+          curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"iOS release: ${{ needs.deploy.result }}\"}" ${{ secrets.SLACK_WEBHOOK }}
+```
+
+5. The Fastfile that the jobs call (fastlane/Fastfile)
+
+```ruby
+default_platform(:ios)                       # every lane here is for iOS
+
+platform :ios do
+  lane :build do                             # called by the build job
+    setup_ci                                 # create a temporary keychain on the CI machine
+    match(type: "appstore", readonly: true)  # download the distribution certificate and profile, never create new ones
+    increment_build_number(build_number: ENV["BUILD_NUMBER"])  # set the unique build number
+    build_app(                               # archive and export the IPA
+      scheme: "MyApp",                       # the scheme to build
+      export_method: "app-store",            # the export type for TestFlight and the App Store
+      output_directory: "build"              # put the IPA and dSYM in the build folder
+    )
+  end
+
+  lane :deploy do                            # called by the deploy job
+    api_key = app_store_connect_api_key(     # sign in with an API key, no password and no 2FA
+      key_id: ENV["ASC_KEY_ID"],             # the key id from the secrets
+      issuer_id: ENV["ASC_ISSUER_ID"],       # the issuer id from the secrets
+      key_content: ENV["ASC_KEY_CONTENT"],   # the key text from the secrets
+      is_key_content_base64: true            # the key was stored as base64
+    )
+    upload_to_testflight(                    # send the build to TestFlight
+      api_key: api_key,                      # use the API key above
+      ipa: "build/MyApp.ipa",                # the IPA downloaded from the artifact
+      skip_waiting_for_build_processing: true  # do not hold the runner while Apple processes the build
+    )
+  end
+end
+```
+
+6. Branch protection (set in GitHub, not in YAML)
+GitHub > Settings > Branches > Add rule for "main"
+• Require a pull request before merging                   # nobody pushes straight to main
+• Require status checks to pass: "checks" (PR checks job) # the merge button stays disabled until tests pass
+• Require branches to be up to date before merging        # the PR was tested against the latest main
+
+Secrets to add (Settings > Secrets and variables > Actions):
+MATCH_PASSWORD, MATCH_GIT_AUTH, ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_CONTENT, SLACK_WEBHOOK.
+
+Quick steps to remember:
+• PR workflow: lint, build, and unit tests. Branch protection blocks the merge if it fails.
+• Merge to main: the push triggers the release workflow.
+• Job 1, test: unit and UI tests, with the report saved.
+• Job 2, build: needs: test, then sign, archive, and upload the IPA and dSYMs as artifacts.
+• Job 3, deploy: needs: build, then download the same IPA and send it to TestFlight.
+• Notify: Slack message with the result, even on failure.
+
+Good to mention (Staff-Level Interview Points):
+• Deploy the file you tested: Passing the IPA between jobs as an artifact means TestFlight gets the exact build that came out of the pipeline, and no job rebuilds it.
+• Two workflows keep feedback fast: The PR workflow stays short with unit tests only. The slow UI tests and the release steps run once, after the merge.
+• Signing: fastlane match keeps certificates in one encrypted repo, so the team and CI share the same files. setup_ci creates a temporary keychain, so the runner never prompts for a password.
+• API key login: the App Store Connect API key avoids Apple ID passwords and two-factor prompts, which cannot work in CI.
+• Build numbers must increase on every upload: github.run_number does that without any extra setup.
+• Keep the dSYMs: The artifact stores them, and you can upload them to your crash tool (Q-75) in the deploy job.
+• Approval gate: an environment with required reviewers pauses the deploy job until someone approves. Use it for the App Store release, and keep TestFlight automatic.
+• Speed and cost: macOS runner minutes cost more than Linux ones. Cache Swift Package Manager downloads and gems, set timeout-minutes, and cancel old PR runs. Teams with heavy usage move to self-hosted Mac runners.
+• Pin versions for repeatable builds: latest-stable and macos-latest change over time. Pin the Xcode version, and check which simulators and Xcode versions the runner image has, in GitHub's runner documentation.
+• Flaky UI tests can block releases: Retry failed tests with -retry-tests-on-failure, and fix flaky tests quickly.
+• Secrets stay in GitHub Secrets: Never commit certificates or keys. Secrets are not passed to workflows triggered from forked pull requests, which is the safe default.
+• Rollback means shipping a new build with a fix, since a TestFlight or App Store build cannot be undone. Tag each release in Git so you can find what went out.
+• Alternatives: Xcode Cloud is Apple's own CI/CD service, and it handles signing and TestFlight for you. GitHub Actions gives more control and fits teams that already use GitHub for everything.
+
+One-liner: A PR workflow blocks bad code before merge, then a merge to main triggers test, build and sign, artifacts, and a TestFlight upload, with each job running only if the one before it passed.
+
+Memory trick: P-M-T-B-D-N → "PR checks, Merge, Test, Build and sign, Deploy, Notify."
+
+#### 💻 YAML & Fastlane Configuration Example
+
+```yaml
+# =========================================================================
+# 🚀 SENIOR / STAFF INTERVIEW ARCHITECTURE: iOS CI/CD with GitHub Actions
+# =========================================================================
+#
+# 💡 SENIOR / STAFF INTERVIEW TALKING POINTS:
+# • Dual-Workflow Model: Fast PR gate (~5 min feedback loop) vs. Chained Release Pipeline.
+# • Zero Recompilation Rule: Build and sign ONCE in Job 2, upload IPA artifact, then
+#   download the exact same binary in Job 3 for TestFlight deployment.
+# • Fastlane Match & Ephemeral Keychains: 'setup_ci' creates a temporary macOS keychain
+#   cleared after job execution; 'match(readonly: true)' prevents CI runner from dirtying certificates.
+# • App Store Connect API Key: Headless 2FA-free authentication using Apple's official REST API (.p8).
+# • Matrix & Cost Optimization: Run notifications and lightweight scripts on ubuntu-latest ($)
+#   instead of burning costly macOS runner minutes ($$$).
+
+# -------------------------------------------------------------------------
+# 1. PR Gate: .github/workflows/pr.yml
+# -------------------------------------------------------------------------
+name: PR checks
+on:
+  pull_request:
+    branches: [main]
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+      - run: brew install swiftlint
+      - run: swiftlint --strict
+      - run: |
+          xcodebuild test -scheme MyApp -destination 'platform=iOS Simulator,name=iPhone 16' -only-testing:MyAppTests
+
+# -------------------------------------------------------------------------
+# 2. Fastlane Automation: fastlane/Fastfile
+# -------------------------------------------------------------------------
+# default_platform(:ios)
+# platform :ios do
+#   lane :build do
+#     setup_ci
+#     match(type: "appstore", readonly: true)
+#     increment_build_number(build_number: ENV["BUILD_NUMBER"])
+#     build_app(scheme: "MyApp", export_method: "app-store", output_directory: "build")
+#   end
+#   lane :deploy do
+#     api_key = app_store_connect_api_key(
+#       key_id: ENV["ASC_KEY_ID"],
+#       issuer_id: ENV["ASC_ISSUER_ID"],
+#       key_content: ENV["ASC_KEY_CONTENT"],
+#       is_key_content_base64: true
+#     )
+#     upload_to_testflight(api_key: api_key, ipa: "build/MyApp.ipa", skip_waiting_for_build_processing: true)
+#   end
+# end
+```
 
 ### `Q-73` — Feature flagging, A/B testing, and remote configuration
 
