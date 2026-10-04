@@ -4727,7 +4727,7 @@ final class AccountSyncService {
 ---
 
 
-## 🔒 Security, Auth & Compliance (Q-48 – Q-56, Q-79 – Q-81)
+## 🔒 Security, Auth & Compliance (Q-48 – Q-59)
 
 ### `Q-48` — Certificate pinning — what it is, why it stops MITM attacks
 
@@ -5720,7 +5720,7 @@ struct AppSecurityHardenCheck {
 
 ---
 
-### `Q-79` — What is App Transport Security?
+### `Q-57` — What is App Transport Security?
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -5879,7 +5879,7 @@ func demonstrateSecureRequest() async throws -> Data {
 
 ---
 
-### `Q-80` — How do you protect data at rest?
+### `Q-58` — How do you protect data at rest?
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -6059,7 +6059,7 @@ final class ProtectionObserver {
 
 ---
 
-### `Q-81` — Where do you store an AI API key for an iOS app?
+### `Q-59` — Where do you store an AI API key for an iOS app?
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -6385,9 +6385,9 @@ enum AIServiceError: LocalizedError {
 ---
 
 
-## 🏛️ System Design & Mobile Architecture (Q-57 – Q-59)
+## 🏛️ System Design & Mobile Architecture (Q-60 – Q-62)
 
-### `Q-57` — How do you load and cache images at scale?
+### `Q-60` — How do you load and cache images at scale?
 
 - **Category:** `System Design & Mobile Architecture`
 
@@ -6619,7 +6619,7 @@ extension ProductFeedViewController: UICollectionViewDataSourcePrefetching {
 
 ---
 
-### `Q-58` — System Design — Offline-First Feed & Bi-directional Synchronization
+### `Q-61` — System Design — Offline-First Feed & Bi-directional Synchronization
 
 - **Category:** `System Design & Mobile Architecture`
 
@@ -6723,7 +6723,7 @@ actor OfflineSyncEngine {
 
 ---
 
-### `Q-59` — How does a payment process work in an e-commerce app like Amazon?
+### `Q-62` — How does a payment process work in an e-commerce app like Amazon?
 
 - **Category:** `System Design & Mobile Architecture`
 
@@ -7005,9 +7005,9 @@ enum PaymentError: LocalizedError {
 
 ---
 
-## 🧪 Testing, CI/CD & AI Engineering (Q-60 – Q-68)
+## 🧪 Testing, CI/CD & AI Engineering (Q-63 – Q-71)
 
-### `Q-60` — Rehearse the AIAnalyzer walkthrough out loud — cloud/local/hybrid modes, confidence-based fallback
+### `Q-63` — Rehearse the AIAnalyzer walkthrough out loud — cloud/local/hybrid modes, confidence-based fallback
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -7060,7 +7060,7 @@ class HybridAIAnalyzer {
 
 ---
 
-### `Q-61` — Why did you choose Gemini for cloud and Ollama/Qwen for local?
+### `Q-64` — Why did you choose Gemini for cloud and Ollama/Qwen for local?
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -7117,7 +7117,7 @@ struct GeminiProvider: LLMProvider {
 
 ---
 
-### `Q-62` — How do you validate AI-generated code before merging?
+### `Q-65` — How do you validate AI-generated code before merging?
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -7176,7 +7176,7 @@ final class AIGeneratedServiceTests: XCTestCase {
 
 ---
 
-### `Q-63` — How building your own AI tool changed how you use Copilot/Cursor day to day
+### `Q-66` — How building your own AI tool changed how you use Copilot/Cursor day to day
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -7231,7 +7231,7 @@ After building my own tool: I use Cursor as a reasoning partner. The specific ch
 
 ---
 
-### `Q-64` — TDD vs BDD — the actual difference
+### `Q-67` — TDD vs BDD — the actual difference
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -7304,7 +7304,7 @@ class BankAccountSpec: QuickSpec {
 
 ---
 
-### `Q-65` — XCTest — writing unit tests and UI tests, mocking and stubbing
+### `Q-68` — XCTest — writing unit tests and UI tests, mocking and stubbing
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -7390,7 +7390,7 @@ final class LoginUITests: XCTestCase {
 
 ---
 
-### `Q-66` — How do you write code that is easy to test?
+### `Q-69` — How do you write code that is easy to test?
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -7627,7 +7627,7 @@ final class ProfileViewModelTests: XCTestCase {
 
 ---
 
-### `Q-67` — CI/CD pipelines for iOS — what goes into one
+### `Q-70` — CI/CD pipelines for iOS — what goes into one
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -7698,7 +7698,7 @@ Key interview talking point: A CI pipeline that takes 45 minutes is one nobody w
 
 ---
 
-### `Q-68` — Feature flagging, A/B testing, and remote configuration
+### `Q-71` — Feature flagging, A/B testing, and remote configuration
 
 - **Category:** `Testing, CI/CD & AI Engineering`
 
@@ -7768,9 +7768,9 @@ struct TransferView: View {
 ---
 
 
-## 👔 Engineering Leadership & Operations (Q-69 – Q-70)
+## 👔 Engineering Leadership & Operations (Q-72 – Q-73)
 
-### `Q-69` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
+### `Q-72` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -7835,7 +7835,7 @@ final class ModernAccountService: AccountServiceProtocol {
 
 ---
 
-### `Q-70` — How do you read a crash log? How do you symbolicate it?
+### `Q-73` — How do you read a crash log? How do you symbolicate it?
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -8033,9 +8033,9 @@ final class BreadcrumbTracker {
 ---
 
 
-## 🧠 Memory Management (Q-71 – Q-78)
+## 🧠 Memory Management (Q-74 – Q-81)
 
-### `Q-71` — How does ARC work? What is the difference between strong, weak, and unowned?
+### `Q-74` — How does ARC work? What is the difference between strong, weak, and unowned?
 
 - **Category:** `Memory Management`
 
@@ -8095,7 +8095,7 @@ class RequestManager {
 
 ---
 
-### `Q-72` — What is a retain cycle? How do you detect and fix them?
+### `Q-75` — What is a retain cycle? How do you detect and fix them?
 
 - **Category:** `Memory Management`
 
@@ -8170,7 +8170,7 @@ func testNoRetainCycle() {
 
 ---
 
-### `Q-73` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
+### `Q-76` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
 
 - **Category:** `Memory Management`
 
@@ -8228,7 +8228,7 @@ struct LargeModel: Describable {
 
 ---
 
-### `Q-74` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
+### `Q-77` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
 
 - **Category:** `Memory Management`
 
@@ -8296,7 +8296,7 @@ print(s2.value)    // "world"
 
 ---
 
-### `Q-75` — How do you handle memory warnings?
+### `Q-78` — How do you handle memory warnings?
 
 - **Category:** `Memory Management`
 
@@ -8466,7 +8466,7 @@ func downsample(url: URL, maxPixel: CGFloat) -> UIImage? {
 
 ---
 
-### `Q-76` — What is the Swift runtime side table? How do weak references work under the hood?
+### `Q-79` — What is the Swift runtime side table? How do weak references work under the hood?
 
 - **Category:** `Memory Management`
 
@@ -8531,7 +8531,7 @@ print(observer?.id ?? "nil")  // "nil"
 
 ---
 
-### `Q-77` — How does Jetsam work? What strategies do you use to survive memory pressure?
+### `Q-80` — How does Jetsam work? What strategies do you use to survive memory pressure?
 
 - **Category:** `Memory Management`
 
@@ -8618,7 +8618,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MXMetricManagerSubscriber
 
 ---
 
-### `Q-78` — How do you profile and debug memory issues in a production iOS app?
+### `Q-81` — How do you profile and debug memory issues in a production iOS app?
 
 - **Category:** `Memory Management`
 
