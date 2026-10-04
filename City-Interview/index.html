@@ -448,7 +448,7 @@
     .sidebar-title {
       font-size: 0.95rem;
       font-weight: 700;
-      color: var(--text-primary);
+      color: #ffffff;
       display: flex;
       align-items: center;
       gap: 0.45rem;
@@ -457,7 +457,7 @@
     .sidebar-close-btn {
       background: transparent;
       border: none;
-      color: var(--text-muted);
+      color: #ffffff;
       cursor: pointer;
       font-size: 1.15rem;
       padding: 0.25rem 0.5rem;
@@ -466,8 +466,8 @@
     }
 
     .sidebar-close-btn:hover {
-      color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.15);
     }
 
     .sidebar-search-box {
@@ -481,14 +481,23 @@
       background: var(--bg-code);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-sm);
-      color: var(--text-primary);
+      color: #ffffff;
       font-size: 0.82rem;
       outline: none;
       transition: border-color 0.2s;
     }
 
+    .sidebar-search-input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
     [data-theme="light"] .sidebar-search-input {
       background: var(--bg-code);
+      color: #24221E;
+    }
+
+    [data-theme="light"] .sidebar-search-input::placeholder {
+      color: #8A847C;
     }
 
     .sidebar-search-input:focus {
@@ -517,27 +526,28 @@
       justify-content: space-between;
       padding: 0.38rem 0.55rem;
       border-radius: var(--radius-sm);
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(255, 255, 255, 0.05);
       font-size: 0.82rem;
       font-weight: 700;
-      color: var(--text-primary);
+      color: #ffffff;
       transition: all 0.15s ease;
       gap: 0.4rem;
     }
 
     .sidebar-topic-header:hover {
-      background: rgba(217, 119, 87, 0.12);
-      color: var(--accent-claude);
+      background: rgba(217, 119, 87, 0.22);
+      color: #ffffff;
     }
 
     .sidebar-topic-header.active {
-      background: rgba(217, 119, 87, 0.15);
+      background: rgba(217, 119, 87, 0.28);
       border-left: 3px solid var(--accent-claude);
-      color: var(--accent-claude);
+      color: #ffffff;
     }
 
     [data-theme="light"] .sidebar-topic-header {
       background: rgba(0, 0, 0, 0.03);
+      color: #24221E;
     }
 
     [data-theme="light"] .sidebar-topic-header.active {
@@ -548,9 +558,9 @@
 
     .sidebar-dropdown-btn {
       background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       cursor: pointer;
-      color: var(--text-muted);
+      color: #ffffff;
       width: 22px;
       height: 22px;
       display: inline-flex;
@@ -564,13 +574,14 @@
     }
 
     .sidebar-dropdown-btn:hover {
-      background: rgba(217, 119, 87, 0.2);
-      border-color: rgba(217, 119, 87, 0.4);
-      color: var(--accent-claude);
+      background: rgba(217, 119, 87, 0.3);
+      border-color: rgba(217, 119, 87, 0.6);
+      color: #ffffff;
     }
 
     [data-theme="light"] .sidebar-dropdown-btn {
       border-color: rgba(0, 0, 0, 0.1);
+      color: #59544D;
     }
 
     [data-theme="light"] .sidebar-dropdown-btn:hover {
@@ -595,51 +606,66 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.35rem 0.65rem 0.35rem 1rem;
+      padding: 0.38rem 0.65rem 0.38rem 1rem;
       border-radius: var(--radius-sm);
       text-decoration: none;
-      color: var(--text-secondary);
-      font-size: 0.78rem;
+      color: #ffffff;
+      font-size: 0.8rem;
+      font-weight: 500;
       transition: all 0.15s ease;
       cursor: pointer;
       line-height: 1.35;
     }
 
     .sidebar-item:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
       transform: translateX(2px);
+    }
+
+    [data-theme="light"] .sidebar-item {
+      color: #24221E;
     }
 
     [data-theme="light"] .sidebar-item:hover {
       background: rgba(0, 0, 0, 0.04);
+      color: #000000;
     }
 
     .sidebar-item.active {
-      background: rgba(217, 119, 87, 0.18);
-      color: var(--accent-claude);
+      background: rgba(217, 119, 87, 0.32);
+      color: #ffffff;
       border-left: 3px solid var(--accent-claude);
       font-weight: 600;
     }
 
     .sidebar-item.reviewed .sidebar-item-text {
-      opacity: 0.65;
+      color: #ffffff;
+      opacity: 0.92;
     }
 
     .sidebar-id-badge {
       font-family: var(--font-mono);
       font-size: 0.68rem;
       font-weight: 700;
-      padding: 0.1rem 0.3rem;
+      padding: 0.12rem 0.35rem;
       border-radius: 4px;
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: #ffffff;
       flex-shrink: 0;
       transition: background 0.15s ease, color 0.15s ease;
     }
 
+    [data-theme="light"] .sidebar-id-badge {
+      background: rgba(0, 0, 0, 0.06);
+      border-color: rgba(0, 0, 0, 0.12);
+      color: #383531;
+    }
+
     .sidebar-item.active .sidebar-id-badge {
       background: var(--accent-claude);
+      border-color: var(--accent-claude);
       color: #ffffff;
     }
 
@@ -648,12 +674,23 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      color: #ffffff;
+    }
+
+    [data-theme="light"] .sidebar-item-text {
+      color: inherit;
     }
 
     .sidebar-check {
       font-size: 0.72rem;
-      color: var(--accent-emerald);
+      color: #ffffff;
       flex-shrink: 0;
+      opacity: 0.75;
+    }
+
+    .sidebar-item.reviewed .sidebar-check {
+      color: #4ade80;
+      opacity: 1;
     }
 
     /* Section Focus Bar in Main View */
@@ -1778,8 +1815,9 @@
 
     /* Sidebar active item highlighted by IntersectionObserver */
     .sidebar-item.in-view {
-      background: rgba(217, 119, 87, 0.12);
-      color: var(--accent-indigo-light);
+      background: rgba(217, 119, 87, 0.22);
+      color: #ffffff;
+      font-weight: 600;
     }
 
     /* Responsive */
