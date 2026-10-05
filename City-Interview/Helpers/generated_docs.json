@@ -848,7 +848,7 @@
         "filename": "PerformanceProfiling-TalkingPoints.md"
       }
     ],
-    "Q-82": [
+    "Q-83": [
       "performance-profiling",
       "ios-internals"
     ],
@@ -952,6 +952,14 @@
         "title": "XCTest, Mocking & UI Testing Guide",
         "filename": "Testing-TalkingPoints.md",
         "icon": "🧪"
+      }
+    ],
+    "Q-77": [
+      {
+        "docId": "leadership-ownership",
+        "title": "Development Lead & Feature Ownership Guide",
+        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
+        "icon": "👔"
       }
     ]
   }
