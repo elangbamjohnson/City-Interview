@@ -1,6 +1,6 @@
 # 📱 iOS Senior & Staff Interview Question Bank
 
-> A comprehensive, senior & staff-level revision suite for 83 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, 60/120fps Scroll Hitch Elimination, Scalable Image Caching, Keychain Secrets Management, OAuth 2.0 PKCE & Token Rotation, Production Crash Log Triage & Symbolication, Memory Management, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
+> A comprehensive, senior & staff-level revision suite for 84 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, 60/120fps Scroll Hitch Elimination, Scalable Image Caching, Keychain Secrets Management, OAuth 2.0 PKCE & Token Rotation, Production Crash Log Triage & Symbolication, Memory Management, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
 
 ## 📊 Overview
 
@@ -17,10 +17,10 @@
 | **Security, Auth & Compliance** | `12` | Keychain vs Secure Enclave, token storage CRUD, OAuth 2.0 PKCE & token rotation, SSL Certificate Pinning, biometric auth, Jailbreak & Frida detection, NSFileProtectionComplete, and banking compliance (PCI-DSS, SOX, GDPR). |
 | **System Design & Mobile Architecture** | `3` | End-to-end mobile system design: Two-tier LRU memory/disk image caching with coalescing, Offline-First bi-directional syncing with outbox pattern, and E-commerce checkout & payment flow (Apple Pay, idempotency, gateway authorization & settlement). |
 | **Testing & AI Engineering** | `10` | Unit and UI testing with XCTest, protocol mocking and stubbing, TDD/BDD, test doubles (mocks/stubs/fakes), feature flagging, and hybrid cloud/on-device AI systems. |
-| **CI/CD & DevOps** | `1` | Automated continuous integration and delivery with GitHub Actions: PR quality gates, macOS runner optimization, Fastlane match code signing, and headless TestFlight deployment via App Store Connect API keys. |
+| **CI/CD & DevOps** | `2` | Automated continuous integration and delivery with GitHub Actions: PR quality gates, macOS runner optimization, Fastlane match code signing, and headless TestFlight deployment via App Store Connect API keys. |
 | **Engineering Leadership & Operations** | `2` | Production incident triage, crash log analysis & dSYM symbolication, Crashlytics velocity alerts, MetricKit crash loops, blameless post-mortems, and migrating legacy monoliths using the Strangler Fig pattern. |
 | **Memory Management** | `8` | ARC strong/weak/unowned, retain cycles, stack vs heap, Copy-on-Write internals, memory warnings, the Swift runtime side table, Jetsam OOM survival, and production memory profiling with Instruments and MetricKit. |
-| **Total** | **`83`** | Complete Senior & Staff iOS Interview Curriculum |
+| **Total** | **`84`** | Complete Senior & Staff iOS Interview Curriculum |
 
 ---
 
@@ -8244,11 +8244,12 @@ struct TransferView: View {
 ---
 
 
-## 👔 Engineering Leadership & Operations (Q-74 – Q-75)
 
 ---
 
-## 🚀 CI/CD & DevOps (Q-73)
+---
+
+## 🚀 CI/CD & DevOps (Q-73 – Q-74)
 
 ### `Q-73` — How do you build a CI/CD pipeline for an iOS app with GitHub Actions?
 
@@ -8522,7 +8523,233 @@ jobs:
 
 ---
 
-### `Q-74` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
+### `Q-74` — How do you manage signing in CI?
+
+- **Category:** `CI/CD & DevOps`
+
+> [!TIP]
+> **🗣️ Interview Pitch (Say it like this):**  
+> *"In CI, code signing requires importing certificates and provisioning profiles into an ephemeral runner keychain without exposing private keys; my standard approach is Fastlane match in read-only mode with setup_ci, with fallbacks to base64-encoded .p12 secrets imported via macOS security CLI or cloud-managed signing with App Store Connect API keys."*
+
+#### 📖 Detailed Answer
+
+To put an app on TestFlight, iOS needs proof that the app comes from you. That proof has three parts:
+
+• **Certificate:** your identity, with a private key. The private key exists only on the Mac that created it, or in a file you exported.
+• **Provisioning profile:** says which app ID, which certificate, and which capabilities (push, for example) are allowed.
+• **Keychain:** the place on the Mac where codesign looks for the certificate.
+
+On your own Mac, all three are already there. A CI runner is a fresh Mac every time, so it has none of them. Managing signing in CI means getting these files onto the runner safely, using them for the build, and removing them afterward.
+
+Say it like this:
+
+"On CI, I need to give a clean machine the certificate, the private key, and the profile, without ever committing them to the repo.
+
+My first choice is fastlane match. It stores the certificate and profiles, encrypted, in a private Git repo (or cloud storage). The whole team and CI use the same files, so there is no 'it signs on my Mac but not on CI' problem. In CI, I run match in read-only mode, so CI downloads and uses the files but never creates new certificates. That matters because Apple limits how many distribution certificates an account can have. Before match, I call setup_ci, which creates a temporary keychain, so the runner never asks for a password.
+
+If I don't use fastlane, there are two other ways. The first is to export the certificate as a .p12 file, convert it and the profile to base64 text, store both in GitHub Secrets, and have the workflow import them into a temporary keychain with the security command. The second is cloud-managed signing: I give xcodebuild an App Store Connect API key and the -allowProvisioningUpdates flag, and Apple creates and manages the distribution certificate for me. That is the least setup, but I have less control. Xcode Cloud goes one step further and handles signing completely.
+
+Two more habits keep it safe and cheap. For pull request jobs that only build and test on the simulator, I turn signing off, because a simulator does not need it. And I treat certificates like passwords: they live in secrets, never in the repo, and the temporary keychain is deleted after the job."
+
+1. Option A: fastlane match, one-time setup (run on a developer Mac)
+
+```ruby
+# fastlane/Matchfile
+git_url("git@github.com:myorg/ios-certs.git")        # the private repo that stores the encrypted signing files
+storage_mode("git")                                  # keep the files in git (S3 or Google Cloud also work)
+type("appstore")                                     # the distribution type used for TestFlight and the App Store
+app_identifier(["com.mycompany.myapp"])              # the bundle id this certificate and profile are for
+```
+
+```bash
+# Run once on a developer Mac. It creates the certificate and profile, encrypts them, and pushes them to the repo.
+bundle exec fastlane match appstore                  # you choose an encryption password, which becomes MATCH_PASSWORD
+```
+
+2. Option A: fastlane match in CI (read-only)
+
+```ruby
+lane :build do
+  setup_ci                                           # create a temporary keychain so the runner never asks for a password
+  match(type: "appstore", readonly: true)            # download and install the files, but never create new ones
+  build_app(scheme: "MyApp", export_method: "app-store")  # archive and export, signing finds the files in the keychain
+end
+```
+
+```yaml
+- run: bundle exec fastlane build                    # run the lane on the runner
+  env:
+    MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}                # decrypts the files in the match repo
+    MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_AUTH }} # lets the job read the private repo (base64 of "user:token")
+```
+
+3. Option B: your own certificate and profile in GitHub Secrets
+
+```bash
+# Run on your Mac once, to turn the files into text that can be stored as secrets
+base64 -i Certificates.p12 | pbcopy                  # copy the certificate as base64, then paste it into the secret P12_BASE64
+base64 -i MyApp_AppStore.mobileprovision | pbcopy    # copy the profile as base64, then paste it into the secret PROFILE_BASE64
+```
+
+```yaml
+- name: Import signing files                         # a step that runs before the build
+  env:
+    P12_BASE64: ${{ secrets.P12_BASE64 }}            # the certificate with its private key, as text
+    P12_PASSWORD: ${{ secrets.P12_PASSWORD }}        # the password you set when exporting the .p12
+    PROFILE_BASE64: ${{ secrets.PROFILE_BASE64 }}    # the provisioning profile, as text
+    KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}  # any random password for the temporary keychain
+  run: |
+    # Choose where the temporary keychain will live
+    KEYCHAIN_PATH=$RUNNER_TEMP/build.keychain-db
+    # Turn the base64 text back into the .p12 file
+    echo -n "$P12_BASE64" | base64 --decode > $RUNNER_TEMP/cert.p12
+    # Create a new empty keychain
+    security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+    # Keep it unlocked for six hours, long enough for the build
+    security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+    # Unlock it so tools can use it
+    security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+    # Put the certificate and private key into the keychain
+    security import $RUNNER_TEMP/cert.p12 -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+    # Allow codesign to use the key without showing a password popup that would hang CI
+    security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+    # Make this keychain the one that tools search
+    security list-keychain -d user -s "$KEYCHAIN_PATH"
+    # Create the folder where Xcode looks for profiles
+    mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+    # Turn the base64 text back into the profile file and put it in that folder
+    echo -n "$PROFILE_BASE64" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/app.mobileprovision
+```
+
+4. Option C: cloud-managed signing with an API key
+
+```bash
+# Save the .p8 key from the secret to a file
+echo -n "$ASC_KEY_CONTENT" | base64 --decode > $RUNNER_TEMP/AuthKey.p8
+
+# Flags used in the next command:
+# -allowProvisioningUpdates : let Xcode create or update the certificate and profile through Apple
+# -authenticationKeyPath    : the .p8 key file
+# -authenticationKeyID      : the id of the API key
+# -authenticationKeyIssuerID: the issuer id of your App Store Connect account
+xcodebuild archive -scheme MyApp -archivePath build/MyApp.xcarchive -allowProvisioningUpdates -authenticationKeyPath $RUNNER_TEMP/AuthKey.p8 -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID"
+```
+
+5. Turn signing off for pull request tests
+
+```bash
+# CODE_SIGNING_ALLOWED=NO : skip signing, because a simulator does not need it
+xcodebuild test -scheme MyApp -destination 'platform=iOS Simulator,name=iPhone 16' CODE_SIGNING_ALLOWED=NO
+```
+
+6. Clean up after the job
+
+```yaml
+- name: Delete temporary keychain                    # remove secrets from the machine
+  if: always()                                       # run even when the build failed
+  run: security delete-keychain $RUNNER_TEMP/build.keychain-db  # the keychain and its certificate are gone
+```
+
+Which option to choose:
+• **fastlane match:** best for teams. One shared source of truth, and CI is read-only.
+• **Secrets with security import:** no extra tools, but you manage the files and expiry by hand.
+• **Cloud-managed signing:** least setup, Apple handles certificates, but less control.
+• **Xcode Cloud:** Apple handles everything, but you are inside Apple's CI.
+
+Quick steps to remember:
+• Store the signing files encrypted or in secrets, never in the repo.
+• Install them into a temporary keychain on the runner.
+• Build with signing, and skip signing for simulator tests.
+• Clean up the keychain after the job.
+• Renew certificates and profiles before they expire.
+
+Good to mention (Staff-Level Interview Points):
+• Certificates expire after one year and profiles expire too. When they do, the build fails with a signing error. Put a calendar reminder, or a scheduled workflow that warns you, a few weeks before the date.
+• To renew with match, run it from a developer Mac with write access. CI stays read-only, and the new files reach every machine through the repo.
+• Adding a capability such as push notifications or a new device changes the profile. Regenerate it, and with match, run it again for that type.
+• Use an API key, not an Apple ID. An Apple ID needs a password and two-factor codes, and neither works in CI.
+• The partition-list command matters: Without `set-key-partition-list`, codesign can wait for a popup that nobody can click, and the job hangs until it times out.
+• Separate certificates by purpose: development for debug builds, distribution for TestFlight and the App Store. Only the distribution one is needed in the release pipeline.
+• Self-hosted runners keep their state: Always delete the temporary keychain, or one job's certificate stays available to the next job.
+• Secrets are not passed to workflows from forked pull requests, so a stranger's PR cannot read your certificate. Keep it that way.
+• Never commit .p12, .p8, or .mobileprovision files, and add them to .gitignore.
+• Manual signing is more predictable in CI: Automatic signing can try to change profiles during a build, so for release builds many teams set the signing style to manual and name the profile.
+
+One-liner: In CI I store the certificate and profile encrypted, install them into a temporary keychain, build with signing, and delete the keychain afterward, and fastlane match with read-only mode is my usual way.
+
+Memory trick: S-T-R-C → "Store encrypted, Temporary keychain, Read-only in CI, Clean up after."
+
+#### 💻 Configuration & Automation Example
+
+```yaml
+# =========================================================================
+# 🔐 SENIOR / STAFF INTERVIEW ARCHITECTURE: Code Signing in CI Pipelines
+# =========================================================================
+#
+# 💡 SENIOR / STAFF INTERVIEW TALKING POINTS:
+# • The Code Signing Triad: Certificate (Private Key Identity) + Mobileprovision Profile +
+#   macOS Keychain (where 'codesign' tool searches for matching identities).
+# • Fastlane Match: Synchronizes encrypted certs & profiles across the team via a private Git
+#   or cloud bucket. In CI, 'readonly: true' prevents running out of Apple developer certificates.
+# • Security CLI & Partition Lists: 'security set-key-partition-list -S apple-tool:,apple:' is
+#   mandatory to prevent the macOS UI from prompting for keychain unlock during headless execution.
+# • PR Optimization: Pass 'CODE_SIGNING_ALLOWED=NO' during simulator testing to bypass signing overhead.
+
+# -------------------------------------------------------------------------
+# 1. Fastlane Configuration: Matchfile & Fastfile
+# -------------------------------------------------------------------------
+# # fastlane/Matchfile
+# git_url("git@github.com:myorg/ios-certificates.git")
+# storage_mode("git")
+# type("appstore")
+# app_identifier(["com.mycompany.myapp"])
+
+# # fastlane/Fastfile
+# platform :ios do
+#   lane :build_release do
+#     # 🛡️ 1. Create temporary ephemeral keychain for CI
+#     setup_ci
+#     # 🛡️ 2. Fetch encrypted certs in READ-ONLY mode (never create new certs on CI)
+#     match(type: "appstore", readonly: true)
+#     # 🛡️ 3. Archive & export IPA
+#     build_app(scheme: "MyApp", export_method: "app-store")
+#   end
+# end
+
+# -------------------------------------------------------------------------
+# 2. Raw GitHub Actions Workflow with macOS Security CLI
+# -------------------------------------------------------------------------
+# - name: Setup Ephemeral Keychain & Import Signing Files
+#   env:
+#     P12_BASE64: ${{ secrets.P12_BASE64 }}
+#     P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+#     PROFILE_BASE64: ${{ secrets.PROFILE_BASE64 }}
+#     KEYCHAIN_PASSWORD: ${{ secrets.TEMP_KEYCHAIN_PASSWORD }}
+#   run: |
+#     KEYCHAIN_PATH=$RUNNER_TEMP/build.keychain-db
+#     echo -n "$P12_BASE64" | base64 --decode > $RUNNER_TEMP/cert.p12
+#     security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+#     security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+#     security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+#     security import $RUNNER_TEMP/cert.p12 -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+#     security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+#     security list-keychain -d user -s "$KEYCHAIN_PATH"
+#     mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+#     echo -n "$PROFILE_BASE64" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/app.mobileprovision
+#
+# - name: Build and Archive
+#   run: xcodebuild archive -scheme MyApp -archivePath build/MyApp.xcarchive
+#
+# - name: Ephemeral Keychain Teardown
+#   if: always()
+#   run: security delete-keychain $RUNNER_TEMP/build.keychain-db
+```
+
+---
+
+## 👔 Engineering Leadership & Operations (Q-75 – Q-76)
+
+### `Q-75` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -8587,7 +8814,7 @@ final class ModernAccountService: AccountServiceProtocol {
 
 ---
 
-### `Q-75` — How do you read a crash log? How do you symbolicate it?
+### `Q-76` — How do you read a crash log? How do you symbolicate it?
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -8785,9 +9012,9 @@ final class BreadcrumbTracker {
 ---
 
 
-## 🧠 Memory Management (Q-76 – Q-83)
+## 🧠 Memory Management (Q-77 – Q-84)
 
-### `Q-76` — How does ARC work? What is the difference between strong, weak, and unowned?
+### `Q-77` — How does ARC work? What is the difference between strong, weak, and unowned?
 
 - **Category:** `Memory Management`
 
@@ -8847,7 +9074,7 @@ class RequestManager {
 
 ---
 
-### `Q-77` — What is a retain cycle? How do you detect and fix them?
+### `Q-78` — What is a retain cycle? How do you detect and fix them?
 
 - **Category:** `Memory Management`
 
@@ -8922,7 +9149,7 @@ func testNoRetainCycle() {
 
 ---
 
-### `Q-78` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
+### `Q-79` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
 
 - **Category:** `Memory Management`
 
@@ -8980,7 +9207,7 @@ struct LargeModel: Describable {
 
 ---
 
-### `Q-79` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
+### `Q-80` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
 
 - **Category:** `Memory Management`
 
@@ -9048,7 +9275,7 @@ print(s2.value)    // "world"
 
 ---
 
-### `Q-80` — How do you handle memory warnings?
+### `Q-81` — How do you handle memory warnings?
 
 - **Category:** `Memory Management`
 
@@ -9218,7 +9445,7 @@ func downsample(url: URL, maxPixel: CGFloat) -> UIImage? {
 
 ---
 
-### `Q-81` — What is the Swift runtime side table? How do weak references work under the hood?
+### `Q-82` — What is the Swift runtime side table? How do weak references work under the hood?
 
 - **Category:** `Memory Management`
 
@@ -9283,7 +9510,7 @@ print(observer?.id ?? "nil")  // "nil"
 
 ---
 
-### `Q-82` — How does Jetsam work? What strategies do you use to survive memory pressure?
+### `Q-83` — How does Jetsam work? What strategies do you use to survive memory pressure?
 
 - **Category:** `Memory Management`
 
@@ -9370,7 +9597,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MXMetricManagerSubscriber
 
 ---
 
-### `Q-83` — How do you profile and debug memory issues in a production iOS app?
+### `Q-84` — How do you profile and debug memory issues in a production iOS app?
 
 - **Category:** `Memory Management`
 
