@@ -1,6 +1,6 @@
 # 📱 iOS Senior & Staff Interview Question Bank
 
-> A comprehensive, senior & staff-level revision suite for 90 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, 60/120fps Scroll Hitch Elimination, Scalable Image Caching, Keychain Secrets Management, OAuth 2.0 PKCE & Token Rotation, Production Crash Log Triage & Symbolication, Memory Management, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
+> A comprehensive, senior & staff-level revision suite for 91 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, 60/120fps Scroll Hitch Elimination, Scalable Image Caching, Keychain Secrets Management, OAuth 2.0 PKCE & Token Rotation, Production Crash Log Triage & Symbolication, Memory Management, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
 
 ## 📊 Overview
 
@@ -13,7 +13,7 @@
 | **SwiftUI & UIKit Layout** | `10` | Auto Layout Cassowary solver, Dynamic Type, accessibility (a11y), iPad adaptive layouts, internationalization & RTL, UICollectionView diffable data sources & compositional layouts, atomic component decomposition, SwiftUI ViewGraph/AttributeGraph diffing, and UIKit interoperability. |
 | **Combine & Reactive Streams** | `1` | Reactive streams, Publishers, Subscribers, Backpressure, Subject types, Debounce vs Throttle, and cancellation lifecycles. |
 | **Networking, APIs & Background Tasks** | `7` | URLSession abstractions, REST vs GraphQL contract-driven schemas, token refresh interceptors, silent APNs pushes, APNs architecture, VoIP PushKit & CallKit, Notification Service Extensions, and BGTaskScheduler. |
-| **Modularity & Launch Performance** | `7` | SPM multi-module boundaries, static vs dynamic linkage launch effects, build-time reduction cascades, binary caching, app thinning, and Instruments profiling. |
+| **Modularity & Launch Performance** | `8` | SPM multi-module boundaries, static vs dynamic linkage launch effects, build-time reduction cascades, binary caching, app thinning, and Instruments profiling. |
 | **Data Persistence & Memory Management** | `4` | Core Data vs SQLite vs Realm vs SwiftData, multi-context concurrency & merging, ARC retain cycles, Heap side tables (weak/unowned), and OS Jetsam OOM survival. |
 | **Security, Auth & Compliance** | `12` | Keychain vs Secure Enclave, token storage CRUD, OAuth 2.0 PKCE & token rotation, SSL Certificate Pinning, biometric auth, Jailbreak & Frida detection, NSFileProtectionComplete, and banking compliance (PCI-DSS, SOX, GDPR). |
 | **System Design & Mobile Architecture** | `4` | End-to-end mobile system design: Two-tier LRU memory/disk image caching with coalescing, Offline-First bi-directional syncing with outbox pattern, and E-commerce checkout & payment flow (Apple Pay, idempotency, gateway authorization & settlement). |
@@ -21,7 +21,7 @@
 | **CI/CD & DevOps** | `2` | Automated continuous integration and delivery with GitHub Actions: PR quality gates, macOS runner optimization, Fastlane match code signing, and headless TestFlight deployment via App Store Connect API keys. |
 | **Engineering Leadership & Operations** | `6` | Production incident triage, crash log analysis & dSYM symbolication, Crashlytics velocity alerts, MetricKit crash loops, blameless post-mortems, and migrating legacy monoliths using the Strangler Fig pattern. |
 | **Memory Management** | `8` | ARC strong/weak/unowned, retain cycles, stack vs heap, Copy-on-Write internals, memory warnings, the Swift runtime side table, Jetsam OOM survival, and production memory profiling with Instruments and MetricKit. |
-| **Total** | **`90`** | Complete Senior & Staff iOS Interview Curriculum |
+| **Total** | **`91`** | Complete Senior & Staff iOS Interview Curriculum |
 
 ---
 
@@ -3909,7 +3909,7 @@ extension VoIPCallManager: CXProviderDelegate {
 ---
 
 
-## 📦 Modularity & Launch Performance (Q-38 – Q-44)
+## 📦 Modularity & Launch Performance (Q-38 – Q-45)
 
 ### `Q-38` — How do you reduce build time in a multi-module app?
 
@@ -4702,9 +4702,252 @@ import CoreModels
 ---
 
 
-## 💾 Data Persistence & Memory Management (Q-45 – Q-48)
 
-### `Q-45` — Core Data vs SQLite vs Realm — one-line difference
+---
+
+### `Q-45` — How do you stop circular dependencies between modules?
+
+- **Category:** `Modularity, Build & Launch Performance`
+
+> [!TIP]
+> **🗣️ Interview Pitch (Say it like this):**  
+> *"A circular dependency breaks the build because Swift Package Manager requires an acyclic graph. I prevent cycles by design using four techniques: strict one-way layer rules (App → Features → Core), interface segregation with protocols, dependency inversion where consumers own the interface, and extracting shared models into lower-level packages. (Memory trick: L-P-I-S → 'Layers, Protocols, Inject, Shared-down.')"*
+
+#### 📖 Detailed Answer
+
+A circular dependency means module A imports module B, and module B imports module A. In Swift Package Manager, this is not allowed. The build fails with a cycle error. So the compiler catches it, but I want to avoid it by design, not fix it later.
+
+Say it like this:
+
+"A circular dependency means module A imports module B, and module B imports module A. In Swift Package Manager, this is not allowed. The build fails with a cycle error. So the compiler catches it, but I want to avoid it by design, not fix it later.
+
+I use four ways to stop cycles. First, I keep a one-way layer order: App → Features → Core. Core never imports a feature, and features never import other features. Second, I depend on protocols, not on modules. If A needs something from B, A defines a small protocol, and the App target injects the real B. Third, I use dependency inversion. The module that needs the service owns the protocol, so the arrow points to the module that needs it, not to the one that provides it. Fourth, I move the shared part out. If two modules truly need the same code, I pull that code into a new lower-level module that both can import.
+
+I also check this in CI. A script fails the build if a feature imports another feature, so a cycle never comes back."
+
+---
+
+### How a Cycle Happens and How to Fix It
+
+#### The Problem: Circular Dependency Cycle (Build Error)
+```
+  CartFeature  ───imports───►  CheckoutFeature
+       ▲                             │
+       └───────────imports───────────┘
+```
+In Swift Package Manager or Xcode targets, circular dependency graph edges cause a fatal build failure: `cycle in dependency graph`.
+
+---
+
+#### Fix 1: Use a Protocol Injected by the App Target (Dependency Inversion)
+
+Instead of `CartFeature` importing `CheckoutFeature` to trigger checkout navigation, `CartFeature` declares an interface of what it needs:
+
+```swift
+// In CartFeature (Package): it defines what it needs as a protocol
+public protocol CheckoutNavigating: AnyObject {
+    func openCheckout()
+}
+
+public final class CartViewModel: ObservableObject {
+    private let checkoutNavigator: CheckoutNavigating
+
+    public init(checkoutNavigator: CheckoutNavigating) {
+        self.checkoutNavigator = checkoutNavigator
+    }
+
+    public func payTapped() {
+        checkoutNavigator.openCheckout()
+    }
+}
+```
+
+```swift
+// In the App Target: It imports both feature modules and wires them together
+import CartFeature
+import CheckoutFeature
+
+struct CheckoutNavigator: CheckoutNavigating {
+    let router: AppRouter
+    func openCheckout() {
+        router.push(.checkout)
+    }
+}
+
+// Composition Root assembly:
+let cartViewModel = CartViewModel(checkoutNavigator: CheckoutNavigator(router: router))
+```
+
+Now `CartFeature` never imports `CheckoutFeature`. Only the top-level App Target / Coordinator imports both.
+
+```
+            App Target (Composition Root)
+               /            \
+              ▼              ▼
+        CartFeature     CheckoutFeature
+         (No dependency arrow between them)
+```
+
+---
+
+#### Fix 2: Move Shared Code Down (Extract Common Entities)
+
+**Before (Cycle due to shared entity `CartItem`):**
+```
+CartFeature  ◄──────────────►  CheckoutFeature
+(Both need CartItem model, causing tight mutual coupling)
+```
+
+**After (Extracted Domain Model Layer):**
+```
+CartFeature ───►  SharedCartModels  ◄─── CheckoutFeature
+```
+`SharedCartModels` is a tiny, highly stable SPM library containing pure Swift structs and zero dependencies. It sits on a lower architectural tier below all features.
+
+---
+
+### Quick Rules to Prevent Cycles
+
+1. **Dependencies Point One Way:** Down the layers, never up or sideways (`App` → `Features` → `Core/Models`).
+2. **Features Talk Through Protocols:** Consumers own the protocol definition; the App target injects the real provider.
+3. **Shared Code Moves Down:** If two sibling modules need the same type, extract it into a lower-tier leaf module.
+4. **Keep Shared Modules Small and Stable:** Avoid monolithic `Common` or `Utilities` packages that become dumping grounds.
+5. **Enforce in CI Quality Gates:** Run a bash / python dependency linter that fails PR builds if any feature module imports a sibling feature.
+
+---
+
+### Real-World Analogy (Easy to Remember)
+
+Two neighbors who each lock the other's key inside their house. Neither can enter.
+• **The Fix:** Give the keys to a third party (the **App Target**) who can open both doors.
+• **Or:** Put the shared garden tools in a **shared community shed** (a lower-level module) that both can access independently.
+
+---
+
+### Bonus Points (Staff-Level Interview Highlights)
+
+• **A Cycle is an Architectural Smell:** Even if build tools allowed it, two modules that mutually require each other are logically a single monolith split in two. Merge them or re-evaluate the domain boundary.
+• **Micro-Interfaces Pattern (`CartInterface` vs `CartImplementation`):** Highly scaled apps (e.g. Uber, Meta) split every feature into an `Interface` package (protocols & public models only) and an `Implementation` package. Features depend only on lightweight `Interface` targets, completely eliminating cycles and accelerating parallel compilation.
+• **Avoid Global Service Locators:** Using a global singleton `ServiceLocator.shared.resolve()` hides circular dependencies from the compiler without resolving the underlying architectural coupling. Use explicit constructor injection.
+• **Delegates, Closures & Async Sequences:** Emitting events upwards to a coordinator using closures or `@Published` streams keeps leaf modules purely decoupled.
+
+---
+
+### One-Liner & Memory Trick
+• **One-liner:** Dependencies flow one way. If two modules need each other, add a protocol, inject it from the App target, or move the shared code down.
+• **Memory trick:** **L-P-I-S** → *"Layers, Protocols, Inject, Shared-down."*
+
+#### 💻 Multi-Module Architecture & Dependency Inversion Example
+
+```swift
+// =========================================================================
+// 📦 SENIOR INTERVIEW ARCHITECTURE: Preventing Circular Module Dependencies
+// =========================================================================
+//
+// 💡 SENIOR / STAFF INTERVIEW TALKING POINTS:
+// • Directed Acyclic Graph (DAG): Swift Package Manager enforces strict acyclic
+//   compilation graphs. A cycle triggers compile-time fatal errors.
+// • Dependency Inversion Principle (DIP): The high-level module (CartFeature)
+//   defines the abstract protocol it requires, inverting the dependency arrow.
+// • Composition Root Pattern: Only the App target / AppCoordinator knows about
+//   all concrete feature implementations and binds them together via constructor DI.
+// • Micro-Interface Segregation: Extracting tiny Interface and SharedModel
+//   libraries allows parallel multi-core compilation without cross-import coupling.
+
+import Foundation
+import SwiftUI
+
+// MARK: - 1. Lower-Tier Shared Domain Layer (SharedCartModels Package)
+// Sits at the bottom of the dependency graph; has ZERO dependencies on feature modules.
+
+public struct CartItem: Identifiable, Equatable, Sendable {
+    public let id: UUID
+    public let title: String
+    public let priceCents: Int
+    public let quantity: Int
+    
+    public init(id: UUID = UUID(), title: String, priceCents: Int, quantity: Int = 1) {
+        self.id = id
+        self.title = title
+        self.priceCents = priceCents
+        self.quantity = quantity
+    }
+}
+
+// MARK: - 2. Feature Module A (CartFeature Package)
+// Notice: CartFeature NEVER imports CheckoutFeature!
+
+/// Protocol defined by CartFeature expressing its navigation requirement
+public protocol CheckoutNavigating: AnyObject, Sendable {
+    func navigateToCheckout(items: [CartItem], orderTotalCents: Int)
+}
+
+public final class CartViewModel: ObservableObject {
+    @Published public private(set) var items: [CartItem] = []
+    private let checkoutNavigator: CheckoutNavigating
+    
+    public init(checkoutNavigator: CheckoutNavigating) {
+        self.checkoutNavigator = checkoutNavigator
+    }
+    
+    public func addItem(_ item: CartItem) {
+        items.append(item)
+    }
+    
+    public var totalCents: Int {
+        items.reduce(0) { $0 + ($1.priceCents * $1.quantity) }
+    }
+    
+    public func proceedToCheckoutTapped() {
+        // Delegates checkout navigation without knowing how Checkout is implemented
+        checkoutNavigator.navigateToCheckout(items: items, orderTotalCents: totalCents)
+    }
+}
+
+// MARK: - 3. Feature Module B (CheckoutFeature Package)
+// Notice: CheckoutFeature NEVER imports CartFeature!
+
+public final class CheckoutViewModel: ObservableObject {
+    public let orderItems: [CartItem]
+    public let totalCents: Int
+    
+    public init(orderItems: [CartItem], totalCents: Int) {
+        self.orderItems = orderItems
+        self.totalCents = totalCents
+    }
+    
+    public func submitPayment() {
+        print("💳 Processing payment of \(totalCents) cents for \(orderItems.count) items.")
+    }
+}
+
+// MARK: - 4. Top-Level App Target (Composition Root)
+// The App target imports both CartFeature and CheckoutFeature, wiring them via DI.
+
+public final class AppCoordinator: CheckoutNavigating {
+    private var navigationPath = NavigationPath()
+    
+    public init() {}
+    
+    // Conforms to CartFeature's protocol and instantiates CheckoutFeature
+    public func navigateToCheckout(items: [CartItem], orderTotalCents: Int) {
+        let checkoutVM = CheckoutViewModel(orderItems: items, totalCents: orderTotalCents)
+        print("🚀 [App Target] Navigating to Checkout with \(items.count) items, total: $\(Double(orderTotalCents)/100.0)")
+    }
+    
+    public func buildCartModule() -> CartViewModel {
+        // Constructor Dependency Injection prevents any direct feature-to-feature coupling
+        return CartViewModel(checkoutNavigator: self)
+    }
+}
+```
+
+
+---
+
+## 💾 Data Persistence & Memory Management (Q-46 – Q-49)
+
+### `Q-46` — Core Data vs SQLite vs Realm — one-line difference
 
 - **Category:** `Data Persistence & Memory Management`
 
@@ -4766,7 +5009,7 @@ func fetchLargeTransactions(db: Database) throws -> [TransactionRecord] {
 
 ---
 
-### `Q-46` — ARC and retain cycles — a clear example of a strong reference cycle
+### `Q-47` — ARC and retain cycles — a clear example of a strong reference cycle
 
 - **Category:** `Data Persistence & Memory Management`
 
@@ -4833,7 +5076,7 @@ onComplete = { [weak self] in
 
 ---
 
-### `Q-47` — Deep Memory Management — Weak vs Unowned, Side Tables, and OS Jetsam OOM Kills
+### `Q-48` — Deep Memory Management — Weak vs Unowned, Side Tables, and OS Jetsam OOM Kills
 
 - **Category:** `Data Persistence & Memory Management`
 
@@ -4901,7 +5144,7 @@ final class ReportPrinter {
 
 ---
 
-### `Q-48` — Core Data & SwiftData Concurrency — Multi-Context Architecture and Merging
+### `Q-49` — Core Data & SwiftData Concurrency — Multi-Context Architecture and Merging
 
 - **Category:** `Data Persistence & Memory Management`
 
@@ -4970,9 +5213,9 @@ final class AccountSyncService {
 ---
 
 
-## 🔒 Security, Auth & Compliance (Q-49 – Q-60)
+## 🔒 Security, Auth & Compliance (Q-50 – Q-61)
 
-### `Q-49` — Certificate pinning — what it is, why it stops MITM attacks
+### `Q-50` — Certificate pinning — what it is, why it stops MITM attacks
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -5035,7 +5278,7 @@ class PinnedURLSessionDelegate: NSObject, URLSessionDelegate {
 
 ---
 
-### `Q-50` — How do you store tokens and secrets on iOS? What goes in Keychain?
+### `Q-51` — How do you store tokens and secrets on iOS? What goes in Keychain?
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -5228,7 +5471,7 @@ struct TokenStore {
 
 ---
 
-### `Q-51` — Explain a safe login flow: OAuth 2.0, refresh tokens, and token rotation
+### `Q-52` — Explain a safe login flow: OAuth 2.0, refresh tokens, and token rotation
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -5553,7 +5796,7 @@ func logout() async {
 
 ---
 
-### `Q-52` — Secure Enclave vs Keychain — what each one is actually for
+### `Q-53` — Secure Enclave vs Keychain — what each one is actually for
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -5620,7 +5863,7 @@ func createSecureEnclaveKey() throws -> SecKey {
 
 ---
 
-### `Q-53` — Secure data handling in financial apps — tokenization, biometric auth, session management
+### `Q-54` — Secure data handling in financial apps — tokenization, biometric auth, session management
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -5687,7 +5930,7 @@ class SessionManager {
 
 ---
 
-### `Q-54` — PCI-DSS — what it protects and who it applies to
+### `Q-55` — PCI-DSS — what it protects and who it applies to
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -5745,7 +5988,7 @@ struct SafePaymentRequest: Codable {
 
 ---
 
-### `Q-55` — SOX (Sarbanes-Oxley) — what it's for
+### `Q-56` — SOX (Sarbanes-Oxley) — what it's for
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -5814,7 +6057,7 @@ await auditLogger.log(userId: user.id, action: "INITIATE_TRANSFER", resource: "t
 
 ---
 
-### `Q-56` — GDPR — what it protects and where it applies
+### `Q-57` — GDPR — what it protects and where it applies
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -5885,7 +6128,7 @@ func handleDeleteMyDataRequest(userId: String) async throws {
 
 ---
 
-### `Q-57` — Application Hardening & Anti-Tampering — Jailbreak, Frida & At-Rest Encryption
+### `Q-58` — Application Hardening & Anti-Tampering — Jailbreak, Frida & At-Rest Encryption
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -5963,7 +6206,7 @@ struct AppSecurityHardenCheck {
 
 ---
 
-### `Q-58` — What is App Transport Security?
+### `Q-59` — What is App Transport Security?
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -6122,7 +6365,7 @@ func demonstrateSecureRequest() async throws -> Data {
 
 ---
 
-### `Q-59` — How do you protect data at rest?
+### `Q-60` — How do you protect data at rest?
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -6302,7 +6545,7 @@ final class ProtectionObserver {
 
 ---
 
-### `Q-60` — Where do you store an AI API key for an iOS app?
+### `Q-61` — Where do you store an AI API key for an iOS app?
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -6628,9 +6871,9 @@ enum AIServiceError: LocalizedError {
 ---
 
 
-## 🏛️ System Design & Mobile Architecture (Q-61 – Q-64)
+## 🏛️ System Design & Mobile Architecture (Q-62 – Q-65)
 
-### `Q-61` — How do you load and cache images at scale?
+### `Q-62` — How do you load and cache images at scale?
 
 - **Category:** `System Design & Mobile Architecture`
 
@@ -6862,7 +7105,7 @@ extension ProductFeedViewController: UICollectionViewDataSourcePrefetching {
 
 ---
 
-### `Q-62` — System Design — Offline-First Feed & Bi-directional Synchronization
+### `Q-63` — System Design — Offline-First Feed & Bi-directional Synchronization
 
 - **Category:** `System Design & Mobile Architecture`
 
@@ -6966,7 +7209,7 @@ actor OfflineSyncEngine {
 
 ---
 
-### `Q-63` — How does a payment process work in an e-commerce app like Amazon?
+### `Q-64` — How does a payment process work in an e-commerce app like Amazon?
 
 - **Category:** `System Design & Mobile Architecture`
 
@@ -7251,7 +7494,7 @@ enum PaymentError: LocalizedError {
 
 ---
 
-### `Q-64` — System Design — How do you design an end-to-end Grocery Delivery App (Instacart / Blinkit)?
+### `Q-65` — System Design — How do you design an end-to-end Grocery Delivery App (Instacart / Blinkit)?
 
 - **Category:** `System Design & Mobile Architecture`
 
@@ -7669,9 +7912,9 @@ public final class OrderTrackingViewModel: ObservableObject {
 
 ---
 
-## 🧪 Testing & AI Engineering (Q-65 – Q-74)
+## 🧪 Testing & AI Engineering (Q-66 – Q-75)
 
-### `Q-65` — Rehearse the AIAnalyzer walkthrough out loud — cloud/local/hybrid modes, confidence-based fallback
+### `Q-66` — Rehearse the AIAnalyzer walkthrough out loud — cloud/local/hybrid modes, confidence-based fallback
 
 - **Category:** `Testing & AI Engineering`
 
@@ -7724,7 +7967,7 @@ class HybridAIAnalyzer {
 
 ---
 
-### `Q-66` — Why did you choose Gemini for cloud and Ollama/Qwen for local?
+### `Q-67` — Why did you choose Gemini for cloud and Ollama/Qwen for local?
 
 - **Category:** `Testing & AI Engineering`
 
@@ -7781,7 +8024,7 @@ struct GeminiProvider: LLMProvider {
 
 ---
 
-### `Q-67` — How do you validate AI-generated code before merging?
+### `Q-68` — How do you validate AI-generated code before merging?
 
 - **Category:** `Testing & AI Engineering`
 
@@ -7840,7 +8083,7 @@ final class AIGeneratedServiceTests: XCTestCase {
 
 ---
 
-### `Q-68` — How building your own AI tool changed how you use Copilot/Cursor day to day
+### `Q-69` — How building your own AI tool changed how you use Copilot/Cursor day to day
 
 - **Category:** `Testing & AI Engineering`
 
@@ -7895,7 +8138,7 @@ After building my own tool: I use Cursor as a reasoning partner. The specific ch
 
 ---
 
-### `Q-69` — TDD vs BDD — the actual difference
+### `Q-70` — TDD vs BDD — the actual difference
 
 - **Category:** `Testing & AI Engineering`
 
@@ -7968,7 +8211,7 @@ class BankAccountSpec: QuickSpec {
 
 ---
 
-### `Q-70` — XCTest — writing unit tests and UI tests, mocking and stubbing
+### `Q-71` — XCTest — writing unit tests and UI tests, mocking and stubbing
 
 - **Category:** `Testing & AI Engineering`
 
@@ -8054,7 +8297,7 @@ final class LoginUITests: XCTestCase {
 
 ---
 
-### `Q-71` — How do you write code that is easy to test?
+### `Q-72` — How do you write code that is easy to test?
 
 - **Category:** `Testing & AI Engineering`
 
@@ -8294,7 +8537,7 @@ final class ProfileViewModelTests: XCTestCase {
 
 ---
 
-### `Q-72` — Unit vs UI vs snapshot vs integration vs performance tests. When do you use each?
+### `Q-73` — Unit vs UI vs snapshot vs integration vs performance tests. When do you use each?
 
 - **Category:** `Testing & AI Engineering`
 
@@ -8582,7 +8825,7 @@ final class AppPerformanceTests: XCTestCase {
 
 ---
 
-### `Q-73` — What are mocks, stubs, and fakes? When do you use each?
+### `Q-74` — What are mocks, stubs, and fakes? When do you use each?
 
 - **Category:** `Testing & AI Engineering`
 
@@ -8837,7 +9080,7 @@ final class CheckoutViewModelTests: XCTestCase {
 
 ---
 
-### `Q-74` — Feature flagging, A/B testing, and remote configuration
+### `Q-75` — Feature flagging, A/B testing, and remote configuration
 
 - **Category:** `Testing & AI Engineering`
 
@@ -8912,9 +9155,9 @@ struct TransferView: View {
 
 ---
 
-## 🚀 CI/CD & DevOps (Q-75 – Q-76)
+## 🚀 CI/CD & DevOps (Q-76 – Q-77)
 
-### `Q-75` — How do you build a CI/CD pipeline for an iOS app with GitHub Actions?
+### `Q-76` — How do you build a CI/CD pipeline for an iOS app with GitHub Actions?
 
 - **Category:** `CI/CD & DevOps`
 
@@ -9186,7 +9429,7 @@ jobs:
 
 ---
 
-### `Q-76` — How do you manage signing in CI?
+### `Q-77` — How do you manage signing in CI?
 
 - **Category:** `CI/CD & DevOps`
 
@@ -9410,9 +9653,9 @@ Memory trick: S-T-R-C → "Store encrypted, Temporary keychain, Read-only in CI,
 
 ---
 
-## 👔 Engineering Leadership & Operations (Q-77 – Q-82)
+## 👔 Engineering Leadership & Operations (Q-78 – Q-83)
 
-### `Q-77` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
+### `Q-78` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -9477,7 +9720,7 @@ final class ModernAccountService: AccountServiceProtocol {
 
 ---
 
-### `Q-78` — How do you read a crash log? How do you symbolicate it?
+### `Q-79` — How do you read a crash log? How do you symbolicate it?
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -9678,7 +9921,7 @@ final class BreadcrumbTracker {
 
 ---
 
-### `Q-79` — How do you evaluate a new third-party SDK before adding it?
+### `Q-80` — How do you evaluate a new third-party SDK before adding it?
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -9918,7 +10161,7 @@ public final class ResilientImageManager: ImageCachingService {
 
 ---
 
-### `Q-80` — An SDK is causing crashes. How do you prove it and fix it?
+### `Q-81` — An SDK is causing crashes. How do you prove it and fix it?
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -10150,7 +10393,7 @@ public final class AnalyticsManager {
 
 ---
 
-### `Q-81` — A crash happens only in production, for 1% of users, and you cannot reproduce it. What do you do?
+### `Q-82` — A crash happens only in production, for 1% of users, and you cannot reproduce it. What do you do?
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -10403,7 +10646,7 @@ public struct ProductFeedParser {
 
 ---
 
-### `Q-82` — A customer says the app crashes on a screen, but you have no crash log. How do you find the crash?
+### `Q-83` — A customer says the app crashes on a screen, but you have no crash log. How do you find the crash?
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -10591,9 +10834,9 @@ public struct SupportDiagnosticExporter {
 
 ---
 
-## 🧠 Memory Management (Q-83 – Q-90)
+## 🧠 Memory Management (Q-84 – Q-91)
 
-### `Q-83` — How does ARC work? What is the difference between strong, weak, and unowned?
+### `Q-84` — How does ARC work? What is the difference between strong, weak, and unowned?
 
 - **Category:** `Memory Management`
 
@@ -10653,7 +10896,7 @@ class RequestManager {
 
 ---
 
-### `Q-84` — What is a retain cycle? How do you detect and fix them?
+### `Q-85` — What is a retain cycle? How do you detect and fix them?
 
 - **Category:** `Memory Management`
 
@@ -10728,7 +10971,7 @@ func testNoRetainCycle() {
 
 ---
 
-### `Q-85` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
+### `Q-86` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
 
 - **Category:** `Memory Management`
 
@@ -10786,7 +11029,7 @@ struct LargeModel: Describable {
 
 ---
 
-### `Q-86` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
+### `Q-87` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
 
 - **Category:** `Memory Management`
 
@@ -10854,7 +11097,7 @@ print(s2.value)    // "world"
 
 ---
 
-### `Q-87` — How do you handle memory warnings?
+### `Q-88` — How do you handle memory warnings?
 
 - **Category:** `Memory Management`
 
@@ -11024,7 +11267,7 @@ func downsample(url: URL, maxPixel: CGFloat) -> UIImage? {
 
 ---
 
-### `Q-88` — What is the Swift runtime side table? How do weak references work under the hood?
+### `Q-89` — What is the Swift runtime side table? How do weak references work under the hood?
 
 - **Category:** `Memory Management`
 
@@ -11089,7 +11332,7 @@ print(observer?.id ?? "nil")  // "nil"
 
 ---
 
-### `Q-89` — How does Jetsam work? What strategies do you use to survive memory pressure?
+### `Q-90` — How does Jetsam work? What strategies do you use to survive memory pressure?
 
 - **Category:** `Memory Management`
 
@@ -11176,7 +11419,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MXMetricManagerSubscriber
 
 ---
 
-### `Q-90` — How do you profile and debug memory issues in a production iOS app?
+### `Q-91` — How do you profile and debug memory issues in a production iOS app?
 
 - **Category:** `Memory Management`
 

@@ -382,7 +382,7 @@
         "icon": "👔"
       }
     ],
-    "Q-59": [
+    "Q-60": [
       {
         "docId": "security-comparison",
         "title": "Security Decision Table (Keychain, Enclave, Pinning)",
@@ -396,7 +396,7 @@
         "icon": "💾"
       }
     ],
-    "Q-58": [
+    "Q-59": [
       {
         "docId": "security-comparison",
         "title": "Security Decision Table (Keychain, Enclave, Pinning)",
@@ -736,14 +736,6 @@
         "filename": "iOSInternals-TalkingPoints.md"
       }
     ],
-    "Q-48": [
-      {
-        "docId": "security-comparison",
-        "title": "Security Decision Table (Keychain, Enclave, Pinning)",
-        "filename": "Security-ComparisonNotes.md",
-        "icon": "🛡️"
-      }
-    ],
     "Q-49": [
       {
         "docId": "security-comparison",
@@ -756,11 +748,19 @@
       {
         "docId": "security-comparison",
         "title": "Security Decision Table (Keychain, Enclave, Pinning)",
+        "filename": "Security-ComparisonNotes.md",
+        "icon": "🛡️"
+      }
+    ],
+    "Q-51": [
+      {
+        "docId": "security-comparison",
+        "title": "Security Decision Table (Keychain, Enclave, Pinning)",
         "icon": "🔒",
         "filename": "SecurityDecisionTable.md"
       }
     ],
-    "Q-51": [
+    "Q-52": [
       {
         "docId": "security-comparison",
         "title": "Security Decision Table (Keychain, Enclave, Pinning)",
@@ -774,20 +774,12 @@
         "filename": "NetworkingArchitecture.md"
       }
     ],
-    "Q-52": [
+    "Q-53": [
       {
         "docId": "security-comparison",
         "title": "Security Decision Table (Keychain, Enclave, Pinning)",
         "icon": "🔒",
         "filename": "SecurityDecisionTable.md"
-      }
-    ],
-    "Q-53": [
-      {
-        "docId": "leadership-ownership",
-        "title": "Development Lead / Feature Ownership — Talking Points",
-        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
-        "icon": "👔"
       }
     ],
     "Q-54": [
@@ -806,7 +798,15 @@
         "icon": "👔"
       }
     ],
-    "Q-61": [
+    "Q-56": [
+      {
+        "docId": "leadership-ownership",
+        "title": "Development Lead / Feature Ownership — Talking Points",
+        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
+        "icon": "👔"
+      }
+    ],
+    "Q-62": [
       {
         "docId": "networking-architecture",
         "title": "Networking Architecture Decision Table & 4 Pillars",
@@ -820,7 +820,7 @@
         "filename": "PerformanceProfiling-TalkingPoints.md"
       }
     ],
-    "Q-68": [
+    "Q-69": [
       {
         "docId": "testing-xctest",
         "title": "Testing, TDD/BDD, and Testability — Talking Points",
@@ -828,7 +828,7 @@
         "icon": "🧪"
       }
     ],
-    "Q-69": [
+    "Q-70": [
       {
         "docId": "repository-pattern",
         "title": "Repository Pattern — Talking Points",
@@ -842,7 +842,7 @@
         "icon": "🧪"
       }
     ],
-    "Q-78": [
+    "Q-79": [
       {
         "docId": "leadership-ownership",
         "title": "Development Lead / Feature Ownership — Talking Points",
@@ -856,11 +856,11 @@
         "filename": "PerformanceProfiling-TalkingPoints.md"
       }
     ],
-    "Q-88": [
+    "Q-89": [
       "performance-profiling",
       "ios-internals"
     ],
-    "Q-60": [
+    "Q-61": [
       {
         "docId": "security-comparison",
         "title": "Security Decision Table (Keychain, Enclave, Pinning)",
@@ -890,7 +890,7 @@
         "icon": "🌐"
       }
     ],
-    "Q-63": [
+    "Q-64": [
       {
         "docId": "security-comparison",
         "title": "Security Decision Table (Keychain, Enclave, Pinning)",
@@ -904,7 +904,7 @@
         "icon": "🌐"
       }
     ],
-    "Q-71": [
+    "Q-72": [
       {
         "docId": "testing-xctest",
         "title": "XCTest, Mocking & UI Testing Guide",
@@ -918,7 +918,7 @@
         "icon": "💉"
       }
     ],
-    "Q-72": [
+    "Q-73": [
       {
         "docId": "testing-xctest",
         "title": "XCTest, Mocking & UI Testing Guide",
@@ -932,7 +932,7 @@
         "icon": "⏱️"
       }
     ],
-    "Q-73": [
+    "Q-74": [
       {
         "docId": "testing-xctest",
         "title": "XCTest, Mocking & UI Testing Guide",
@@ -946,14 +946,6 @@
         "icon": "💉"
       }
     ],
-    "Q-75": [
-      {
-        "docId": "testing-xctest",
-        "title": "XCTest, Mocking & UI Testing Guide",
-        "filename": "Testing-TalkingPoints.md",
-        "icon": "🧪"
-      }
-    ],
     "Q-76": [
       {
         "docId": "testing-xctest",
@@ -962,12 +954,12 @@
         "icon": "🧪"
       }
     ],
-    "Q-79": [
+    "Q-77": [
       {
-        "docId": "leadership-ownership",
-        "title": "Development Lead & Feature Ownership Guide",
-        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
-        "icon": "👔"
+        "docId": "testing-xctest",
+        "title": "XCTest, Mocking & UI Testing Guide",
+        "filename": "Testing-TalkingPoints.md",
+        "icon": "🧪"
       }
     ],
     "Q-80": [
@@ -994,7 +986,15 @@
         "icon": "👔"
       }
     ],
-    "Q-64": [
+    "Q-83": [
+      {
+        "docId": "leadership-ownership",
+        "title": "Development Lead & Feature Ownership Guide",
+        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
+        "icon": "👔"
+      }
+    ],
+    "Q-65": [
       {
         "docId": "networking-architecture",
         "title": "Networking, API Design & Resilience Guide",
@@ -1006,6 +1006,20 @@
         "title": "Security, Storage & App Hardening Guide",
         "filename": "Security-Comparison-TalkingPoints.md",
         "icon": "🔒"
+      }
+    ],
+    "Q-45": [
+      {
+        "docId": "modular-architecture",
+        "title": "Modular App Architecture — Talking Points",
+        "icon": "📦",
+        "filename": "Modular-Architecture-TalkingPoints.md"
+      },
+      {
+        "docId": "dependency-injection",
+        "title": "Dependency Injection (DI) — Interview Cheat Sheet",
+        "icon": "💉",
+        "filename": "DependencyInjection-CheatSheet.md"
       }
     ]
   }
