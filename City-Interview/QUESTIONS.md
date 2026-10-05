@@ -16,7 +16,8 @@
 | **Data Persistence & Memory Management** | `4` | Core Data vs SQLite vs Realm vs SwiftData, multi-context concurrency & merging, ARC retain cycles, Heap side tables (weak/unowned), and OS Jetsam OOM survival. |
 | **Security, Auth & Compliance** | `12` | Keychain vs Secure Enclave, token storage CRUD, OAuth 2.0 PKCE & token rotation, SSL Certificate Pinning, biometric auth, Jailbreak & Frida detection, NSFileProtectionComplete, and banking compliance (PCI-DSS, SOX, GDPR). |
 | **System Design & Mobile Architecture** | `3` | End-to-end mobile system design: Two-tier LRU memory/disk image caching with coalescing, Offline-First bi-directional syncing with outbox pattern, and E-commerce checkout & payment flow (Apple Pay, idempotency, gateway authorization & settlement). |
-| **Testing, CI/CD & AI Engineering** | `11` | Unit and UI testing with XCTest, protocol mocking and stubbing, TDD/BDD, automated CI/CD pipelines, feature flagging, and hybrid cloud/on-device AI systems. |
+| **Testing & AI Engineering** | `10` | Unit and UI testing with XCTest, protocol mocking and stubbing, TDD/BDD, test doubles (mocks/stubs/fakes), feature flagging, and hybrid cloud/on-device AI systems. |
+| **CI/CD & DevOps** | `1` | Automated continuous integration and delivery with GitHub Actions: PR quality gates, macOS runner optimization, Fastlane match code signing, and headless TestFlight deployment via App Store Connect API keys. |
 | **Engineering Leadership & Operations** | `2` | Production incident triage, crash log analysis & dSYM symbolication, Crashlytics velocity alerts, MetricKit crash loops, blameless post-mortems, and migrating legacy monoliths using the Strangler Fig pattern. |
 | **Memory Management** | `8` | ARC strong/weak/unowned, retain cycles, stack vs heap, Copy-on-Write internals, memory warnings, the Swift runtime side table, Jetsam OOM survival, and production memory profiling with Instruments and MetricKit. |
 | **Total** | **`83`** | Complete Senior & Staff iOS Interview Curriculum |
@@ -7005,11 +7006,11 @@ enum PaymentError: LocalizedError {
 
 ---
 
-## 🧪 Testing, CI/CD & AI Engineering (Q-63 – Q-73)
+## 🧪 Testing & AI Engineering (Q-63 – Q-72)
 
 ### `Q-63` — Rehearse the AIAnalyzer walkthrough out loud — cloud/local/hybrid modes, confidence-based fallback
 
-- **Category:** `Testing, CI/CD & AI Engineering`
+- **Category:** `Testing & AI Engineering`
 
 > [!TIP]
 > **🗣️ Interview Pitch (Say it like this):**  
@@ -7062,7 +7063,7 @@ class HybridAIAnalyzer {
 
 ### `Q-64` — Why did you choose Gemini for cloud and Ollama/Qwen for local?
 
-- **Category:** `Testing, CI/CD & AI Engineering`
+- **Category:** `Testing & AI Engineering`
 
 > [!TIP]
 > **🗣️ Interview Pitch (Say it like this):**  
@@ -7119,7 +7120,7 @@ struct GeminiProvider: LLMProvider {
 
 ### `Q-65` — How do you validate AI-generated code before merging?
 
-- **Category:** `Testing, CI/CD & AI Engineering`
+- **Category:** `Testing & AI Engineering`
 
 > [!TIP]
 > **🗣️ Interview Pitch (Say it like this):**  
@@ -7178,7 +7179,7 @@ final class AIGeneratedServiceTests: XCTestCase {
 
 ### `Q-66` — How building your own AI tool changed how you use Copilot/Cursor day to day
 
-- **Category:** `Testing, CI/CD & AI Engineering`
+- **Category:** `Testing & AI Engineering`
 
 > [!TIP]
 > **🗣️ Interview Pitch (Say it like this):**  
@@ -7233,7 +7234,7 @@ After building my own tool: I use Cursor as a reasoning partner. The specific ch
 
 ### `Q-67` — TDD vs BDD — the actual difference
 
-- **Category:** `Testing, CI/CD & AI Engineering`
+- **Category:** `Testing & AI Engineering`
 
 > [!TIP]
 > **🗣️ Interview Pitch (Say it like this):**  
@@ -7306,7 +7307,7 @@ class BankAccountSpec: QuickSpec {
 
 ### `Q-68` — XCTest — writing unit tests and UI tests, mocking and stubbing
 
-- **Category:** `Testing, CI/CD & AI Engineering`
+- **Category:** `Testing & AI Engineering`
 
 > [!TIP]
 > **🗣️ Interview Pitch (Say it like this):**  
@@ -7392,7 +7393,7 @@ final class LoginUITests: XCTestCase {
 
 ### `Q-69` — How do you write code that is easy to test?
 
-- **Category:** `Testing, CI/CD & AI Engineering`
+- **Category:** `Testing & AI Engineering`
 
 > [!TIP]
 > **🗣️ Interview Pitch (Say it like this):**  
@@ -7632,7 +7633,7 @@ final class ProfileViewModelTests: XCTestCase {
 
 ### `Q-70` — Unit vs UI vs snapshot vs integration vs performance tests. When do you use each?
 
-- **Category:** `Testing, CI/CD & AI Engineering`
+- **Category:** `Testing & AI Engineering`
 
 > [!TIP]
 > **🗣️ Interview Pitch (Say it like this):**  
@@ -7920,7 +7921,7 @@ final class AppPerformanceTests: XCTestCase {
 
 ### `Q-71` — What are mocks, stubs, and fakes? When do you use each?
 
-- **Category:** `Testing, CI/CD & AI Engineering`
+- **Category:** `Testing & AI Engineering`
 
 > [!TIP]
 > **🗣️ Interview Pitch (Say it like this):**  
@@ -8173,9 +8174,85 @@ final class CheckoutViewModelTests: XCTestCase {
 
 ---
 
-### `Q-72` — How do you build a CI/CD pipeline for an iOS app with GitHub Actions?
+### `Q-72` — Feature flagging, A/B testing, and remote configuration
 
-- **Category:** `Testing, CI/CD & AI Engineering`
+- **Category:** `Testing & AI Engineering`
+
+> [!TIP]
+> **🗣️ Interview Pitch (Say it like this):**  
+> *"Feature flags are critical in enterprise banking — they let us do phased rollouts to 5% of users, kill a broken feature in seconds without an emergency release, and gate features by regulatory region."*
+
+#### 📖 Detailed Answer
+
+Feature flags (also called feature toggles): A way to enable or disable a feature without pushing an app update. The flag value is fetched from a remote configuration server. If you discover a critical bug in a new feature, you flip the flag to OFF — the feature disappears from production in seconds. Without a flag, you would need an emergency app release that takes hours to pass App Review.
+
+In banking, feature flags are essential for phased rollouts: release a new transfer UI to 5% of users first, watch metrics, and gradually increase to 100% if everything looks good. They are also used for compliance: show this new disclosure screen only to users in the EU.
+
+A/B testing: Show variant A to 50% of users and variant B to the other 50%. Measure which version has better engagement or conversion. Firebase Remote Config, LaunchDarkly, and Optimizely all support this.
+
+Remote configuration: Beyond feature flags, you can control app behavior without a release: change the minimum transfer amount, update a promotional banner, adjust timeout durations.
+
+Key interview talking point: Feature flags require a default state — what happens if the config server is unreachable? The app must have a safe fallback value baked in. For a new, unproven feature, the safe default is OFF.
+
+#### 💻 Swift Code Example
+
+```swift
+import FirebaseRemoteConfig
+
+// 1. Define all flags in one place
+enum FeatureFlag: String {
+    case newTransferUI      = "new_transfer_ui"
+    case cryptoWallet       = "crypto_wallet_enabled"
+    case euComplianceBanner = "eu_compliance_banner"
+}
+
+// 2. Feature flag service with safe local defaults
+class FeatureFlagService {
+    private let config = RemoteConfig.remoteConfig()
+
+    // Safe defaults: if server unreachable, new features default to OFF
+    private let defaults: [String: NSObject] = [
+        FeatureFlag.newTransferUI.rawValue:      false as NSObject,
+        FeatureFlag.cryptoWallet.rawValue:       false as NSObject,
+        FeatureFlag.euComplianceBanner.rawValue: false as NSObject
+    ]
+
+    func setup() async {
+        config.setDefaults(defaults)
+        try? await config.fetch(minimumFetchInterval: 3600)  // cache 1 hour
+        try? await config.activate()
+    }
+
+    func isEnabled(_ flag: FeatureFlag) -> Bool {
+        config[flag.rawValue].boolValue
+    }
+}
+
+// 3. UI adapts based on server-controlled flag
+struct TransferView: View {
+    @EnvironmentObject var flags: FeatureFlagService
+    var body: some View {
+        if flags.isEnabled(.newTransferUI) {
+            NewTransferFormView()     // 5% of users see this first
+        } else {
+            LegacyTransferFormView()  // safe default for everyone else
+        }
+    }
+}
+```
+
+---
+
+
+## 👔 Engineering Leadership & Operations (Q-74 – Q-75)
+
+---
+
+## 🚀 CI/CD & DevOps (Q-73)
+
+### `Q-73` — How do you build a CI/CD pipeline for an iOS app with GitHub Actions?
+
+- **Category:** `CI/CD & DevOps`
 
 > [!TIP]
 > **🗣️ Interview Pitch (Say it like this):**  
@@ -8443,77 +8520,7 @@ jobs:
 # end
 ```
 
-### `Q-73` — Feature flagging, A/B testing, and remote configuration
-
-- **Category:** `Testing, CI/CD & AI Engineering`
-
-> [!TIP]
-> **🗣️ Interview Pitch (Say it like this):**  
-> *"Feature flags are critical in enterprise banking — they let us do phased rollouts to 5% of users, kill a broken feature in seconds without an emergency release, and gate features by regulatory region."*
-
-#### 📖 Detailed Answer
-
-Feature flags (also called feature toggles): A way to enable or disable a feature without pushing an app update. The flag value is fetched from a remote configuration server. If you discover a critical bug in a new feature, you flip the flag to OFF — the feature disappears from production in seconds. Without a flag, you would need an emergency app release that takes hours to pass App Review.
-
-In banking, feature flags are essential for phased rollouts: release a new transfer UI to 5% of users first, watch metrics, and gradually increase to 100% if everything looks good. They are also used for compliance: show this new disclosure screen only to users in the EU.
-
-A/B testing: Show variant A to 50% of users and variant B to the other 50%. Measure which version has better engagement or conversion. Firebase Remote Config, LaunchDarkly, and Optimizely all support this.
-
-Remote configuration: Beyond feature flags, you can control app behavior without a release: change the minimum transfer amount, update a promotional banner, adjust timeout durations.
-
-Key interview talking point: Feature flags require a default state — what happens if the config server is unreachable? The app must have a safe fallback value baked in. For a new, unproven feature, the safe default is OFF.
-
-#### 💻 Swift Code Example
-
-```swift
-import FirebaseRemoteConfig
-
-// 1. Define all flags in one place
-enum FeatureFlag: String {
-    case newTransferUI      = "new_transfer_ui"
-    case cryptoWallet       = "crypto_wallet_enabled"
-    case euComplianceBanner = "eu_compliance_banner"
-}
-
-// 2. Feature flag service with safe local defaults
-class FeatureFlagService {
-    private let config = RemoteConfig.remoteConfig()
-
-    // Safe defaults: if server unreachable, new features default to OFF
-    private let defaults: [String: NSObject] = [
-        FeatureFlag.newTransferUI.rawValue:      false as NSObject,
-        FeatureFlag.cryptoWallet.rawValue:       false as NSObject,
-        FeatureFlag.euComplianceBanner.rawValue: false as NSObject
-    ]
-
-    func setup() async {
-        config.setDefaults(defaults)
-        try? await config.fetch(minimumFetchInterval: 3600)  // cache 1 hour
-        try? await config.activate()
-    }
-
-    func isEnabled(_ flag: FeatureFlag) -> Bool {
-        config[flag.rawValue].boolValue
-    }
-}
-
-// 3. UI adapts based on server-controlled flag
-struct TransferView: View {
-    @EnvironmentObject var flags: FeatureFlagService
-    var body: some View {
-        if flags.isEnabled(.newTransferUI) {
-            NewTransferFormView()     // 5% of users see this first
-        } else {
-            LegacyTransferFormView()  // safe default for everyone else
-        }
-    }
-}
-```
-
 ---
-
-
-## 👔 Engineering Leadership & Operations (Q-74 – Q-75)
 
 ### `Q-74` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
 
