@@ -374,7 +374,15 @@
     }
   ],
   "QUESTION_TO_DOCS": {
-    "Q-58": [
+    "Q-01": [
+      {
+        "docId": "leadership-ownership",
+        "title": "Development Lead & Feature Ownership Guide",
+        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
+        "icon": "👔"
+      }
+    ],
+    "Q-59": [
       {
         "docId": "security-comparison",
         "title": "Security Decision Table (Keychain, Enclave, Pinning)",
@@ -388,7 +396,7 @@
         "icon": "💾"
       }
     ],
-    "Q-57": [
+    "Q-58": [
       {
         "docId": "security-comparison",
         "title": "Security Decision Table (Keychain, Enclave, Pinning)",
@@ -396,7 +404,7 @@
         "icon": "🛡️"
       }
     ],
-    "Q-01": [
+    "Q-02": [
       {
         "docId": "clean-architecture",
         "title": "Clean Architecture — Interview Cheat Sheet",
@@ -416,7 +424,7 @@
         "icon": "🔄"
       }
     ],
-    "Q-02": [
+    "Q-03": [
       {
         "docId": "viper-pattern",
         "title": "VIPER Architecture — Interview Cheat Sheet",
@@ -424,7 +432,7 @@
         "icon": "🐍"
       }
     ],
-    "Q-03": [
+    "Q-04": [
       {
         "docId": "dependency-injection",
         "title": "Dependency Injection (DI) — Interview Cheat Sheet",
@@ -432,7 +440,7 @@
         "icon": "💉"
       }
     ],
-    "Q-04": [
+    "Q-05": [
       {
         "docId": "solid-principles",
         "title": "SOLID Principles — Interview Cheat Sheet",
@@ -440,20 +448,12 @@
         "icon": "🧱"
       }
     ],
-    "Q-05": [
+    "Q-06": [
       {
         "docId": "coordinator-pattern",
         "title": "Coordinator Pattern — Interview Cheat Sheet",
         "filename": "Coordinator-README.md",
         "icon": "🧭"
-      }
-    ],
-    "Q-06": [
-      {
-        "docId": "multithreading-gcd",
-        "title": "iOS Concurrency & GCD Reference",
-        "filename": "Multithreading-README.md",
-        "icon": "⚡"
       }
     ],
     "Q-07": [
@@ -474,13 +474,21 @@
     ],
     "Q-09": [
       {
+        "docId": "multithreading-gcd",
+        "title": "iOS Concurrency & GCD Reference",
+        "filename": "Multithreading-README.md",
+        "icon": "⚡"
+      }
+    ],
+    "Q-10": [
+      {
         "docId": "concurrency-issues",
         "title": "Concurrency Issues Diagnosis Table",
         "filename": "ConcurrencyIssues-ComparisonNotes.md",
         "icon": "⚠️"
       }
     ],
-    "Q-10": [
+    "Q-11": [
       {
         "docId": "operation-queue",
         "title": "OperationQueue vs Grand Central Dispatch Decision Table",
@@ -488,7 +496,7 @@
         "icon": "⛓️"
       }
     ],
-    "Q-11": [
+    "Q-12": [
       {
         "docId": "thread-safety",
         "title": "Thread Safety Primitives Decision Table",
@@ -496,7 +504,7 @@
         "icon": "🔒"
       }
     ],
-    "Q-13": [
+    "Q-14": [
       {
         "docId": "ios-internals",
         "title": "iOS Internals — Interview Talking Points",
@@ -504,7 +512,7 @@
         "icon": "⚙️"
       }
     ],
-    "Q-18": [
+    "Q-19": [
       {
         "docId": "swiftui-uikit-interop",
         "title": "SwiftUI & UIKit Interoperability — Cheat Sheet",
@@ -512,7 +520,7 @@
         "icon": "🤝"
       }
     ],
-    "Q-19": [
+    "Q-20": [
       {
         "docId": "autolayout-basics",
         "title": "Auto Layout Basics — Talking Points",
@@ -520,7 +528,7 @@
         "icon": "📐"
       }
     ],
-    "Q-20": [
+    "Q-21": [
       {
         "docId": "composable-ui",
         "title": "Composable UI Decomposition — Talking Points",
@@ -532,14 +540,6 @@
         "title": "Design System & Shared UI Library — Talking Points",
         "filename": "DesignSystem-TalkingPoints.md",
         "icon": "🎨"
-      }
-    ],
-    "Q-21": [
-      {
-        "docId": "autolayout-basics",
-        "title": "Auto Layout Basics — Talking Points",
-        "icon": "📐",
-        "filename": "AutoLayoutBasics-TalkingPoints.md"
       }
     ],
     "Q-22": [
@@ -556,6 +556,14 @@
         "title": "Auto Layout Basics — Talking Points",
         "icon": "📐",
         "filename": "AutoLayoutBasics-TalkingPoints.md"
+      }
+    ],
+    "Q-24": [
+      {
+        "docId": "autolayout-basics",
+        "title": "Auto Layout Basics — Talking Points",
+        "icon": "📐",
+        "filename": "AutoLayoutBasics-TalkingPoints.md"
       },
       {
         "docId": "swiftui-uikit-interop",
@@ -564,7 +572,7 @@
         "filename": "SwiftUI-UIKit-Interop-TalkingPoints.md"
       }
     ],
-    "Q-24": [
+    "Q-25": [
       {
         "docId": "autolayout-basics",
         "title": "Auto Layout Basics — Talking Points",
@@ -578,7 +586,7 @@
         "filename": "DesignSystem-TalkingPoints.md"
       }
     ],
-    "Q-25": [
+    "Q-26": [
       {
         "docId": "composable-ui",
         "title": "Composable UI Decomposition — Talking Points",
@@ -592,7 +600,7 @@
         "filename": "AutoLayoutBasics-TalkingPoints.md"
       }
     ],
-    "Q-27": [
+    "Q-28": [
       {
         "docId": "swiftui-state",
         "title": "SwiftUI State Management — Cheat Sheet",
@@ -600,7 +608,7 @@
         "icon": "🔄"
       }
     ],
-    "Q-28": [
+    "Q-29": [
       {
         "docId": "repository-pattern",
         "title": "Repository Pattern — Talking Points",
@@ -614,14 +622,6 @@
         "icon": "🌐"
       }
     ],
-    "Q-31": [
-      {
-        "docId": "modular-architecture",
-        "title": "Modular App Architecture — Talking Points",
-        "filename": "ModularArchitecture-TalkingPoints.md",
-        "icon": "📦"
-      }
-    ],
     "Q-32": [
       {
         "docId": "modular-architecture",
@@ -632,13 +632,21 @@
     ],
     "Q-33": [
       {
+        "docId": "modular-architecture",
+        "title": "Modular App Architecture — Talking Points",
+        "filename": "ModularArchitecture-TalkingPoints.md",
+        "icon": "📦"
+      }
+    ],
+    "Q-34": [
+      {
         "docId": "networking-architecture",
         "title": "Networking Architecture Decision Table & 4 Pillars",
         "icon": "🌐",
         "filename": "NetworkingArchitecture-DecisionTable.md"
       }
     ],
-    "Q-34": [
+    "Q-35": [
       {
         "docId": "ios-internals",
         "title": "iOS Internals — Interview Talking Points",
@@ -652,14 +660,6 @@
         "filename": "DataPersistence-DecisionTable.md"
       }
     ],
-    "Q-37": [
-      {
-        "docId": "performance-profiling",
-        "title": "Performance Profiling & Instruments — Talking Points",
-        "filename": "PerformanceProfiling-TalkingPoints.md",
-        "icon": "⏱️"
-      }
-    ],
     "Q-38": [
       {
         "docId": "performance-profiling",
@@ -670,17 +670,25 @@
     ],
     "Q-39": [
       {
+        "docId": "performance-profiling",
+        "title": "Performance Profiling & Instruments — Talking Points",
+        "filename": "PerformanceProfiling-TalkingPoints.md",
+        "icon": "⏱️"
+      }
+    ],
+    "Q-40": [
+      {
         "docId": "modular-architecture",
         "title": "Modular App Architecture — Talking Points",
         "filename": "ModularArchitecture-TalkingPoints.md",
         "icon": "📦"
       }
     ],
-    "Q-40": [
+    "Q-41": [
       "performance-profiling",
       "ios-internals"
     ],
-    "Q-41": [
+    "Q-42": [
       {
         "docId": "performance-profiling",
         "title": "Performance Profiling & Instruments — Talking Points",
@@ -694,7 +702,7 @@
         "filename": "iOSInternals-TalkingPoints.md"
       }
     ],
-    "Q-42": [
+    "Q-43": [
       {
         "docId": "performance-profiling",
         "title": "Performance Profiling & Instruments — Talking Points",
@@ -714,7 +722,7 @@
         "filename": "iOSInternals-TalkingPoints.md"
       }
     ],
-    "Q-43": [
+    "Q-44": [
       {
         "docId": "performance-profiling",
         "title": "Performance Profiling & Instruments — Talking Points",
@@ -726,14 +734,6 @@
         "title": "iOS Internals — Interview Talking Points",
         "icon": "⚙️",
         "filename": "iOSInternals-TalkingPoints.md"
-      }
-    ],
-    "Q-47": [
-      {
-        "docId": "security-comparison",
-        "title": "Security Decision Table (Keychain, Enclave, Pinning)",
-        "filename": "Security-ComparisonNotes.md",
-        "icon": "🛡️"
       }
     ],
     "Q-48": [
@@ -748,11 +748,19 @@
       {
         "docId": "security-comparison",
         "title": "Security Decision Table (Keychain, Enclave, Pinning)",
+        "filename": "Security-ComparisonNotes.md",
+        "icon": "🛡️"
+      }
+    ],
+    "Q-50": [
+      {
+        "docId": "security-comparison",
+        "title": "Security Decision Table (Keychain, Enclave, Pinning)",
         "icon": "🔒",
         "filename": "SecurityDecisionTable.md"
       }
     ],
-    "Q-50": [
+    "Q-51": [
       {
         "docId": "security-comparison",
         "title": "Security Decision Table (Keychain, Enclave, Pinning)",
@@ -766,20 +774,12 @@
         "filename": "NetworkingArchitecture.md"
       }
     ],
-    "Q-51": [
+    "Q-52": [
       {
         "docId": "security-comparison",
         "title": "Security Decision Table (Keychain, Enclave, Pinning)",
         "icon": "🔒",
         "filename": "SecurityDecisionTable.md"
-      }
-    ],
-    "Q-52": [
-      {
-        "docId": "leadership-ownership",
-        "title": "Development Lead / Feature Ownership — Talking Points",
-        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
-        "icon": "👔"
       }
     ],
     "Q-53": [
@@ -798,7 +798,15 @@
         "icon": "👔"
       }
     ],
-    "Q-60": [
+    "Q-55": [
+      {
+        "docId": "leadership-ownership",
+        "title": "Development Lead / Feature Ownership — Talking Points",
+        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
+        "icon": "👔"
+      }
+    ],
+    "Q-61": [
       {
         "docId": "networking-architecture",
         "title": "Networking Architecture Decision Table & 4 Pillars",
@@ -812,7 +820,7 @@
         "filename": "PerformanceProfiling-TalkingPoints.md"
       }
     ],
-    "Q-67": [
+    "Q-68": [
       {
         "docId": "testing-xctest",
         "title": "Testing, TDD/BDD, and Testability — Talking Points",
@@ -820,7 +828,7 @@
         "icon": "🧪"
       }
     ],
-    "Q-68": [
+    "Q-69": [
       {
         "docId": "repository-pattern",
         "title": "Repository Pattern — Talking Points",
@@ -834,7 +842,7 @@
         "icon": "🧪"
       }
     ],
-    "Q-77": [
+    "Q-78": [
       {
         "docId": "leadership-ownership",
         "title": "Development Lead / Feature Ownership — Talking Points",
@@ -848,25 +856,17 @@
         "filename": "PerformanceProfiling-TalkingPoints.md"
       }
     ],
-    "Q-87": [
+    "Q-88": [
       "performance-profiling",
       "ios-internals"
     ],
-    "Q-59": [
+    "Q-60": [
       {
         "docId": "security-comparison",
         "title": "Security Decision Table (Keychain, Enclave, Pinning)",
         "filename": "Security-ComparisonNotes.md",
         "icon": "🛡️"
       },
-      {
-        "docId": "networking-architecture",
-        "title": "Networking Architecture Decision Table & 4 Pillars",
-        "filename": "Networking-ComparisonNotes.md",
-        "icon": "🌐"
-      }
-    ],
-    "Q-35": [
       {
         "docId": "networking-architecture",
         "title": "Networking Architecture Decision Table & 4 Pillars",
@@ -882,7 +882,15 @@
         "icon": "🌐"
       }
     ],
-    "Q-62": [
+    "Q-37": [
+      {
+        "docId": "networking-architecture",
+        "title": "Networking Architecture Decision Table & 4 Pillars",
+        "filename": "Networking-ComparisonNotes.md",
+        "icon": "🌐"
+      }
+    ],
+    "Q-63": [
       {
         "docId": "security-comparison",
         "title": "Security Decision Table (Keychain, Enclave, Pinning)",
@@ -896,7 +904,7 @@
         "icon": "🌐"
       }
     ],
-    "Q-70": [
+    "Q-71": [
       {
         "docId": "testing-xctest",
         "title": "XCTest, Mocking & UI Testing Guide",
@@ -910,7 +918,7 @@
         "icon": "💉"
       }
     ],
-    "Q-71": [
+    "Q-72": [
       {
         "docId": "testing-xctest",
         "title": "XCTest, Mocking & UI Testing Guide",
@@ -924,7 +932,7 @@
         "icon": "⏱️"
       }
     ],
-    "Q-72": [
+    "Q-73": [
       {
         "docId": "testing-xctest",
         "title": "XCTest, Mocking & UI Testing Guide",
@@ -938,14 +946,6 @@
         "icon": "💉"
       }
     ],
-    "Q-74": [
-      {
-        "docId": "testing-xctest",
-        "title": "XCTest, Mocking & UI Testing Guide",
-        "filename": "Testing-TalkingPoints.md",
-        "icon": "🧪"
-      }
-    ],
     "Q-75": [
       {
         "docId": "testing-xctest",
@@ -954,12 +954,12 @@
         "icon": "🧪"
       }
     ],
-    "Q-78": [
+    "Q-76": [
       {
-        "docId": "leadership-ownership",
-        "title": "Development Lead & Feature Ownership Guide",
-        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
-        "icon": "👔"
+        "docId": "testing-xctest",
+        "title": "XCTest, Mocking & UI Testing Guide",
+        "filename": "Testing-TalkingPoints.md",
+        "icon": "🧪"
       }
     ],
     "Q-79": [
@@ -986,7 +986,15 @@
         "icon": "👔"
       }
     ],
-    "Q-63": [
+    "Q-82": [
+      {
+        "docId": "leadership-ownership",
+        "title": "Development Lead & Feature Ownership Guide",
+        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
+        "icon": "👔"
+      }
+    ],
+    "Q-64": [
       {
         "docId": "networking-architecture",
         "title": "Networking, API Design & Resilience Guide",

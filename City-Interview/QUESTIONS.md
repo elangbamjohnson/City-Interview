@@ -1,11 +1,12 @@
 # 📱 iOS Senior & Staff Interview Question Bank
 
-> A comprehensive, senior & staff-level revision suite for 89 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, 60/120fps Scroll Hitch Elimination, Scalable Image Caching, Keychain Secrets Management, OAuth 2.0 PKCE & Token Rotation, Production Crash Log Triage & Symbolication, Memory Management, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
+> A comprehensive, senior & staff-level revision suite for 90 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, 60/120fps Scroll Hitch Elimination, Scalable Image Caching, Keychain Secrets Management, OAuth 2.0 PKCE & Token Rotation, Production Crash Log Triage & Symbolication, Memory Management, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
 
 ## 📊 Overview
 
 | Category / Topic | Questions | Key Coverage |
 |---|:---:|---|
+| **Career Narrative & Leadership Walkthrough** | `1` | Executive 2-minute elevator pitch, career evolution from VoIP/C to enterprise scale, quantified reliability metrics, and staff-level positioning. |
 | **Architecture & Design Patterns** | `5` | Enterprise presentation patterns (MVVM, Clean Architecture, VIPER), Coordinator routing, Dependency Injection, and SOLID principles. |
 | **Swift Concurrency & Multithreading** | `7` | Swift Actors, async/await, Structured Concurrency, Task Groups, synchronization primitives, GCD queues, and race conditions. |
 | **Core Swift & Language Internals** | `6` | Protocol-Oriented Programming, Stack vs Heap & CoW, Method Dispatch (V-table/witness), Generics & some/any existentials, Property Wrappers & Macros, and Run Loops. |
@@ -20,13 +21,254 @@
 | **CI/CD & DevOps** | `2` | Automated continuous integration and delivery with GitHub Actions: PR quality gates, macOS runner optimization, Fastlane match code signing, and headless TestFlight deployment via App Store Connect API keys. |
 | **Engineering Leadership & Operations** | `6` | Production incident triage, crash log analysis & dSYM symbolication, Crashlytics velocity alerts, MetricKit crash loops, blameless post-mortems, and migrating legacy monoliths using the Strangler Fig pattern. |
 | **Memory Management** | `8` | ARC strong/weak/unowned, retain cycles, stack vs heap, Copy-on-Write internals, memory warnings, the Swift runtime side table, Jetsam OOM survival, and production memory profiling with Instruments and MetricKit. |
-| **Total** | **`89`** | Complete Senior & Staff iOS Interview Curriculum |
+| **Total** | **`90`** | Complete Senior & Staff iOS Interview Curriculum |
 
 ---
 
-## 📌 Architecture & Design Patterns (Q-01 – Q-05)
 
-### `Q-01` — MVC vs MVVM vs Clean Architecture — tradeoffs
+---
+
+## 🎙️ Career Narrative & Leadership Walkthrough (Q-01)
+
+### `Q-01` — Walk me through your career in 2 minutes?
+
+- **Category:** `Career Narrative & Leadership Walkthrough`
+
+> [!TIP]
+> **🗣️ Interview Pitch (Say it like this):**  
+> *"I'm an iOS engineer with 18+ years of experience across low-level VoIP (PJSIP), offline enterprise/consumer apps (FordPass, Domino's), and enterprise calling platforms at Neurealm/Avaya where I architected Clean Architecture + Swift Concurrency, increasing crash-free sessions to 99% and cutting build times by up to 70%—now positioning for a Staff-level role owning technical direction at scale. (Memory trick: V-O-F-L-N → 'VoIP, Offline apps, Ford & CI/CD, Lead at Avaya, Now Staff role.')"*
+
+#### 📖 Detailed Answer
+
+"I'm an iOS engineer with more than 18 years of experience. I started in 2008 with VoIP, building SIP softphone apps at Adore Infotech and then Ascent Telecom, using the PJSIP library. That gave me a strong base in networking, audio, and low-level code. I even modified PJSIP at the C level.
+
+From 2011, I moved to enterprise and consumer apps, at HELM360 and then Copper Mobile. I built an offline-capable iPad app for Thomson Reuters, and I worked on consumer apps like Domino's, with voice ordering, and MyLife. That is where I learned Core Data, offline storage, and syncing.
+
+In 2014, I joined Cognizant in the US and worked on FordPass for Ford. I shipped remote vehicle control, a parking locator, and wallet integration, and I built the CI/CD pipelines that cut release time from days to minutes. I was also the tech lead and scrum master on the AutoZone retail app.
+
+After that, I spent two years freelancing and building my skills. In 2021, I joined Neurealm as Lead iOS Engineer and architected Avaya Workplace and the Spaces SDK, which is calling and video conferencing for enterprise users. I used Clean Architecture with MVVM, and I moved the call layer to Swift Concurrency with actors, which removed the race conditions. Crash-free sessions went from 96 to 99 percent. I also cut build and deploy time by 30 to 70 percent, and I mentored four to five developers.
+
+So across my career, I have worked on large consumer and enterprise apps, with a focus on reliability, architecture, and team leadership. Now I'm looking for a Staff-level role, where I can own the technical direction of a consumer app at scale."
+
+---
+
+### How the Two Minutes Are Split (Execution Blueprint)
+
+| Segment | Duration | Focus | What to Say |
+| :--- | :---: | :--- | :--- |
+| **1. Opening** | **10s** | Total tenure & root specialization | 18+ years of experience; foundational start in 2008 building low-level SIP/VoIP softphones using PJSIP. |
+| **2. Early Career** | **25s** | C internals to offline enterprise apps | C-level PJSIP modifications, then moving to Copper Mobile: Thomson Reuters offline iPad app, Domino's voice ordering, Core Data syncing. |
+| **3. Enterprise Scale** | **25s** | Consumer scale & CI/CD automation | Cognizant (US): FordPass connected vehicle features (remote control, parking, wallet), CI/CD cutting releases from days to minutes; Tech Lead on AutoZone. |
+| **4. Lead Architect** | **40s** | High-impact numbers & modern architecture | Neurealm / Avaya Workplace & Spaces SDK: Clean Architecture + MVVM, Swift Concurrency/actors eliminating races, **96% $\rightarrow$ 99% crash-free rate**, **30% – 70% build acceleration**, mentoring 4-5 engineers. |
+| **5. Closing Pitch** | **20s** | The common thread & target role | Reliability, architecture, and leadership across consumer & enterprise apps. Ready for a Staff-level role owning technical direction at scale. |
+
+---
+
+### Chronological Career Evolution (2008 – Present)
+
+| Period | Company / Client | Role | Core Tech Stack | High-Impact Deliverables |
+| :--- | :--- | :--- | :--- | :--- |
+| **2008 – 2011** | **Adore Infotech & Ascent Telecom** | iOS / VoIP Engineer | Objective-C, C, PJSIP, SIP, RTP, CoreAudio | Built enterprise SIP softphones from scratch. Customized PJSIP at the C layer for low-bandwidth codec negotiation and packet-loss concealment. |
+| **2011 – 2014** | **HELM360 & Copper Mobile** | Senior iOS Developer | Objective-C, Core Data, REST, SQLite, Voice SDKs | Built Thomson Reuters offline-capable iPad reporting tool; delivered Domino's consumer app with voice-assisted ordering and real-time order tracker. |
+| **2014 – 2019** | **Cognizant (USA)** *(Ford & AutoZone)* | Senior iOS Lead / Scrum Master | Swift, Objective-C, Jenkins, Fastlane, Bluetooth, CoreBluetooth | Shipped FordPass vehicle remote control, parking locator, and digital wallet. Engineered automated CI/CD pipelines reducing deployment from days to minutes. Led AutoZone retail app team. |
+| **2019 – 2021** | **Independent Consulting** | Principal iOS Consultant | Swift, Architecture Audits, Modern Concurrency | Independent consulting, skills modernization (SwiftUI, Combine, early async/await), and architectural advisory for early-stage products. |
+| **2021 – Present** | **Neurealm** *(Avaya Workplace & Spaces)* | Lead iOS Engineer / Architect | Swift, Swift Concurrency (Actors), Clean Architecture, WebRTC, SPM | Architected Avaya Workplace and Spaces SDK. Migrated call pipeline to Swift Actors, eliminating race conditions and boosting **crash-free rate from 96% to 99%**. Slashed build/deploy times by **30% – 70%**. Mentored 4–5 engineers. |
+
+---
+
+### Good to Mention (Staff-Level Interview Tactics)
+
+1. **Lead with Hard Numbers:**
+   Metrics like *"crash-free sessions jumped from 96% to 99%"* and *"build times dropped by 30% to 70%"* anchor your seniority. Data sticks in the interviewer's memory far longer than vague phrases like *"improved app performance"*.
+2. **Weight the Most Recent Tenure Heavily:**
+   Spend 40 seconds (the largest block) on Neurealm/Avaya. Modern interviewers care most about how you write code today (Swift Concurrency, Actors, Clean Architecture) and how you lead teams.
+3. **Address Independent Consulting Calmly in One Breath:**
+   Summarize the 2019–2021 period in a single confident sentence (*"After that, I spent two years freelancing and building my skills"*), and immediately advance to your Lead role. A calm, matter-of-fact tone signals deliberate career agency.
+4. **Directly Connect to the Open Role:**
+   Don't make the interviewer guess why you're a match. If the job involves a high-scale consumer or enterprise app, link your experience with FordPass, AutoZone, and Avaya Workplace directly to the company's technical scale.
+5. **Maintain Authenticity and Honesty:**
+   Never overstate unpracticed skills. If SwiftUI was a secondary layer in an enterprise codebase, keep it out of the elevator pitch and speak candidly about your hands-on depth when asked.
+6. **Strict 2-Minute Timebox:**
+   Stop at exactly two minutes. Interviewers use your opening response to gauge executive conciseness. A crisp narrative invites targeted, engaging follow-up questions.
+
+---
+
+### One-Liner & Memory Trick
+• **One-liner:** Tell a story of growth: VoIP engineer, then offline and consumer apps, then FordPass and CI/CD, then lead architect at Avaya, and finish with why you fit this Staff role.
+• **Memory trick:** **V-O-F-L-N** → *"VoIP, Offline apps, Ford and CI/CD, Lead at Avaya, Now Staff role."*
+
+#### 💻 Technical Evolution & Architecture Blueprint
+
+```swift
+// =========================================================================
+// 🎙️ SENIOR / STAFF INTERVIEW ARCHITECTURE: 18-Year Technical Evolution
+// =========================================================================
+//
+// 💡 SENIOR / STAFF INTERVIEW TALKING POINTS:
+// • Low-Level Roots (VoIP / C / PJSIP): Modifying C libraries and managing
+//   audio/socket buffers instills a hardware-level intuition for memory and threads.
+// • Offline-First Enterprise Sync (Thomson Reuters, FordPass): Local persistence
+//   acts as the source of truth, queuing mutations in an Outbox with background sync.
+// • Modern Swift Concurrency & Actors (Avaya Workplace / Spaces SDK):
+//   Transitioning stateful call orchestration to Swift Actors eliminated race conditions,
+//   catapulting crash-free sessions from 96% to 99% across enterprise deployments.
+// • Clean Architecture & Modularity: Strict separation between Domain Use Cases,
+//   Data Repositories, and Presentation ViewModels accelerates build times by up to 70%.
+
+import Foundation
+import Combine
+
+// MARK: - 1. Low-Level VoIP & Audio Pipeline (2008 – 2011: PJSIP & C Internals)
+
+/// Abstraction over low-level C / PJSIP socket and RTP audio stream operations.
+public protocol VoIPAudioEngineProtocol: AnyObject, Sendable {
+    func initializeSIPStack(domain: String, port: Int) -> Bool
+    func configureAudioSession(sampleRate: Double, bufferDuration: Double) throws
+    func terminateStack()
+}
+
+public final class LegacyVoIPBridge: VoIPAudioEngineProtocol {
+    public init() {}
+    
+    public func initializeSIPStack(domain: String, port: Int) -> Bool {
+        // Simulates C-level pjsip_init() and transport configuration
+        print("🔌 [PJSIP C-Bridge] SIP transport initialized on \(domain):\(port)")
+        return true
+    }
+    
+    public func configureAudioSession(sampleRate: Double, bufferDuration: Double) throws {
+        // Low-level CoreAudio / AudioUnit buffer frame allocation
+        print("🎙️ [CoreAudio] Buffer configured: \(sampleRate)Hz, duration: \(bufferDuration)s")
+    }
+    
+    public func terminateStack() {
+        print("🛑 [PJSIP C-Bridge] Stack destroyed cleanly without memory leaks")
+    }
+}
+
+// MARK: - 2. Offline-First Enterprise Data Architecture (2011 – 2019: Thomson Reuters & FordPass)
+
+/// Generic entity representing persistent business records (e.g. FordPass vehicle status)
+public struct VehicleStatusRecord: Identifiable, Codable, Sendable {
+    public let id: String
+    public let vin: String
+    public let isLocked: Bool
+    public let fuelLevelPercent: Double
+    public let lastSyncTimestamp: Date
+}
+
+/// Demonstrates offline-first pattern: Return local cache immediately, then sync remote
+public protocol VehicleRepositoryProtocol: Sendable {
+    func getStatus(vin: String) async throws -> VehicleStatusRecord
+    func updateLockState(vin: String, locked: Bool) async throws
+}
+
+public actor OfflineFirstVehicleRepository: VehicleRepositoryProtocol {
+    private var localStore: [String: VehicleStatusRecord] = [:]
+    private var pendingSyncOutbox: [(vin: String, locked: Bool)] = []
+    
+    public init() {}
+    
+    public func getStatus(vin: String) async throws -> VehicleStatusRecord {
+        // 1. Instant local cache lookup (0ms perceived latency for users)
+        if let cached = localStore[vin] {
+            return cached
+        }
+        // 2. Fallback default while remote sync completes
+        let fresh = VehicleStatusRecord(id: UUID().uuidString, vin: vin, isLocked: true, fuelLevelPercent: 85.0, lastSyncTimestamp: Date())
+        localStore[vin] = fresh
+        return fresh
+    }
+    
+    public func updateLockState(vin: String, locked: Bool) async throws {
+        // Optimistic UI update: Mutate local store immediately
+        if var current = localStore[vin] {
+            current = VehicleStatusRecord(id: current.id, vin: vin, isLocked: locked, fuelLevelPercent: current.fuelLevelPercent, lastSyncTimestamp: Date())
+            localStore[vin] = current
+        }
+        // Enqueue to offline outbox for opportunistic background transmission
+        pendingSyncOutbox.append((vin: vin, locked: locked))
+        print("📡 [Offline Outbox] Queued remote vehicle lock command. Pending: \(pendingSyncOutbox.count)")
+    }
+}
+
+// MARK: - 3. Modern Concurrency & Lead Architecture (2021 – Present: Avaya Workplace / Spaces)
+
+/// Call status state machine ensuring thread-safe VoIP transitions
+public enum CallState: String, Sendable {
+    case idle
+    case dialing
+    case connected
+    case onHold
+    case terminated
+}
+
+/// Swift Actor eliminating race conditions in multi-party enterprise conferencing.
+/// Achieved 99% crash-free sessions across global enterprise client bases.
+public actor CallSessionActor {
+    public private(set) var currentState: CallState = .idle
+    public private(set) var callDurationSeconds: Int = 0
+    private let callID: String
+    
+    public init(callID: String) {
+        self.callID = callID
+    }
+    
+    /// Thread-safe state transition with actor-isolated mutation
+    public func transition(to newState: CallState) {
+        // Validate transition
+        switch (currentState, newState) {
+        case (.idle, .dialing), (.dialing, .connected), (.connected, .onHold), (.onHold, .connected), (_, .terminated):
+            print("📞 [CallSessionActor] Transition: \(currentState) -> \(newState)")
+            self.currentState = newState
+        default:
+            print("⚠️ [CallSessionActor] Illegal transition rejected: \(currentState) -> \(newState)")
+        }
+    }
+    
+    public func incrementDuration() {
+        guard currentState == .connected else { return }
+        callDurationSeconds += 1
+    }
+}
+
+// MARK: - 4. Presentation Layer (Clean Architecture + MVVM)
+
+@MainActor
+public final class CallViewModel: ObservableObject {
+    @Published public private(set) var displayState: String = "Idle"
+    @Published public private(set) var formattedDuration: String = "00:00"
+    
+    private let sessionActor: CallSessionActor
+    
+    public init(callID: String) {
+        self.sessionActor = CallSessionActor(callID: callID)
+    }
+    
+    public func startCall() async {
+        await sessionActor.transition(to: .dialing)
+        self.displayState = "Dialing..."
+        
+        // Simulating network connection
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        
+        await sessionActor.transition(to: .connected)
+        self.displayState = "Connected"
+    }
+    
+    public func endCall() async {
+        await sessionActor.transition(to: .terminated)
+        self.displayState = "Call Ended"
+    }
+}
+```
+
+
+---
+
+## 📌 Architecture & Design Patterns (Q-02 – Q-06)
+
+### `Q-02` — MVC vs MVVM vs Clean Architecture — tradeoffs
 
 - **Category:** `Architecture & Design Patterns`
 
@@ -80,7 +322,7 @@ struct ProfileView: View {
 
 ---
 
-### `Q-02` — VIPER — the 5 components and why teams choose it
+### `Q-03` — VIPER — the 5 components and why teams choose it
 
 - **Category:** `Architecture & Design Patterns`
 
@@ -138,7 +380,7 @@ class ProfileRouter: ProfileRouterProtocol {
 
 ---
 
-### `Q-03` — Dependency Injection — constructor vs property injection, why it helps testing
+### `Q-04` — Dependency Injection — constructor vs property injection, why it helps testing
 
 - **Category:** `Architecture & Design Patterns`
 
@@ -192,7 +434,7 @@ let testVM = ProfileViewModel(network: MockNetworkService()) // test
 
 ---
 
-### `Q-04` — SOLID principles
+### `Q-05` — SOLID principles
 
 - **Category:** `Architecture & Design Patterns`
 
@@ -245,7 +487,7 @@ class ProfileViewModel {
 
 ---
 
-### `Q-05` — MVVM-C (Coordinator pattern) — why enterprise apps use it
+### `Q-06` — MVVM-C (Coordinator pattern) — why enterprise apps use it
 
 - **Category:** `Architecture & Design Patterns`
 
@@ -319,9 +561,9 @@ class AppCoordinator: Coordinator {
 ---
 
 
-## ⚡ Swift Concurrency & Multithreading (Q-06 – Q-12)
+## ⚡ Swift Concurrency & Multithreading (Q-07 – Q-13)
 
-### `Q-06` — GCD vs Swift Concurrency — when to use which, and why
+### `Q-07` — GCD vs Swift Concurrency — when to use which, and why
 
 - **Category:** `Swift Concurrency & Multithreading`
 
@@ -362,7 +604,7 @@ Task {
 
 ---
 
-### `Q-07` — How do Swift actors actually prevent data races?
+### `Q-08` — How do Swift actors actually prevent data races?
 
 - **Category:** `Swift Concurrency & Multithreading`
 
@@ -417,7 +659,7 @@ class ProfileViewModel: ObservableObject {
 
 ---
 
-### `Q-08` — What is nonisolated? When do you use it?
+### `Q-09` — What is nonisolated? When do you use it?
 
 - **Category:** `Swift Concurrency & Multithreading`
 
@@ -509,7 +751,7 @@ final class ProfileViewModel {
 
 ---
 
-### `Q-09` — async/await, structured concurrency, task groups
+### `Q-10` — async/await, structured concurrency, task groups
 
 - **Category:** `Swift Concurrency & Multithreading`
 
@@ -555,7 +797,7 @@ func fetchImages(urls: [URL]) async throws -> [UIImage] {
 
 ---
 
-### `Q-10` — Race conditions vs deadlocks — definitions + a real example of each
+### `Q-11` — Race conditions vs deadlocks — definitions + a real example of each
 
 - **Category:** `Swift Concurrency & Multithreading`
 
@@ -608,7 +850,7 @@ let lockA = NSLock(), lockB = NSLock()
 
 ---
 
-### `Q-11` — OperationQueue / Operation — basic concept
+### `Q-12` — OperationQueue / Operation — basic concept
 
 - **Category:** `Swift Concurrency & Multithreading`
 
@@ -653,7 +895,7 @@ func processAndUpload() async throws {
 
 ---
 
-### `Q-12` — Thread-safe code using synchronization primitives — locks, mutexes, atomic operations
+### `Q-13` — Thread-safe code using synchronization primitives — locks, mutexes, atomic operations
 
 - **Category:** `Swift Concurrency & Multithreading`
 
@@ -713,9 +955,9 @@ actor ActorCache<K: Hashable, V> {
 ---
 
 
-## 🚀 Core Swift & Language Internals (Q-13 – Q-18)
+## 🚀 Core Swift & Language Internals (Q-14 – Q-19)
 
-### `Q-13` — Protocol-Oriented Programming in Swift — What problem does it solve?
+### `Q-14` — Protocol-Oriented Programming in Swift — What problem does it solve?
 
 - **Category:** `Core Swift & Language Internals`
 
@@ -785,7 +1027,7 @@ let test = ProfileViewModel(service: MockService())
 
 ---
 
-### `Q-14` — App lifecycle and Run Loops — what happens from launch to termination
+### `Q-15` — App lifecycle and Run Loops — what happens from launch to termination
 
 - **Category:** `Core Swift & Language Internals`
 
@@ -843,7 +1085,7 @@ Task.detached(priority: .userInitiated) {
 
 ---
 
-### `Q-15` — Core Swift Mechanics — Stack vs Heap, Value vs Reference Semantics, and Copy-on-Write (CoW)
+### `Q-16` — Core Swift Mechanics — Stack vs Heap, Value vs Reference Semantics, and Copy-on-Write (CoW)
 
 - **Category:** `Core Swift & Language Internals`
 
@@ -919,7 +1161,7 @@ listB.append(4)   // CoW kicks in here: listB allocates its own copy; listA rema
 
 ---
 
-### `Q-16` — Swift Method Dispatch — Static, Witness Table, V-Table, and Message Dispatch
+### `Q-17` — Swift Method Dispatch — Static, Witness Table, V-Table, and Message Dispatch
 
 - **Category:** `Core Swift & Language Internals`
 
@@ -989,7 +1231,7 @@ class SecurityMonitor: NSObject {
 
 ---
 
-### `Q-17` — Generics & Type Erasure — some vs any, Existential Containers, and Memory Overhead
+### `Q-18` — Generics & Type Erasure — some vs any, Existential Containers, and Memory Overhead
 
 - **Category:** `Core Swift & Language Internals`
 
@@ -1058,7 +1300,7 @@ func processMultipleMethods(methods: [any PaymentMethod]) {
 
 ---
 
-### `Q-18` — Property Wrappers & Swift 5.9+ Macros — @propertyWrapper, wrappedValue, projectedValue, and @Observable
+### `Q-19` — Property Wrappers & Swift 5.9+ Macros — @propertyWrapper, wrappedValue, projectedValue, and @Observable
 
 - **Category:** `Core Swift & Language Internals`
 
@@ -1127,9 +1369,9 @@ final class AccountStore {
 ---
 
 
-## 🎨 SwiftUI & UIKit Layout (Q-19 – Q-28)
+## 🎨 SwiftUI & UIKit Layout (Q-20 – Q-29)
 
-### `Q-19` — UIKit and SwiftUI interoperability — UIHostingController and UIViewRepresentable
+### `Q-20` — UIKit and SwiftUI interoperability — UIHostingController and UIViewRepresentable
 
 - **Category:** `SwiftUI & UIKit Layout`
 
@@ -1190,7 +1432,7 @@ navigationController.pushViewController(hosting, animated: true)
 
 ---
 
-### `Q-20` — SwiftUI vs UIKit: how do you decide for a large app?
+### `Q-21` — SwiftUI vs UIKit: how do you decide for a large app?
 
 - **Category:** `SwiftUI & UIKit Layout`
 
@@ -1274,7 +1516,7 @@ struct MapContainer: UIViewRepresentable {
 
 ---
 
-### `Q-21` — How does Auto Layout work?
+### `Q-22` — How does Auto Layout work?
 
 - **Category:** `SwiftUI & UIKit Layout`
 
@@ -1422,7 +1664,7 @@ final class ProfileHeaderCard: UIView {
 
 ---
 
-### `Q-22` — Auto Layout, Dynamic Type, and Accessibility (a11y)
+### `Q-23` — Auto Layout, Dynamic Type, and Accessibility (a11y)
 
 - **Category:** `SwiftUI & UIKit Layout`
 
@@ -1494,7 +1736,7 @@ struct BalanceView: View {
 
 ---
 
-### `Q-23` — How do you handle iPad, split view, and adaptive layouts?
+### `Q-24` — How do you handle iPad, split view, and adaptive layouts?
 
 - **Category:** `SwiftUI & UIKit Layout`
 
@@ -1686,7 +1928,7 @@ struct ActionButtonsGroup: View {
 
 ---
 
-### `Q-24` — How do you handle localization?
+### `Q-25` — How do you handle localization?
 
 - **Category:** `SwiftUI & UIKit Layout`
 
@@ -1870,7 +2112,7 @@ struct AccountSummaryRow: View {
 
 ---
 
-### `Q-25` — What do UICollectionViewDiffableDataSource and compositional layout give you?
+### `Q-26` — What do UICollectionViewDiffableDataSource and compositional layout give you?
 
 - **Category:** `SwiftUI & UIKit Layout`
 
@@ -2003,7 +2245,7 @@ final class ProductsViewController: UIViewController {
 
 ---
 
-### `Q-26` — Decomposing complex screens into reusable, composable UI components
+### `Q-27` — Decomposing complex screens into reusable, composable UI components
 
 - **Category:** `SwiftUI & UIKit Layout`
 
@@ -2073,7 +2315,7 @@ struct TransactionHistoryView: View {
 
 ---
 
-### `Q-27` — Modern SwiftUI Rendering Engine — ViewGraph, AttributeGraph, Structural vs Explicit Identity
+### `Q-28` — Modern SwiftUI Rendering Engine — ViewGraph, AttributeGraph, Structural vs Explicit Identity
 
 - **Category:** `SwiftUI & UIKit Layout`
 
@@ -2145,7 +2387,7 @@ struct UserBannerView: View {
 
 ---
 
-### `Q-28` — What are property wrappers? How do @State, @Binding, and @Published work inside?
+### `Q-29` — What are property wrappers? How do @State, @Binding, and @Published work inside?
 
 - **Category:** `SwiftUI & UIKit Layout`
 
@@ -2305,9 +2547,9 @@ struct ChildCounterControl: View {
 ---
 
 
-## 🌊 Combine & Reactive Streams (Q-29)
+## 🌊 Combine & Reactive Streams (Q-30)
 
-### `Q-29` — Combine Framework & Reactive Streams — Publishers, Subjects, Backpressure, and Operators
+### `Q-30` — Combine Framework & Reactive Streams — Publishers, Subjects, Backpressure, and Operators
 
 - **Category:** `Combine & Reactive Streams`
 
@@ -2385,9 +2627,9 @@ final class LiveSearchViewModel {
 ---
 
 
-## 🌐 Networking, APIs & Background Tasks (Q-30 – Q-36)
+## 🌐 Networking, APIs & Background Tasks (Q-31 – Q-37)
 
-### `Q-30` — URLSession and building a networking layer — how would you architect one?
+### `Q-31` — URLSession and building a networking layer — how would you architect one?
 
 - **Category:** `Networking, APIs & Background Tasks`
 
@@ -2463,7 +2705,7 @@ class MockAPIClient: APIClientProtocol {
 
 ---
 
-### `Q-31` — REST and GraphQL API integration — contract-driven development
+### `Q-32` — REST and GraphQL API integration — contract-driven development
 
 - **Category:** `Networking, APIs & Background Tasks`
 
@@ -2521,7 +2763,7 @@ func fetchTransactions(accountId: String) async throws -> [Transaction] {
 
 ---
 
-### `Q-32` — Push Notifications & Background Tasks — APNs Extensions & BGTaskScheduler
+### `Q-33` — Push Notifications & Background Tasks — APNs Extensions & BGTaskScheduler
 
 - **Category:** `Networking, APIs & Background Tasks`
 
@@ -2591,7 +2833,7 @@ class NotificationService: UNNotificationServiceExtension {
 
 ---
 
-### `Q-33` — What does background execution allow?
+### `Q-34` — What does background execution allow?
 
 - **Category:** `Networking, APIs & Background Tasks`
 
@@ -2808,7 +3050,7 @@ final class VoIPPushHandler: NSObject, PKPushRegistryDelegate {
 
 ---
 
-### `Q-34` — What happens when the app is suspended or terminated? How do you save state?
+### `Q-35` — What happens when the app is suspended or terminated? How do you save state?
 
 - **Category:** `Networking, APIs & Background Tasks`
 
@@ -3008,7 +3250,7 @@ final class AccountLedgerStore: ObservableObject {
 
 ---
 
-### `Q-35` — How does APNs work end to end?
+### `Q-36` — How does APNs work end to end?
 
 - **Category:** `Networking, APIs & Background Tasks`
 
@@ -3371,7 +3613,7 @@ struct PushBackendClient: PushBackendClientProtocol {
 
 ---
 
-### `Q-36` — How does a VoIP call work between two iOS devices?
+### `Q-37` — How does a VoIP call work between two iOS devices?
 
 - **Category:** `Networking, APIs & Background Tasks`
 
@@ -3667,9 +3909,9 @@ extension VoIPCallManager: CXProviderDelegate {
 ---
 
 
-## 📦 Modularity & Launch Performance (Q-37 – Q-43)
+## 📦 Modularity & Launch Performance (Q-38 – Q-44)
 
-### `Q-37` — How do you reduce build time in a multi-module app?
+### `Q-38` — How do you reduce build time in a multi-module app?
 
 - **Category:** `Modularity & Launch Performance`
 
@@ -3726,7 +3968,7 @@ let package = Package(
 
 ---
 
-### `Q-38` — Static vs dynamic frameworks. What is the effect on launch?
+### `Q-39` — Static vs dynamic frameworks. What is the effect on launch?
 
 - **Category:** `Modularity & Launch Performance`
 
@@ -3779,7 +4021,7 @@ let package = Package(
 
 ---
 
-### `Q-39` — How do you control app size?
+### `Q-40` — How do you control app size?
 
 - **Category:** `Modularity & Launch Performance`
 
@@ -3840,7 +4082,7 @@ func loadTutorialContent() async throws {
 
 ---
 
-### `Q-40` — Your app is slow. How do you find the cause? Walk me through the steps.
+### `Q-41` — Your app is slow. How do you find the cause? Walk me through the steps.
 
 - **Category:** `Modularity & Launch Performance`
 
@@ -4019,7 +4261,7 @@ final class LaunchPerformanceTests: XCTestCase {
 
 ---
 
-### `Q-41` — Which Instruments tools do you use? What are their purposes?
+### `Q-42` — Which Instruments tools do you use? What are their purposes?
 
 - **Category:** `Modularity & Launch Performance`
 
@@ -4158,7 +4400,7 @@ actor HeavyBatchProcessor {
 
 ---
 
-### `Q-42` — How do you fix scroll jank and dropped frames?
+### `Q-43` — How do you fix scroll jank and dropped frames?
 
 - **Category:** `Modularity & Launch Performance`
 
@@ -4396,7 +4638,7 @@ final class ScrollPerformanceUITests: XCTestCase {
 
 ---
 
-### `Q-43` — Swift Package Manager (SPM) and modularization strategies
+### `Q-44` — Swift Package Manager (SPM) and modularization strategies
 
 - **Category:** `Modularity & Launch Performance`
 
@@ -4460,9 +4702,9 @@ import CoreModels
 ---
 
 
-## 💾 Data Persistence & Memory Management (Q-44 – Q-47)
+## 💾 Data Persistence & Memory Management (Q-45 – Q-48)
 
-### `Q-44` — Core Data vs SQLite vs Realm — one-line difference
+### `Q-45` — Core Data vs SQLite vs Realm — one-line difference
 
 - **Category:** `Data Persistence & Memory Management`
 
@@ -4524,7 +4766,7 @@ func fetchLargeTransactions(db: Database) throws -> [TransactionRecord] {
 
 ---
 
-### `Q-45` — ARC and retain cycles — a clear example of a strong reference cycle
+### `Q-46` — ARC and retain cycles — a clear example of a strong reference cycle
 
 - **Category:** `Data Persistence & Memory Management`
 
@@ -4591,7 +4833,7 @@ onComplete = { [weak self] in
 
 ---
 
-### `Q-46` — Deep Memory Management — Weak vs Unowned, Side Tables, and OS Jetsam OOM Kills
+### `Q-47` — Deep Memory Management — Weak vs Unowned, Side Tables, and OS Jetsam OOM Kills
 
 - **Category:** `Data Persistence & Memory Management`
 
@@ -4659,7 +4901,7 @@ final class ReportPrinter {
 
 ---
 
-### `Q-47` — Core Data & SwiftData Concurrency — Multi-Context Architecture and Merging
+### `Q-48` — Core Data & SwiftData Concurrency — Multi-Context Architecture and Merging
 
 - **Category:** `Data Persistence & Memory Management`
 
@@ -4728,9 +4970,9 @@ final class AccountSyncService {
 ---
 
 
-## 🔒 Security, Auth & Compliance (Q-48 – Q-59)
+## 🔒 Security, Auth & Compliance (Q-49 – Q-60)
 
-### `Q-48` — Certificate pinning — what it is, why it stops MITM attacks
+### `Q-49` — Certificate pinning — what it is, why it stops MITM attacks
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -4793,7 +5035,7 @@ class PinnedURLSessionDelegate: NSObject, URLSessionDelegate {
 
 ---
 
-### `Q-49` — How do you store tokens and secrets on iOS? What goes in Keychain?
+### `Q-50` — How do you store tokens and secrets on iOS? What goes in Keychain?
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -4986,7 +5228,7 @@ struct TokenStore {
 
 ---
 
-### `Q-50` — Explain a safe login flow: OAuth 2.0, refresh tokens, and token rotation
+### `Q-51` — Explain a safe login flow: OAuth 2.0, refresh tokens, and token rotation
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -5311,7 +5553,7 @@ func logout() async {
 
 ---
 
-### `Q-51` — Secure Enclave vs Keychain — what each one is actually for
+### `Q-52` — Secure Enclave vs Keychain — what each one is actually for
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -5378,7 +5620,7 @@ func createSecureEnclaveKey() throws -> SecKey {
 
 ---
 
-### `Q-52` — Secure data handling in financial apps — tokenization, biometric auth, session management
+### `Q-53` — Secure data handling in financial apps — tokenization, biometric auth, session management
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -5445,7 +5687,7 @@ class SessionManager {
 
 ---
 
-### `Q-53` — PCI-DSS — what it protects and who it applies to
+### `Q-54` — PCI-DSS — what it protects and who it applies to
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -5503,7 +5745,7 @@ struct SafePaymentRequest: Codable {
 
 ---
 
-### `Q-54` — SOX (Sarbanes-Oxley) — what it's for
+### `Q-55` — SOX (Sarbanes-Oxley) — what it's for
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -5572,7 +5814,7 @@ await auditLogger.log(userId: user.id, action: "INITIATE_TRANSFER", resource: "t
 
 ---
 
-### `Q-55` — GDPR — what it protects and where it applies
+### `Q-56` — GDPR — what it protects and where it applies
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -5643,7 +5885,7 @@ func handleDeleteMyDataRequest(userId: String) async throws {
 
 ---
 
-### `Q-56` — Application Hardening & Anti-Tampering — Jailbreak, Frida & At-Rest Encryption
+### `Q-57` — Application Hardening & Anti-Tampering — Jailbreak, Frida & At-Rest Encryption
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -5721,7 +5963,7 @@ struct AppSecurityHardenCheck {
 
 ---
 
-### `Q-57` — What is App Transport Security?
+### `Q-58` — What is App Transport Security?
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -5880,7 +6122,7 @@ func demonstrateSecureRequest() async throws -> Data {
 
 ---
 
-### `Q-58` — How do you protect data at rest?
+### `Q-59` — How do you protect data at rest?
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -6060,7 +6302,7 @@ final class ProtectionObserver {
 
 ---
 
-### `Q-59` — Where do you store an AI API key for an iOS app?
+### `Q-60` — Where do you store an AI API key for an iOS app?
 
 - **Category:** `Security, Auth & Compliance`
 
@@ -6386,9 +6628,9 @@ enum AIServiceError: LocalizedError {
 ---
 
 
-## 🏛️ System Design & Mobile Architecture (Q-60 – Q-63)
+## 🏛️ System Design & Mobile Architecture (Q-61 – Q-64)
 
-### `Q-60` — How do you load and cache images at scale?
+### `Q-61` — How do you load and cache images at scale?
 
 - **Category:** `System Design & Mobile Architecture`
 
@@ -6620,7 +6862,7 @@ extension ProductFeedViewController: UICollectionViewDataSourcePrefetching {
 
 ---
 
-### `Q-61` — System Design — Offline-First Feed & Bi-directional Synchronization
+### `Q-62` — System Design — Offline-First Feed & Bi-directional Synchronization
 
 - **Category:** `System Design & Mobile Architecture`
 
@@ -6724,7 +6966,7 @@ actor OfflineSyncEngine {
 
 ---
 
-### `Q-62` — How does a payment process work in an e-commerce app like Amazon?
+### `Q-63` — How does a payment process work in an e-commerce app like Amazon?
 
 - **Category:** `System Design & Mobile Architecture`
 
@@ -7009,7 +7251,7 @@ enum PaymentError: LocalizedError {
 
 ---
 
-### `Q-63` — System Design — How do you design an end-to-end Grocery Delivery App (Instacart / Blinkit)?
+### `Q-64` — System Design — How do you design an end-to-end Grocery Delivery App (Instacart / Blinkit)?
 
 - **Category:** `System Design & Mobile Architecture`
 
@@ -7427,9 +7669,9 @@ public final class OrderTrackingViewModel: ObservableObject {
 
 ---
 
-## 🧪 Testing & AI Engineering (Q-64 – Q-73)
+## 🧪 Testing & AI Engineering (Q-65 – Q-74)
 
-### `Q-64` — Rehearse the AIAnalyzer walkthrough out loud — cloud/local/hybrid modes, confidence-based fallback
+### `Q-65` — Rehearse the AIAnalyzer walkthrough out loud — cloud/local/hybrid modes, confidence-based fallback
 
 - **Category:** `Testing & AI Engineering`
 
@@ -7482,7 +7724,7 @@ class HybridAIAnalyzer {
 
 ---
 
-### `Q-65` — Why did you choose Gemini for cloud and Ollama/Qwen for local?
+### `Q-66` — Why did you choose Gemini for cloud and Ollama/Qwen for local?
 
 - **Category:** `Testing & AI Engineering`
 
@@ -7539,7 +7781,7 @@ struct GeminiProvider: LLMProvider {
 
 ---
 
-### `Q-66` — How do you validate AI-generated code before merging?
+### `Q-67` — How do you validate AI-generated code before merging?
 
 - **Category:** `Testing & AI Engineering`
 
@@ -7598,7 +7840,7 @@ final class AIGeneratedServiceTests: XCTestCase {
 
 ---
 
-### `Q-67` — How building your own AI tool changed how you use Copilot/Cursor day to day
+### `Q-68` — How building your own AI tool changed how you use Copilot/Cursor day to day
 
 - **Category:** `Testing & AI Engineering`
 
@@ -7653,7 +7895,7 @@ After building my own tool: I use Cursor as a reasoning partner. The specific ch
 
 ---
 
-### `Q-68` — TDD vs BDD — the actual difference
+### `Q-69` — TDD vs BDD — the actual difference
 
 - **Category:** `Testing & AI Engineering`
 
@@ -7726,7 +7968,7 @@ class BankAccountSpec: QuickSpec {
 
 ---
 
-### `Q-69` — XCTest — writing unit tests and UI tests, mocking and stubbing
+### `Q-70` — XCTest — writing unit tests and UI tests, mocking and stubbing
 
 - **Category:** `Testing & AI Engineering`
 
@@ -7812,7 +8054,7 @@ final class LoginUITests: XCTestCase {
 
 ---
 
-### `Q-70` — How do you write code that is easy to test?
+### `Q-71` — How do you write code that is easy to test?
 
 - **Category:** `Testing & AI Engineering`
 
@@ -8052,7 +8294,7 @@ final class ProfileViewModelTests: XCTestCase {
 
 ---
 
-### `Q-71` — Unit vs UI vs snapshot vs integration vs performance tests. When do you use each?
+### `Q-72` — Unit vs UI vs snapshot vs integration vs performance tests. When do you use each?
 
 - **Category:** `Testing & AI Engineering`
 
@@ -8340,7 +8582,7 @@ final class AppPerformanceTests: XCTestCase {
 
 ---
 
-### `Q-72` — What are mocks, stubs, and fakes? When do you use each?
+### `Q-73` — What are mocks, stubs, and fakes? When do you use each?
 
 - **Category:** `Testing & AI Engineering`
 
@@ -8595,7 +8837,7 @@ final class CheckoutViewModelTests: XCTestCase {
 
 ---
 
-### `Q-73` — Feature flagging, A/B testing, and remote configuration
+### `Q-74` — Feature flagging, A/B testing, and remote configuration
 
 - **Category:** `Testing & AI Engineering`
 
@@ -8670,9 +8912,9 @@ struct TransferView: View {
 
 ---
 
-## 🚀 CI/CD & DevOps (Q-74 – Q-75)
+## 🚀 CI/CD & DevOps (Q-75 – Q-76)
 
-### `Q-74` — How do you build a CI/CD pipeline for an iOS app with GitHub Actions?
+### `Q-75` — How do you build a CI/CD pipeline for an iOS app with GitHub Actions?
 
 - **Category:** `CI/CD & DevOps`
 
@@ -8944,7 +9186,7 @@ jobs:
 
 ---
 
-### `Q-75` — How do you manage signing in CI?
+### `Q-76` — How do you manage signing in CI?
 
 - **Category:** `CI/CD & DevOps`
 
@@ -9168,9 +9410,9 @@ Memory trick: S-T-R-C → "Store encrypted, Temporary keychain, Read-only in CI,
 
 ---
 
-## 👔 Engineering Leadership & Operations (Q-76 – Q-81)
+## 👔 Engineering Leadership & Operations (Q-77 – Q-82)
 
-### `Q-76` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
+### `Q-77` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -9235,7 +9477,7 @@ final class ModernAccountService: AccountServiceProtocol {
 
 ---
 
-### `Q-77` — How do you read a crash log? How do you symbolicate it?
+### `Q-78` — How do you read a crash log? How do you symbolicate it?
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -9436,7 +9678,7 @@ final class BreadcrumbTracker {
 
 ---
 
-### `Q-78` — How do you evaluate a new third-party SDK before adding it?
+### `Q-79` — How do you evaluate a new third-party SDK before adding it?
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -9676,7 +9918,7 @@ public final class ResilientImageManager: ImageCachingService {
 
 ---
 
-### `Q-79` — An SDK is causing crashes. How do you prove it and fix it?
+### `Q-80` — An SDK is causing crashes. How do you prove it and fix it?
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -9908,7 +10150,7 @@ public final class AnalyticsManager {
 
 ---
 
-### `Q-80` — A crash happens only in production, for 1% of users, and you cannot reproduce it. What do you do?
+### `Q-81` — A crash happens only in production, for 1% of users, and you cannot reproduce it. What do you do?
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -10161,7 +10403,7 @@ public struct ProductFeedParser {
 
 ---
 
-### `Q-81` — A customer says the app crashes on a screen, but you have no crash log. How do you find the crash?
+### `Q-82` — A customer says the app crashes on a screen, but you have no crash log. How do you find the crash?
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -10349,9 +10591,9 @@ public struct SupportDiagnosticExporter {
 
 ---
 
-## 🧠 Memory Management (Q-82 – Q-89)
+## 🧠 Memory Management (Q-83 – Q-90)
 
-### `Q-82` — How does ARC work? What is the difference between strong, weak, and unowned?
+### `Q-83` — How does ARC work? What is the difference between strong, weak, and unowned?
 
 - **Category:** `Memory Management`
 
@@ -10411,7 +10653,7 @@ class RequestManager {
 
 ---
 
-### `Q-83` — What is a retain cycle? How do you detect and fix them?
+### `Q-84` — What is a retain cycle? How do you detect and fix them?
 
 - **Category:** `Memory Management`
 
@@ -10486,7 +10728,7 @@ func testNoRetainCycle() {
 
 ---
 
-### `Q-84` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
+### `Q-85` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
 
 - **Category:** `Memory Management`
 
@@ -10544,7 +10786,7 @@ struct LargeModel: Describable {
 
 ---
 
-### `Q-85` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
+### `Q-86` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
 
 - **Category:** `Memory Management`
 
@@ -10612,7 +10854,7 @@ print(s2.value)    // "world"
 
 ---
 
-### `Q-86` — How do you handle memory warnings?
+### `Q-87` — How do you handle memory warnings?
 
 - **Category:** `Memory Management`
 
@@ -10782,7 +11024,7 @@ func downsample(url: URL, maxPixel: CGFloat) -> UIImage? {
 
 ---
 
-### `Q-87` — What is the Swift runtime side table? How do weak references work under the hood?
+### `Q-88` — What is the Swift runtime side table? How do weak references work under the hood?
 
 - **Category:** `Memory Management`
 
@@ -10847,7 +11089,7 @@ print(observer?.id ?? "nil")  // "nil"
 
 ---
 
-### `Q-88` — How does Jetsam work? What strategies do you use to survive memory pressure?
+### `Q-89` — How does Jetsam work? What strategies do you use to survive memory pressure?
 
 - **Category:** `Memory Management`
 
@@ -10934,7 +11176,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MXMetricManagerSubscriber
 
 ---
 
-### `Q-89` — How do you profile and debug memory issues in a production iOS app?
+### `Q-90` — How do you profile and debug memory issues in a production iOS app?
 
 - **Category:** `Memory Management`
 
