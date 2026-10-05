@@ -848,7 +848,7 @@
         "filename": "PerformanceProfiling-TalkingPoints.md"
       }
     ],
-    "Q-83": [
+    "Q-84": [
       "performance-profiling",
       "ios-internals"
     ],
@@ -955,6 +955,14 @@
       }
     ],
     "Q-77": [
+      {
+        "docId": "leadership-ownership",
+        "title": "Development Lead & Feature Ownership Guide",
+        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
+        "icon": "👔"
+      }
+    ],
+    "Q-78": [
       {
         "docId": "leadership-ownership",
         "title": "Development Lead & Feature Ownership Guide",
