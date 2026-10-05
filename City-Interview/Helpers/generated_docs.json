@@ -812,7 +812,7 @@
         "filename": "PerformanceProfiling-TalkingPoints.md"
       }
     ],
-    "Q-66": [
+    "Q-67": [
       {
         "docId": "testing-xctest",
         "title": "Testing, TDD/BDD, and Testability — Talking Points",
@@ -820,7 +820,7 @@
         "icon": "🧪"
       }
     ],
-    "Q-67": [
+    "Q-68": [
       {
         "docId": "repository-pattern",
         "title": "Repository Pattern — Talking Points",
@@ -834,7 +834,7 @@
         "icon": "🧪"
       }
     ],
-    "Q-76": [
+    "Q-77": [
       {
         "docId": "leadership-ownership",
         "title": "Development Lead / Feature Ownership — Talking Points",
@@ -848,7 +848,7 @@
         "filename": "PerformanceProfiling-TalkingPoints.md"
       }
     ],
-    "Q-86": [
+    "Q-87": [
       "performance-profiling",
       "ios-internals"
     ],
@@ -896,7 +896,7 @@
         "icon": "🌐"
       }
     ],
-    "Q-69": [
+    "Q-70": [
       {
         "docId": "testing-xctest",
         "title": "XCTest, Mocking & UI Testing Guide",
@@ -910,7 +910,7 @@
         "icon": "💉"
       }
     ],
-    "Q-70": [
+    "Q-71": [
       {
         "docId": "testing-xctest",
         "title": "XCTest, Mocking & UI Testing Guide",
@@ -924,7 +924,7 @@
         "icon": "⏱️"
       }
     ],
-    "Q-71": [
+    "Q-72": [
       {
         "docId": "testing-xctest",
         "title": "XCTest, Mocking & UI Testing Guide",
@@ -938,14 +938,6 @@
         "icon": "💉"
       }
     ],
-    "Q-73": [
-      {
-        "docId": "testing-xctest",
-        "title": "XCTest, Mocking & UI Testing Guide",
-        "filename": "Testing-TalkingPoints.md",
-        "icon": "🧪"
-      }
-    ],
     "Q-74": [
       {
         "docId": "testing-xctest",
@@ -954,12 +946,12 @@
         "icon": "🧪"
       }
     ],
-    "Q-77": [
+    "Q-75": [
       {
-        "docId": "leadership-ownership",
-        "title": "Development Lead & Feature Ownership Guide",
-        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
-        "icon": "👔"
+        "docId": "testing-xctest",
+        "title": "XCTest, Mocking & UI Testing Guide",
+        "filename": "Testing-TalkingPoints.md",
+        "icon": "🧪"
       }
     ],
     "Q-78": [
@@ -984,6 +976,28 @@
         "title": "Development Lead & Feature Ownership Guide",
         "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
         "icon": "👔"
+      }
+    ],
+    "Q-81": [
+      {
+        "docId": "leadership-ownership",
+        "title": "Development Lead & Feature Ownership Guide",
+        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
+        "icon": "👔"
+      }
+    ],
+    "Q-63": [
+      {
+        "docId": "networking-architecture",
+        "title": "Networking, API Design & Resilience Guide",
+        "filename": "Networking-Architecture-TalkingPoints.md",
+        "icon": "🌐"
+      },
+      {
+        "docId": "security-comparison",
+        "title": "Security, Storage & App Hardening Guide",
+        "filename": "Security-Comparison-TalkingPoints.md",
+        "icon": "🔒"
       }
     ]
   }

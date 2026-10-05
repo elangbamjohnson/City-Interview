@@ -1,6 +1,6 @@
 # 📱 iOS Senior & Staff Interview Question Bank
 
-> A comprehensive, senior & staff-level revision suite for 88 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, 60/120fps Scroll Hitch Elimination, Scalable Image Caching, Keychain Secrets Management, OAuth 2.0 PKCE & Token Rotation, Production Crash Log Triage & Symbolication, Memory Management, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
+> A comprehensive, senior & staff-level revision suite for 89 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, 60/120fps Scroll Hitch Elimination, Scalable Image Caching, Keychain Secrets Management, OAuth 2.0 PKCE & Token Rotation, Production Crash Log Triage & Symbolication, Memory Management, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
 
 ## 📊 Overview
 
@@ -15,12 +15,12 @@
 | **Modularity & Launch Performance** | `7` | SPM multi-module boundaries, static vs dynamic linkage launch effects, build-time reduction cascades, binary caching, app thinning, and Instruments profiling. |
 | **Data Persistence & Memory Management** | `4` | Core Data vs SQLite vs Realm vs SwiftData, multi-context concurrency & merging, ARC retain cycles, Heap side tables (weak/unowned), and OS Jetsam OOM survival. |
 | **Security, Auth & Compliance** | `12` | Keychain vs Secure Enclave, token storage CRUD, OAuth 2.0 PKCE & token rotation, SSL Certificate Pinning, biometric auth, Jailbreak & Frida detection, NSFileProtectionComplete, and banking compliance (PCI-DSS, SOX, GDPR). |
-| **System Design & Mobile Architecture** | `3` | End-to-end mobile system design: Two-tier LRU memory/disk image caching with coalescing, Offline-First bi-directional syncing with outbox pattern, and E-commerce checkout & payment flow (Apple Pay, idempotency, gateway authorization & settlement). |
+| **System Design & Mobile Architecture** | `4` | End-to-end mobile system design: Two-tier LRU memory/disk image caching with coalescing, Offline-First bi-directional syncing with outbox pattern, and E-commerce checkout & payment flow (Apple Pay, idempotency, gateway authorization & settlement). |
 | **Testing & AI Engineering** | `10` | Unit and UI testing with XCTest, protocol mocking and stubbing, TDD/BDD, test doubles (mocks/stubs/fakes), feature flagging, and hybrid cloud/on-device AI systems. |
 | **CI/CD & DevOps** | `2` | Automated continuous integration and delivery with GitHub Actions: PR quality gates, macOS runner optimization, Fastlane match code signing, and headless TestFlight deployment via App Store Connect API keys. |
 | **Engineering Leadership & Operations** | `6` | Production incident triage, crash log analysis & dSYM symbolication, Crashlytics velocity alerts, MetricKit crash loops, blameless post-mortems, and migrating legacy monoliths using the Strangler Fig pattern. |
 | **Memory Management** | `8` | ARC strong/weak/unowned, retain cycles, stack vs heap, Copy-on-Write internals, memory warnings, the Swift runtime side table, Jetsam OOM survival, and production memory profiling with Instruments and MetricKit. |
-| **Total** | **`88`** | Complete Senior & Staff iOS Interview Curriculum |
+| **Total** | **`89`** | Complete Senior & Staff iOS Interview Curriculum |
 
 ---
 
@@ -6386,7 +6386,7 @@ enum AIServiceError: LocalizedError {
 ---
 
 
-## 🏛️ System Design & Mobile Architecture (Q-60 – Q-62)
+## 🏛️ System Design & Mobile Architecture (Q-60 – Q-63)
 
 ### `Q-60` — How do you load and cache images at scale?
 
@@ -7006,9 +7006,430 @@ enum PaymentError: LocalizedError {
 
 ---
 
-## 🧪 Testing & AI Engineering (Q-63 – Q-72)
 
-### `Q-63` — Rehearse the AIAnalyzer walkthrough out loud — cloud/local/hybrid modes, confidence-based fallback
+---
+
+### `Q-63` — System Design — How do you design an end-to-end Grocery Delivery App (Instacart / Blinkit)?
+
+- **Category:** `System Design & Mobile Architecture`
+
+> [!TIP]
+> **🗣️ Interview Pitch (Say it like this):**  
+> *"I start with the main user journey: browse, search, cart, checkout, and tracking. The iOS app owns the screens, a small local cache so browsing feels fast, and the cart for guests. The cloud owns the truth: prices, stock, the final total, and the order status. Behind an API gateway, microservices coordinate via an asynchronous event bus, and third parties handle payment tokenization, maps, and push delivery. (Memory trick: A-G-S-E-T → 'App shows, Gateway guards, Services own the truth, Events connect them, Third parties do the specialist work.')"*
+
+#### 📖 Detailed Answer
+
+A grocery app looks simple, but it joins four worlds: the customer's phone, your own cloud, the store staff who pick the items, and outside companies for payments, delivery, and notifications. The main challenge is that the data changes all the time: prices, stock, delivery slots, and order status. A good design keeps the app fast and still honest about what is in stock and what the customer will pay.
+
+Say it like this:
+
+"I start with the main user journey: browse, search, cart, checkout, and tracking. Then I decide who owns what.
+
+The iOS app owns the screens, a small local cache so browsing feels fast, and the cart for guests. The cloud owns the truth: prices, stock, the final total, and the order status. The app shows what the server says and never calculates money itself.
+
+Between them sits an API gateway, which handles login, rate limits, and routing. Behind it, I split the backend into small services: catalog, search, cart, inventory, order, payment, delivery, and notifications. They share events through an event bus, so when an order is paid, the inventory, delivery, and notification services all hear about it without calling each other directly.
+
+Outside parties do the specialist work. A CDN serves product images fast. A payment gateway charges the card, and Apple Pay creates the secure token. A delivery partner assigns riders and provides the map and location. Push and SMS providers reach the customer. I also have a store staff app, because someone must pick and pack the order, and their updates drive the tracking the customer sees."
+
+---
+
+### Diagram 1: High-Level System Architecture
+
+The first diagram illustrates how the four worlds connect through the API Gateway, Event Bus, Microservices, and Third-Party Specialists:
+
+![Grocery App System Architecture Diagram](Resources/grocery_app_architecture_diagram.png)
+
+```
++------------------+         +------------------+         +------------------+
+|  Customer App    |         |     iOS App      |         |  Store Staff App |
+| (Shops & Pays)   |-------->| (Browse/Cart/UI) |         | (Pick & Pack)    |
++------------------+         +--------+---------+         +--------+---------+
+          |                           |                            |
+          v                           v                            v
++------------------+         +-----------------------------------------------+
+|       CDN        |         |                  API Gateway                  |
+| (Product Images) |         |          (Auth, Rate Limits, Routing)         |
++------------------+         +-----------------------+-----------------------+
+                                                     |
++----------------------------------------------------+--------------------------------------------------+
+|                                        Backend Services                                               |
+|  +----------------+  +----------------+  +----------------+  +----------------+                       |
+|  | Catalog Svc    |  | Search Svc     |  | Cart Svc       |  | Inventory Svc  |                       |
+|  | (Store/Prices) |  | (Index/Filters)|  | (Items/Totals) |  | (Stock/Store)  |                       |
+|  +----------------+  +----------------+  +----------------+  +----------------+                       |
+|  ---------------------------------------------------------------------------                          |
+|                             Event Bus: Services share order and stock events                          |
+|  ---------------------------------------------------------------------------                          |
+|  +----------------+  +----------------+  +----------------+  +----------------+                       |
+|  | Payment Svc    |  | Order Svc      |  | Delivery Svc   |  | Notify Svc     |                       |
+|  | (Charges/Refund)|  | (Status Machine)|  | (Slots/ETA)    |  | (APNs/SMS)     |                       |
+|  +-------+--------+  +-------+--------+  +-------+--------+  +-------+--------+                       |
++----------|-------------------|-------------------|-------------------|--------------------------------+
+           v                   v                   v                   v
+    +--------------+    +--------------+    +--------------+    +--------------+
+    | Payment GW   |    | Core DB      |    | Delivery     |    | Push & SMS   |
+    | Stripe/Apple |    | Orders/Users |    | Partner API  |    | APNs/SMS/Mail|
+    +--------------+    +--------------+    +--------------+    +--------------+
+```
+
+---
+
+### Diagram 2: Checkout to Delivery Sequence Flow
+
+The second diagram shows how these parties talk to each other in sequence from checkout to delivery:
+
+![Grocery App Order Flow Diagram](Resources/grocery_app_order_flow_diagram.png)
+
+```
+iOS App (Customer)     Order Service      Payment Provider    Store Staff App    Delivery Partner
+        |                     |                  |                   |                  |
+ 1. Place order ------------->|                  |                   |                  |
+        |              2. Charge --------------->|                   |                  |
+        |                     | 3. Paid (Webhook)|                   |                  |
+        |                     |< - - - - - - - - |                   |                  |
+        |              4. Pick request ----------------------------->|                  |
+        |                     |                  |      5. Packed    |                  |
+        |                     |< - - - - - - - - - - - - - - - - - - |                  |
+        |              6. Assign rider ------------------------------------------------>|
+        |                     |                  |                   | 7. Location, ETA |
+        |                     |< - - - - - - - - - - - - - - - - - - - - - - - - - - - -|
+        | 8. Push update      |                  |                   |                  |
+        |< - - - - - - - - - -|                  |                   |                  |
+        |                     |                  |      9. Delivered |                  |
+        |                     |< - - - - - - - - - - - - - - - - - - - - - - - - - - - -|
+        | 10. Final push      |                  |                   |                  |
+        |< - - - - - - - - - -|                  |                   |                  |
+```
+
+---
+
+### How Each Feature Works
+
+#### 1. Browse
+• **Store-Scoped Catalog:** The app asks the catalog service for products by category and store. Prices, taxes, and stock depend on the store or delivery area (dark store / fulfillment hub), so every request includes the `storeID`.
+• **Paged Feeds:** Lists are paginated (e.g. 20 items per page), so the app loads a screenful at a time using `AsyncSequence` or Combine pagination.
+• **CDN Image Optimization:** Product images come from an edge CDN in the exact pixel size the screen needs (WebP/AVIF format), and the app caches them locally using a two-tier memory/disk cache (Q34).
+• **Local Category Cache:** The app keeps a small local cache of categories and top products in SQLite/SwiftData, so the home screen opens instantly (0ms perceived latency) and still works on a weak network, refreshing quietly in the background.
+
+#### 2. Search
+• **Dedicated Search Index:** A separate search service (Elasticsearch / OpenSearch) handles full-text queries, typo tolerance ("avocado" vs "avacado"), and ranking. A normal transactional database is too slow and too weak for faceted filtering.
+• **Debouncing & Cancellation:** The app waits 300ms after the user stops typing before firing the query, and cancels in-flight requests when a new character is typed (Q06).
+• **Availability Filtering:** Results are filtered on the backend by instant availability in the chosen store, so customers never see products that cannot be fulfilled.
+• **Local Search History:** Recent searches and popular trending terms are stored securely on the phone.
+
+#### 3. Cart
+• **Guest vs. Signed-In Cart:** A guest cart lives locally on the phone (UserDefaults / SwiftData). A signed-in cart lives on the server in Redis, following the customer across iPad, iPhone, and web. On login, the guest cart items are merged with the server cart.
+• **Server Owns Totals:** The server owns line-item sums, discounts, delivery fees, and taxes. The app merely displays what the server calculates and NEVER calculates the final charge itself (Q49).
+• **Pre-Checkout Re-Validation:** Cart items are re-validated for current price and stock when the user opens checkout, catching price changes or flash sell-outs before payment.
+• **Substitution Preferences:** Grocery apps require item-level substitution rules: "replace with similar brand/size" or "remove and refund" if out of stock during picking.
+
+#### 4. Checkout
+• **Delivery Slot Hold:** The customer selects a delivery address and a 1-hour delivery slot. The slot is temporarily locked in Redis with a 5-minute TTL so two customers cannot grab the final slot simultaneously.
+• **Idempotency Key:** The checkout request carries a client-generated UUID idempotency key (`X-Idempotency-Key`), ensuring network retries or double-taps never produce duplicate charges or multiple orders (Q49).
+• **Apple Pay / Gateway SDK:** The app collects an Apple Pay token via PassKit or card details via the Payment Gateway SDK. The app sends ONLY the single-use cryptogram/token to your backend; your server executes the charge through Stripe/Adyen.
+• **Temporary Stock Hold:** Inventory is reserved at checkout initiation with a short expiration timer, and immediately released if authorization fails.
+• **Reconciliation:** If network drops before receiving the response, the app queries `GET /orders?idempotency_key=...` to retrieve the definitive status without re-submitting.
+
+#### 5. Order Tracking
+• **Strict State Machine:** The order service owns an immutable status state machine:
+  `Placed` -> `Paid` -> `Picking` -> `Packed` -> `Out for Delivery` -> `Delivered`.
+  Only valid forward transitions are allowed; illegal jumps are rejected.
+• **Store Staff App Updates:** In-store shoppers scan barcodes to verify correct picking and substitutions. Tapping "Packed" marks the order ready for courier handoff.
+• **Real-Time Courier Tracking:** While the tracking screen is open, live courier coordinates and ETA stream over a WebSocket or SSE connection (falling back to short polling every 10s).
+• **Lock Screen Live Activity:** iOS ActivityKit / Live Activities display real-time order state ("Out for delivery — Arriving in 8 mins") on the Lock Screen and Dynamic Island without opening the app.
+• **Proactive Exception Push:** If an item is substituted or delivery is delayed, a push notification alerts the customer immediately with the reason and one-tap approval.
+
+---
+
+### What the iOS App Contains
+
+• **Feature Modules:** `Browse`, `Search`, `Cart`, `Checkout`, and `OrderTracking` are isolated into independent Swift Packages (SPM), ensuring clean boundaries, fast parallel builds, and team ownership (Q03).
+• **Shared Core Layers:** A robust Networking layer with automatic 401 token refresh interceptors and exponential retry; a LRU disk/memory image cache; a local database (SwiftData); analytics engine; and remote feature flag manager.
+• **State Management:** Dedicated ViewModels per screen with unidirectional data flow, backed by a single-source-of-truth `CartActor` to eliminate race conditions.
+• **Universal Links:** Deep links route users directly to specific products, category promotions, or tracking screens from push notifications (`myapp://orders/{id}`) (Q48).
+• **Secure Auth:** Session tokens and biometric refresh credentials stored securely in the iOS Keychain with `kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly` (Q36, Q37).
+• **Settings & Accessibility:** Full Dynamic Type typography scaling, VoiceOver accessibility labels, RTL localization, and seamless Light/Dark mode.
+
+---
+
+### Key Design Decisions (Senior/Staff Talking Points)
+
+1. **The Server Owns Money and Stock:**
+   Prices, vouchers, surge fees, and inventory counts must come exclusively from the cloud. Client-calculated totals are vulnerable to binary tampering, jailbroken memory editing, and clock drift.
+2. **Loosely Coupled Services via Event Bus:**
+   When an order moves to `Paid`, an event is published to Apache Kafka / AWS SNS. Inventory, Delivery, and Notification microservices consume the event asynchronously. A slow or degraded notification service will never block order processing.
+3. **Dedicated Search Subsystem:**
+   Search is separated from the primary transactional database (PostgreSQL) into an inverted index (OpenSearch), updated asynchronously via change-data-capture (CDC) pipeline events.
+4. **Idempotency Everywhere:**
+   Every payment authorization, stock reservation, and slot booking requires an idempotency token. Double-tapping "Place Order" or cell-tower handover retransmissions are completely safe.
+5. **Third Parties Kept Behind the Gateway:**
+   The iOS app never talks to delivery partner APIs or payment providers directly (except PassKit for Apple Pay tokenization). Keeping integration secrets and webhooks on the server minimizes app binary footprint and prevents reverse-engineering vulnerabilities (Q45).
+6. **Eventually Consistent Stock with Picking Safety Net:**
+   In high-frequency grocery operations, inventory is "eventually consistent". A shelf item might be grabbed by an in-store customer seconds before an online order lands. The true inventory reconciliation happens at picking, backed by customer-approved substitution preferences.
+
+---
+
+### What Can Go Wrong, and the Architectural Answer
+
+• **Item Out of Stock During In-Store Picking:**
+  The store staff app prompts the picker with the customer's pre-selected preference: pick suggested substitute or drop item. The customer gets an instant push notification; order totals are automatically adjusted.
+• **Payment Succeeded, but Network Crashed Before Order Created:**
+  The server listens for payment gateway webhooks (`payment_intent.succeeded`). If an orphaned payment is detected without a linked order, the server auto-creates the order or immediately triggers an automated refund.
+• **Slow or Dropped Network at Checkout:**
+  The iOS client preserves the session idempotency key in local storage. When connectivity resumes, the app issues a status check using the same key before attempting any retry.
+• **Push Notification Fails to Deliver:**
+  Push is an alert, never the source of truth. Whenever the app launches or enters the foreground, it polls `GET /orders/active` to synchronize the latest status (Q27).
+• **Delivery Courier Delayed or Offline:**
+  The delivery service recalculates ETA using GPS heartbeat pings. If delays exceed threshold limits, the customer is proactively notified with compensation credits or cancellation options.
+• **High Traffic Spikes (Festivals / Flash Sales):**
+  Edge CDN caches catalog reads; API Gateway applies token-bucket rate limiting; message queues (Kafka) absorb checkout bursts to prevent cascading microservice collapse.
+
+---
+
+### Good to Mention (Staff-Level Interview Highlights)
+
+• **Per-Store / Dark-Store Scoping:** A single product (e.g. Milk) has different prices, warehouse stock levels, and available delivery windows depending on the customer's geo-fenced dark store.
+• **Produce Weight-Based Pricing (Two-Phase Auth & Capture):** Apples or bananas cannot be weighed until picking. The app pre-authorizes the card for ~115% of estimated weight. Once picked and weighed at checkout scales, the backend captures the exact amount and releases the excess authorization hold.
+• **Regulated Items & Age Checks:** Alcohol and medication trigger automated ID-verification workflows at checkout and require the delivery driver to scan customer photo ID upon doorstep delivery.
+• **"Buy Again" High-Value Caching:** Grocery shopping is highly habitual. Caching past orders locally to power a 1-tap "Buy Again" carousel drives massive conversion with minimal server cost.
+• **Checkout Funnel Observability:** Telemetry tracks every step: `View Cart` -> `Slot Selected` -> `Apple Pay Presented` -> `Authorized` -> `Success`, exposing funnel drop-off regressions instantly (Q49).
+• **Feature Flags & Kill Switches:** Critical payment gateways, slot booking logic, and checkout variants are wrapped in feature flags (LaunchDarkly), allowing instant rollback without App Store review (Q55).
+
+---
+
+### One-Liner & Memory Trick
+• **One-liner:** The iOS app shows and collects, the cloud owns prices, stock, and order status, and third parties handle payment, delivery, and messages, with events and push tying the whole journey together.
+• **Memory trick:** **A-G-S-E-T** → *"App shows, Gateway guards, Services own the truth, Events connect them, Third parties do the specialist work."*
+
+#### 💻 Swift Architecture & Domain Implementation
+
+```swift
+// =========================================================================
+// 🛒 SENIOR INTERVIEW ARCHITECTURE: End-to-End Grocery Delivery System
+// =========================================================================
+//
+// 💡 SENIOR / STAFF INTERVIEW TALKING POINTS:
+// • Single Source of Truth: The iOS app NEVER calculates line-item prices,
+//   taxes, or order totals. All calculations are performed on the cloud.
+// • Concurrency & Actor Isolation: Cart mutations and idempotency key lifecycle
+//   are managed within a thread-safe Swift Actor, preventing race conditions.
+// • State Machine Integrity: Order status transitions follow a strict, forward-only
+//   validation model (Placed -> Paid -> Picking -> Packed -> OutForDelivery -> Delivered).
+// • Two-Phase Payment for Weighted Produce: Pre-authorize estimate (+15%), capture exact weight.
+// • Live Activities (ActivityKit): Real-time Lock Screen & Dynamic Island updates via APNs.
+
+import Foundation
+import SwiftUI
+import ActivityKit
+
+// MARK: - 1. Domain Models & State Machine
+
+/// Strict state machine for grocery order lifecycle.
+/// Validates allowed forward transitions, preventing illegal backward jumps.
+public enum OrderStatus: String, Codable, Sendable, CaseIterable {
+    case placed         = "PLACED"
+    case paid           = "PAID"
+    case picking        = "PICKING"
+    case packed         = "PACKED"
+    case outForDelivery = "OUT_FOR_DELIVERY"
+    case delivered      = "DELIVERED"
+    case cancelled      = "CANCELLED"
+    
+    /// Verifies if transitioning from current state to target state is legally permissible.
+    public func canTransition(to next: OrderStatus) -> Bool {
+        switch (self, next) {
+        case (.placed, .paid), (.placed, .cancelled):
+            return true
+        case (.paid, .picking), (.paid, .cancelled):
+            return true
+        case (.picking, .packed):
+            return true
+        case (.packed, .outForDelivery):
+            return true
+        case (.outForDelivery, .delivered):
+            return true
+        default:
+            return false // Illegal jump (e.g. Delivered -> Picking) rejected
+        }
+    }
+}
+
+/// Substitution preference per grocery line item
+public enum SubstitutionPolicy: String, Codable, Sendable {
+    case replaceWithSimilar = "REPLACE_SIMILAR" // In-store picker picks closest alternative
+    case refundAndRemove    = "REFUND_REMOVE"    // Drop from order if out of stock
+    case contactCustomer    = "CALL_CUSTOMER"    // Picker calls or chats for approval
+}
+
+/// Represents either a packaged barcode item or weighted produce (e.g. bananas, apples)
+public struct GroceryItem: Codable, Identifiable, Sendable {
+    public let id: String
+    public let name: String
+    public let storeID: String
+    public let unitPriceCents: Int
+    public let isWeightBased: Bool
+    public let estimatedWeightKg: Double?
+    public var substitutionPolicy: SubstitutionPolicy
+    
+    public init(id: String, name: String, storeID: String, unitPriceCents: Int,
+                isWeightBased: Bool = false, estimatedWeightKg: Double? = nil,
+                substitutionPolicy: SubstitutionPolicy = .replaceWithSimilar) {
+        self.id = id
+        self.name = name
+        self.storeID = storeID
+        self.unitPriceCents = unitPriceCents
+        self.isWeightBased = isWeightBased
+        self.estimatedWeightKg = estimatedWeightKg
+        self.substitutionPolicy = substitutionPolicy
+    }
+}
+
+/// Server-calculated cart truth (App displays, NEVER calculates)
+public struct ServerCartSummary: Codable, Sendable {
+    public let subtotalCents: Int
+    public let deliveryFeeCents: Int
+    public let estimatedTaxCents: Int
+    public let discountCents: Int
+    public let totalCents: Int
+    public let reservedSlotExpiresAt: Date?
+    public let items: [GroceryItem]
+}
+
+// MARK: - 2. Thread-Safe Cart & Checkout Manager (Actor Isolation)
+
+/// Actor ensuring zero race conditions when mutating local cart or preparing checkout
+public actor GroceryCartManager {
+    private var localCart: [GroceryItem] = []
+    private var activeIdempotencyKey: UUID?
+    private let storeID: String
+    
+    public init(storeID: String) {
+        self.storeID = storeID
+    }
+    
+    /// Adds an item with pre-selected substitution policy
+    public func addItem(_ item: GroceryItem) {
+        guard item.storeID == storeID else { return } // Enforce dark-store boundaries
+        localCart.append(item)
+    }
+    
+    /// Merges guest cart items with remote server cart upon successful login
+    public func mergeGuestCart(with remoteItems: [GroceryItem]) {
+        var merged = remoteItems
+        for localItem in localCart where !merged.contains(where: { $0.id == localItem.id }) {
+            merged.append(localItem)
+        }
+        self.localCart = merged
+    }
+    
+    /// Generates or reuses client idempotency key for network resilience
+    public func getOrCreateCheckoutIdempotencyKey() -> UUID {
+        if let existing = activeIdempotencyKey {
+            return existing
+        }
+        let newKey = UUID()
+        self.activeIdempotencyKey = newKey
+        return newKey
+    }
+    
+    /// Resets idempotency key once checkout response confirms order creation
+    public func finalizeCheckoutSession() {
+        self.localCart.removeAll()
+        self.activeIdempotencyKey = nil
+    }
+    
+    public var currentItems: [GroceryItem] {
+        return localCart
+    }
+}
+
+// MARK: - 3. Real-Time Order Tracking & Live Activity Integration
+
+/// Attributes required by iOS ActivityKit for Lock Screen & Dynamic Island display
+public struct GroceryDeliveryAttributes: ActivityAttributes {
+    public struct ContentState: Codable, Hashable {
+        public var status: OrderStatus
+        public var estimatedMinutesRemaining: Int
+        public var courierName: String
+        public var currentStepDescription: String
+    }
+    
+    public var orderID: String
+    public var storeName: String
+}
+
+@MainActor
+public final class OrderTrackingViewModel: ObservableObject {
+    @Published public private(set) var currentStatus: OrderStatus = .placed
+    @Published public private(set) var etaMinutes: Int = 15
+    @Published public private(set) var statusMessage: String = "Order received by dark store"
+    
+    private let orderID: String
+    private var liveActivity: Activity<GroceryDeliveryAttributes>?
+    
+    public init(orderID: String) {
+        self.orderID = orderID
+    }
+    
+    /// Starts iOS 16.1+ Live Activity on Lock Screen and Dynamic Island
+    public func startLiveActivity(storeName: String) {
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
+        
+        let attributes = GroceryDeliveryAttributes(orderID: orderID, storeName: storeName)
+        let initialContentState = GroceryDeliveryAttributes.ContentState(
+            status: .placed,
+            estimatedMinutesRemaining: 20,
+            courierName: "Assigning...",
+            currentStepDescription: "Order placed. Awaiting dark store picker."
+        )
+        
+        do {
+            liveActivity = try Activity.request(
+                attributes: attributes,
+                content: .init(state: initialContentState, staleDate: nil),
+                pushType: .token // Receive APNs updates to push silent Lock Screen updates!
+            )
+            print("🚀 Live Activity started for order: \(orderID)")
+        } catch {
+            print("Failed to start Live Activity: \(error)")
+        }
+    }
+    
+    /// Processes incoming WebSocket / APNs push payload to transition status machine
+    public func applyStatusUpdate(newStatus: OrderStatus, eta: Int, message: String) {
+        guard currentStatus.canTransition(to: newStatus) else {
+            print("⚠️ Rejected invalid state transition: \(currentStatus) -> \(newStatus)")
+            return
+        }
+        
+        self.currentStatus = newStatus
+        self.etaMinutes = eta
+        self.statusMessage = message
+        
+        // Update Live Activity on Lock Screen
+        Task {
+            let updatedState = GroceryDeliveryAttributes.ContentState(
+                status: newStatus,
+                estimatedMinutesRemaining: eta,
+                courierName: "Alex R.",
+                currentStepDescription: message
+            )
+            await liveActivity?.update(.init(state: updatedState, staleDate: nil))
+            
+            if newStatus == .delivered || newStatus == .cancelled {
+                await liveActivity?.end(.init(state: updatedState, staleDate: nil), dismissalPolicy: .default)
+            }
+        }
+    }
+}
+```
+
+
+---
+
+## 🧪 Testing & AI Engineering (Q-64 – Q-73)
+
+### `Q-64` — Rehearse the AIAnalyzer walkthrough out loud — cloud/local/hybrid modes, confidence-based fallback
 
 - **Category:** `Testing & AI Engineering`
 
@@ -7061,7 +7482,7 @@ class HybridAIAnalyzer {
 
 ---
 
-### `Q-64` — Why did you choose Gemini for cloud and Ollama/Qwen for local?
+### `Q-65` — Why did you choose Gemini for cloud and Ollama/Qwen for local?
 
 - **Category:** `Testing & AI Engineering`
 
@@ -7118,7 +7539,7 @@ struct GeminiProvider: LLMProvider {
 
 ---
 
-### `Q-65` — How do you validate AI-generated code before merging?
+### `Q-66` — How do you validate AI-generated code before merging?
 
 - **Category:** `Testing & AI Engineering`
 
@@ -7177,7 +7598,7 @@ final class AIGeneratedServiceTests: XCTestCase {
 
 ---
 
-### `Q-66` — How building your own AI tool changed how you use Copilot/Cursor day to day
+### `Q-67` — How building your own AI tool changed how you use Copilot/Cursor day to day
 
 - **Category:** `Testing & AI Engineering`
 
@@ -7232,7 +7653,7 @@ After building my own tool: I use Cursor as a reasoning partner. The specific ch
 
 ---
 
-### `Q-67` — TDD vs BDD — the actual difference
+### `Q-68` — TDD vs BDD — the actual difference
 
 - **Category:** `Testing & AI Engineering`
 
@@ -7305,7 +7726,7 @@ class BankAccountSpec: QuickSpec {
 
 ---
 
-### `Q-68` — XCTest — writing unit tests and UI tests, mocking and stubbing
+### `Q-69` — XCTest — writing unit tests and UI tests, mocking and stubbing
 
 - **Category:** `Testing & AI Engineering`
 
@@ -7391,7 +7812,7 @@ final class LoginUITests: XCTestCase {
 
 ---
 
-### `Q-69` — How do you write code that is easy to test?
+### `Q-70` — How do you write code that is easy to test?
 
 - **Category:** `Testing & AI Engineering`
 
@@ -7631,7 +8052,7 @@ final class ProfileViewModelTests: XCTestCase {
 
 ---
 
-### `Q-70` — Unit vs UI vs snapshot vs integration vs performance tests. When do you use each?
+### `Q-71` — Unit vs UI vs snapshot vs integration vs performance tests. When do you use each?
 
 - **Category:** `Testing & AI Engineering`
 
@@ -7919,7 +8340,7 @@ final class AppPerformanceTests: XCTestCase {
 
 ---
 
-### `Q-71` — What are mocks, stubs, and fakes? When do you use each?
+### `Q-72` — What are mocks, stubs, and fakes? When do you use each?
 
 - **Category:** `Testing & AI Engineering`
 
@@ -8174,7 +8595,7 @@ final class CheckoutViewModelTests: XCTestCase {
 
 ---
 
-### `Q-72` — Feature flagging, A/B testing, and remote configuration
+### `Q-73` — Feature flagging, A/B testing, and remote configuration
 
 - **Category:** `Testing & AI Engineering`
 
@@ -8249,9 +8670,9 @@ struct TransferView: View {
 
 ---
 
-## 🚀 CI/CD & DevOps (Q-73 – Q-74)
+## 🚀 CI/CD & DevOps (Q-74 – Q-75)
 
-### `Q-73` — How do you build a CI/CD pipeline for an iOS app with GitHub Actions?
+### `Q-74` — How do you build a CI/CD pipeline for an iOS app with GitHub Actions?
 
 - **Category:** `CI/CD & DevOps`
 
@@ -8523,7 +8944,7 @@ jobs:
 
 ---
 
-### `Q-74` — How do you manage signing in CI?
+### `Q-75` — How do you manage signing in CI?
 
 - **Category:** `CI/CD & DevOps`
 
@@ -8747,9 +9168,9 @@ Memory trick: S-T-R-C → "Store encrypted, Temporary keychain, Read-only in CI,
 
 ---
 
-## 👔 Engineering Leadership & Operations (Q-75 – Q-80)
+## 👔 Engineering Leadership & Operations (Q-76 – Q-81)
 
-### `Q-75` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
+### `Q-76` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -8814,7 +9235,7 @@ final class ModernAccountService: AccountServiceProtocol {
 
 ---
 
-### `Q-76` — How do you read a crash log? How do you symbolicate it?
+### `Q-77` — How do you read a crash log? How do you symbolicate it?
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -9015,7 +9436,7 @@ final class BreadcrumbTracker {
 
 ---
 
-### `Q-77` — How do you evaluate a new third-party SDK before adding it?
+### `Q-78` — How do you evaluate a new third-party SDK before adding it?
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -9255,7 +9676,7 @@ public final class ResilientImageManager: ImageCachingService {
 
 ---
 
-### `Q-78` — An SDK is causing crashes. How do you prove it and fix it?
+### `Q-79` — An SDK is causing crashes. How do you prove it and fix it?
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -9487,7 +9908,7 @@ public final class AnalyticsManager {
 
 ---
 
-### `Q-79` — A crash happens only in production, for 1% of users, and you cannot reproduce it. What do you do?
+### `Q-80` — A crash happens only in production, for 1% of users, and you cannot reproduce it. What do you do?
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -9740,7 +10161,7 @@ public struct ProductFeedParser {
 
 ---
 
-### `Q-80` — A customer says the app crashes on a screen, but you have no crash log. How do you find the crash?
+### `Q-81` — A customer says the app crashes on a screen, but you have no crash log. How do you find the crash?
 
 - **Category:** `Engineering Leadership & Operations`
 
@@ -9928,9 +10349,9 @@ public struct SupportDiagnosticExporter {
 
 ---
 
-## 🧠 Memory Management (Q-81 – Q-88)
+## 🧠 Memory Management (Q-82 – Q-89)
 
-### `Q-81` — How does ARC work? What is the difference between strong, weak, and unowned?
+### `Q-82` — How does ARC work? What is the difference between strong, weak, and unowned?
 
 - **Category:** `Memory Management`
 
@@ -9990,7 +10411,7 @@ class RequestManager {
 
 ---
 
-### `Q-82` — What is a retain cycle? How do you detect and fix them?
+### `Q-83` — What is a retain cycle? How do you detect and fix them?
 
 - **Category:** `Memory Management`
 
@@ -10065,7 +10486,7 @@ func testNoRetainCycle() {
 
 ---
 
-### `Q-83` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
+### `Q-84` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
 
 - **Category:** `Memory Management`
 
@@ -10123,7 +10544,7 @@ struct LargeModel: Describable {
 
 ---
 
-### `Q-84` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
+### `Q-85` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
 
 - **Category:** `Memory Management`
 
@@ -10191,7 +10612,7 @@ print(s2.value)    // "world"
 
 ---
 
-### `Q-85` — How do you handle memory warnings?
+### `Q-86` — How do you handle memory warnings?
 
 - **Category:** `Memory Management`
 
@@ -10361,7 +10782,7 @@ func downsample(url: URL, maxPixel: CGFloat) -> UIImage? {
 
 ---
 
-### `Q-86` — What is the Swift runtime side table? How do weak references work under the hood?
+### `Q-87` — What is the Swift runtime side table? How do weak references work under the hood?
 
 - **Category:** `Memory Management`
 
@@ -10426,7 +10847,7 @@ print(observer?.id ?? "nil")  // "nil"
 
 ---
 
-### `Q-87` — How does Jetsam work? What strategies do you use to survive memory pressure?
+### `Q-88` — How does Jetsam work? What strategies do you use to survive memory pressure?
 
 - **Category:** `Memory Management`
 
@@ -10513,7 +10934,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MXMetricManagerSubscriber
 
 ---
 
-### `Q-88` — How do you profile and debug memory issues in a production iOS app?
+### `Q-89` — How do you profile and debug memory issues in a production iOS app?
 
 - **Category:** `Memory Management`
 
