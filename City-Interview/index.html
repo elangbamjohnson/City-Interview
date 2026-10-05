@@ -233,6 +233,20 @@
       transform: translateY(-1px);
     }
 
+    #cmdThemeBtn {
+      padding: 0.4rem 0.65rem;
+      min-width: 34px;
+      justify-content: center;
+      font-size: 0.95rem;
+    }
+
+    #themeToggleBtn {
+      padding: 0.5rem 0.75rem;
+      min-width: 38px;
+      justify-content: center;
+      font-size: 0.95rem;
+    }
+
     .cmd-btn-primary {
       background: var(--accent-claude);
       border-color: var(--accent-claude);
@@ -1893,7 +1907,7 @@
     <div class="cmd-bar-top">
       <div class="cmd-bar-brand">
         <span style="color: var(--accent-claude); font-size: 1.25rem; line-height: 1; font-weight: 800;">✳</span>
-        <h1>Citi iOS Interview Prep</h1>
+        <h1>iOS Interview Prep</h1>
         <span class="brand-tag">91 Questions · 24 Guides</span>
       </div>
 
@@ -1909,9 +1923,8 @@
           <span class="kbd">M</span>
         </button>
         <!-- Theme toggle -->
-        <button class="cmd-btn" id="cmdThemeBtn" aria-label="Toggle light/dark theme">
+        <button class="cmd-btn" id="cmdThemeBtn" aria-label="Toggle light/dark theme" title="Toggle theme">
           <span id="cmdThemeIcon">🌙</span>
-          <span id="cmdThemeLabel">Dark</span>
         </button>
       </div>
     </div>
@@ -1988,8 +2001,8 @@
           <button id="sidebarToggleBtn" class="header-btn" title="Toggle Sidebar (or press M)" aria-label="Toggle Sidebar">
             <span>📑</span> <span id="sidebarToggleLabel">Hide Index</span>
           </button>
-          <button id="themeToggleBtn" class="header-btn" aria-label="Toggle theme">
-            <span id="themeIcon">🌙</span> <span id="themeLabel">Dark</span>
+          <button id="themeToggleBtn" class="header-btn" aria-label="Toggle theme" title="Toggle theme">
+            <span id="themeIcon">🌙</span>
           </button>
         </div>
       </header>
@@ -2253,11 +2266,14 @@
     function updateThemeUI(theme) {
       const isLight = theme === 'light';
       if (themeIcon) themeIcon.textContent = isLight ? '☀️' : '🌙';
-      if (themeLabel) themeLabel.textContent = isLight ? 'Claude Light' : 'Claude Dark';
+      if (themeLabel) themeLabel.textContent = '';
       const cmdThemeIcon = document.getElementById('cmdThemeIcon');
       const cmdThemeLabel = document.getElementById('cmdThemeLabel');
       if (cmdThemeIcon) cmdThemeIcon.textContent = isLight ? '☀️' : '🌙';
-      if (cmdThemeLabel) cmdThemeLabel.textContent = isLight ? 'Claude Light' : 'Claude Dark';
+      if (cmdThemeLabel) cmdThemeLabel.textContent = '';
+      const titleText = isLight ? 'Switch to Dark Mode' : 'Switch to Light Mode';
+      if (themeToggleBtn) themeToggleBtn.title = titleText;
+      if (cmdThemeBtn) cmdThemeBtn.title = titleText;
     }
 
     // ==========================================
