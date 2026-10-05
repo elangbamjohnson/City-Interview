@@ -1,6 +1,6 @@
 # 📱 iOS Senior & Staff Interview Question Bank
 
-> A comprehensive, senior & staff-level revision suite for 91 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, 60/120fps Scroll Hitch Elimination, Scalable Image Caching, Keychain Secrets Management, OAuth 2.0 PKCE & Token Rotation, Production Crash Log Triage & Symbolication, Memory Management, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
+> A comprehensive, senior & staff-level revision suite for 92 iOS interview questions covering Swift internals, Concurrency, Architecture, Auto Layout & Adaptive iPad Design, Localization & RTL, UICollectionView Diffable Data Sources & Compositional Layouts, Background Execution & State Restoration, Performance Profiling & Instruments, 60/120fps Scroll Hitch Elimination, Scalable Image Caching, Keychain Secrets Management, OAuth 2.0 PKCE & Token Rotation, Production Crash Log Triage & Symbolication, Memory Management, and Engineering Leadership. Each question includes a spoken pitch, in-depth technical breakdown, and real-world Swift code with interview talking points.
 
 ## 📊 Overview
 
@@ -19,9 +19,9 @@
 | **System Design & Mobile Architecture** | `4` | End-to-end mobile system design: Two-tier LRU memory/disk image caching with coalescing, Offline-First bi-directional syncing with outbox pattern, and E-commerce checkout & payment flow (Apple Pay, idempotency, gateway authorization & settlement). |
 | **Testing & AI Engineering** | `10` | Unit and UI testing with XCTest, protocol mocking and stubbing, TDD/BDD, test doubles (mocks/stubs/fakes), feature flagging, and hybrid cloud/on-device AI systems. |
 | **CI/CD & DevOps** | `2` | Automated continuous integration and delivery with GitHub Actions: PR quality gates, macOS runner optimization, Fastlane match code signing, and headless TestFlight deployment via App Store Connect API keys. |
-| **Engineering Leadership & Operations** | `6` | Production incident triage, crash log analysis & dSYM symbolication, Crashlytics velocity alerts, MetricKit crash loops, blameless post-mortems, and migrating legacy monoliths using the Strangler Fig pattern. |
+| **Engineering Leadership & Operations** | `7` | Production incident triage, crash log analysis & dSYM symbolication, Crashlytics velocity alerts, MetricKit crash loops, blameless post-mortems, and migrating legacy monoliths using the Strangler Fig pattern. |
 | **Memory Management** | `8` | ARC strong/weak/unowned, retain cycles, stack vs heap, Copy-on-Write internals, memory warnings, the Swift runtime side table, Jetsam OOM survival, and production memory profiling with Instruments and MetricKit. |
-| **Total** | **`91`** | Complete Senior & Staff iOS Interview Curriculum |
+| **Total** | **`92`** | Complete Senior & Staff iOS Interview Curriculum |
 
 ---
 
@@ -9657,7 +9657,7 @@ Memory trick: S-T-R-C → "Store encrypted, Temporary keychain, Read-only in CI,
 
 ---
 
-## 👔 Engineering Leadership & Operations (Q-78 – Q-83)
+## 👔 Engineering Leadership & Operations (Q-78 – Q-84)
 
 ### `Q-78` — Engineering Leadership — Production Incident Triage & Strangler Fig Migration
 
@@ -10838,9 +10838,347 @@ public struct SupportDiagnosticExporter {
 
 ---
 
-## 🧠 Memory Management (Q-84 – Q-91)
 
-### `Q-84` — How does ARC work? What is the difference between strong, weak, and unowned?
+---
+
+### `Q-84` — How do you handle a legacy Objective-C codebase while moving to Swift?
+
+- **Category:** `Engineering Leadership & Operations`
+
+> [!TIP]
+> **🗣️ Interview Pitch (Say it like this):**  
+> *"I migrate legacy Objective-C codebases incrementally using the Strangler Fig approach: writing all new features in Swift, converting existing files only when touched with tests in place, and shielding new code behind Swift protocol wrappers to prevent legacy API leaks. (Memory trick: N-T-C-W → 'New in Swift, Tests first, Convert when touched, Wrap the rest.')"*
+
+#### 📖 Detailed Answer
+
+"I never stop and rewrite everything. The app must keep shipping, so I move step by step. The rule I follow is simple: all new code is written in Swift, and old Objective-C is converted only when we have a real reason to touch it, like a bug fix or a feature change.
+
+Before I convert a file, I add tests around it. Then I convert it with no logic changes, so any bug is easy to find. I start with small, low-risk code that has few dependencies, like models, helpers, and utilities. The big, risky classes come last, after the team has learned the process.
+
+For the two languages to work together, I clean up the Objective-C side first. I add nullability and generics, so Swift sees real types and not Optional! everywhere. For old Objective-C code that I cannot convert yet, I write a small Swift wrapper in front of it. The new Swift code uses the wrapper, so the old API does not spread. I also track progress with simple numbers, like the percentage of Swift lines and the number of Objective-C files left."
+
+---
+
+### Real-World Production Example (FordPass & AutoZone)
+
+At Copper Mobile, I worked on client apps that had Objective-C and early Swift in the same project. Later at Cognizant, on FordPass and AutoZone, we worked in large codebases with older Objective-C. In those projects, the safe approach was always the same: new features in Swift, tests before any conversion, and one module at a time.
+
+For example, on FordPass, the legacy vehicle status and command dispatch service was written in Objective-C with completion blocks and implicit optionals. When we needed to support remote start and lock/unlock commands with retry logic, I wrote unit tests around the legacy Objective-C class, wrapped it behind a clean Swift protocol (`VehicleCommandServiceProtocol`) using Swift async/await, and later replaced the internals with Swift without breaking the UI coordinators. This eliminated forced unwrapping crashes and cut command failure troubleshooting time significantly.
+
+---
+
+### How We Implement It: The Big Picture
+
+```
+Old Objective-C app
+      │
+      ▼
+ 1. Make ObjC "Swift-friendly"  (nullability, generics, NS_SWIFT_NAME)
+      │
+      ▼
+ 2. Connect the languages       (bridging header  +  MyApp-Swift.h)
+      │
+      ▼
+ 3. Write all NEW code in Swift
+      │
+      ▼
+ 4. Convert old code only when touched  (tests first, no logic change)
+      │
+      ▼
+ 5. Wrap what can't move yet    (Swift facade over ObjC)
+      │
+      ▼
+ 6. Track progress → remove the last ObjC
+```
+
+---
+
+### Step 1: Connect the Two Languages
+
+| Direction | What to use | Setting |
+| :--- | :--- | :--- |
+| **Swift uses ObjC** | Bridging header: `MyApp-Bridging-Header.h`, with `#import "LegacyClass.h"` | `SWIFT_OBJC_BRIDGING_HEADER` |
+| **ObjC uses Swift** | Xcode generates `MyApp-Swift.h`. In `.m` files: `#import "MyApp-Swift.h"` | `SWIFT_OBJC_INTERFACE_HEADER_NAME` |
+| **Inside a framework** | Umbrella header, and ObjC uses `#import <MyFramework/MyFramework-Swift.h>` | `DEFINES_MODULE = YES` |
+| **Expose Swift to ObjC** | `@objc`, `@objcMembers`, and the class must inherit from `NSObject` | in code |
+
+---
+
+### Step 2: Make the Objective-C Side Swift-Friendly
+
+Without this, Swift sees every property as an implicitly unwrapped optional (`Type!`), and runtime crashes hide there.
+
+```objc
+// Before: Swift sees "String!" and "[Any]!"
+@interface UserService : NSObject
+- (NSString *)userName;
+- (NSArray *)orders;
+@end
+
+// After: Swift sees "String" and "[Order]"
+NS_ASSUME_NONNULL_BEGIN
+
+NS_SWIFT_NAME(UserService)
+@interface LegacyUserService : NSObject
+@property (nonatomic, readonly) NSString *userName;
+@property (nonatomic, readonly) NSArray<Order *> *orders;
+- (nullable Order *)orderWithId:(NSString *)orderId;
+- (void)fetchOrdersWithCompletion:(void (^)(NSArray<Order *> * _Nullable, NSError * _Nullable))completion;
+@end
+
+NS_ASSUME_NONNULL_END
+```
+
+**Useful Macros:**
+• `NS_ASSUME_NONNULL_BEGIN/END`: Everything is non-null unless explicitly marked `nullable`.
+• `NS_SWIFT_NAME`: Gives a clean, idiomatic Swift name (e.g., stripping legacy prefixes).
+• `NS_ENUM` / `NS_CLOSED_ENUM`: Imports as a native Swift enum.
+• `NS_REFINED_FOR_SWIFT`: Hides the raw ObjC method (`__fetchOrders`) so you can add a refined Swift version in an extension.
+• **Lightweight Generics:** e.g., `NSArray<Order *> *` imports as typed `[Order]`.
+
+Swift also imports completion-handler methods as `async` by itself, so you can call old code with `await`:
+```swift
+let orders = try await legacyService.fetchOrders()   // imported automatically from completion handler
+```
+
+---
+
+### Step 3: Swift Wrapper in Front of Old Code (Facade Pattern)
+
+```swift
+// The rest of the new code only sees this protocol
+protocol UserRepository {
+    func orders() async throws -> [Order]
+}
+
+// Thin wrapper over the legacy class
+final class LegacyUserRepository: UserRepository {
+    private let legacy = LegacyUserService()
+
+    func orders() async throws -> [Order] {
+        try await legacy.fetchOrders()
+    }
+}
+```
+
+Later, when you replace the Objective-C code, write a new class conforming to the same protocol. Only the composition root/wiring changes; nothing else in the app is touched.
+
+---
+
+### Step 4: Expose New Swift Code to Old Objective-C
+
+```swift
+@objcMembers
+final class PriceFormatter: NSObject {
+    func format(_ amount: Double) -> String { /* ... */ }
+}
+```
+
+```objc
+#import "MyApp-Swift.h"
+PriceFormatter *formatter = [PriceFormatter new];
+```
+
+#### What Does Not Cross the Boundary
+
+Objective-C runtime cannot see advanced Swift language features. If legacy code needs them, wrap them in an `@objc` adapter:
+
+| Swift Feature | Visible to ObjC? | Note / Workaround |
+| :--- | :--- | :--- |
+| **Structs** | ❌ No | Wrap in an `NSObject` class or expose primitive properties |
+| **Enums with associated values** | ❌ No | Use `@objc enum` (Int-backed) or class hierarchy |
+| **Generics (Swift own types)** | ❌ No | Type-erase or create non-generic `@objc` subclass |
+| **Protocol extensions & Tuples** | ❌ No | Expose concrete methods or wrapper objects |
+| **Actors** | ❌ No | Wrap actor calls in an `@objc` class with callbacks |
+| **async functions** | ✅ Yes | Imported into ObjC as completion-handler block methods |
+
+---
+
+### Step 5: Mixed Code in Swift Packages
+
+A single SwiftPM target cannot mix Swift and Objective-C files in the same directory.
+• Create two separate targets:
+  1. A C-language/Objective-C target with its `include/` public header folder.
+  2. A Swift target that declares a dependency on the Objective-C target.
+• This modular boundary physically enforces clean dependencies and accelerates parallel compilation.
+
+---
+
+### Step 6: Keep It Safe (Engineering Guardrails)
+
+1. **Tests First:** Add unit tests or UI tests around the old Objective-C class *before* converting it.
+2. **Convert with No Behavior Change:** Never refactor and convert in the same pull request. A 1:1 translation ensures any regressions are immediately caught.
+3. **Watch Objective-C Runtime Features:** Method swizzling, `performSelector:`, KVC/KVO, and `NSInvocation` need extra care. Swift properties require `@objc dynamic` for KVO observation.
+4. **Check Nil Behavior:** Objective-C silently swallows messages sent to `nil` (returns `0` or `nil`), whereas Swift crashes if force-unwrapped (`!`).
+5. **Use a Linter Rule:** Add a SwiftLint custom rule or CI script that blocks new `.m` files from being added to the repository.
+6. **Watch Metrics:** Ensure the crash-free user rate does not drop following conversion deployments.
+
+---
+
+### Conversion Order: Leaf Nodes First
+
+| Order | What to Convert | Why (Risk & Dependency Analysis) |
+| :---: | :--- | :--- |
+| **1** | **Models, Utilities, Extensions** | Fewest dependencies, leaf nodes, lowest risk |
+| **2** | **Networking, Parsing, Data Layer** | Easy to mock and unit test with contract fixtures |
+| **3** | **ViewModels & Business Logic** | High value; safe once test suite is in place |
+| **4** | **ViewControllers & UI** | Complex UIKit dependencies; convert after domain is pure Swift |
+| **5** | **AppDelegate, Entry Points & Core Monoliths** | Highest blast radius; convert last when entire app is modernized |
+
+---
+
+### Bonus Points (Staff-Level Interview Highlights)
+
+• **The "Big-Bang" Rewrite Fallacy:** Explain that full rewrites are one of software engineering's most common traps. They take years, freeze feature shipping, and discard a decade of bug fixes baked into the legacy code. Step-by-step Strangler Fig always wins.
+• **The "Boy Scout Rule":** Whenever an engineer touches an Objective-C file for a bug fix or small feature, they leave it better than they found it: convert it to Swift if it is small and testable.
+• **The Cost of the Bridge:** Calls across the ObjC-Swift bridge involve message dispatch (`objc_msgSend`) and type conversions. The generated `MyApp-Swift.h` header also increases rebuild cascades. Moving entire modules to Swift eliminates bridge overhead.
+• **Some Objective-C Can Stay:** If a legacy C/ObjC crypto, audio, or math engine is completely stable, has 100% test coverage, and never requires changes, converting it has low business ROI. Modernize based on product velocity and defect rates, not dogmatism.
+
+---
+
+### One-Liner & Memory Trick
+• **One-liner:** New code in Swift, convert old code only when touched, test first, and wrap what can't move yet.
+• **Memory trick:** **N-T-C-W** → *"New in Swift, Tests first, Convert when touched, Wrap the rest."*
+
+#### 💻 Legacy Interoperability & Facade Adapter Example
+
+```swift
+// =========================================================================
+// 🔄 SENIOR INTERVIEW ARCHITECTURE: Legacy Objective-C to Modern Swift Migration
+// =========================================================================
+//
+// 💡 SENIOR / STAFF INTERVIEW TALKING POINTS:
+// • Incremental Modernization (Strangler Fig): Never halt product development
+//   for a "big-bang" rewrite. Ship new features in Swift, modernize legacy incrementally.
+// • Bridge Hygiene: Add nullability annotations (`NS_ASSUME_NONNULL_BEGIN/END`),
+//   generics (`NSArray<Order *> *`), and `NS_SWIFT_NAME` to ObjC headers before touching Swift.
+// • Protocol Facade Pattern: Isolate legacy ObjC behind an abstract Swift protocol.
+//   New UI/ViewModel layers only talk to the protocol, preventing ObjC leakage.
+// • Swift Concurrency Interop: Swift automatically imports Objective-C completion-block
+//   APIs as `async throws` methods, enabling clean `await` syntax without manual wrapping.
+// • Safe Conversion Order: Leaf nodes first (Models, Utilities) → Core/Data layers →
+//   Business Logic / ViewModels → ViewControllers → AppDelegate / Composition Root.
+
+import Foundation
+
+// MARK: - 1. Simulated Objective-C Header Annotations
+// In Objective-C (LegacyUserService.h):
+//
+// NS_ASSUME_NONNULL_BEGIN
+// NS_SWIFT_NAME(LegacyUserBridge)
+// @interface LegacyUserService : NSObject
+// - (void)fetchProfileWithCompletion:(void (^)(NSDictionary * _Nullable, NSError * _Nullable))completion;
+// @end
+// NS_ASSUME_NONNULL_END
+
+/// Simulated Legacy Objective-C class exposed through bridging header `<App>-Bridging-Header.h`
+@objcMembers
+public final class LegacyUserBridge: NSObject {
+    // In actual ObjC, this uses a completion handler block.
+    // Swift automatically synthesizes an async throwing method from this signature!
+    public func fetchProfile(completion: @escaping ([String: Any]?, Error?) -> Void) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+            let mockData: [String: Any] = [
+                "userId": "usr_9981",
+                "name": "Jane Doe",
+                "membershipTier": "Platinum"
+            ]
+            completion(mockData, nil)
+        }
+    }
+}
+
+// MARK: - 2. Modern Swift Protocol Interface (Boundary Abstraction)
+// The rest of the modern codebase ONLY depends on this protocol, never the legacy class.
+
+public struct UserProfile: Identifiable, Equatable, Sendable {
+    public let id: String
+    public let name: String
+    public let membershipTier: String
+    
+    public init(id: String, name: String, membershipTier: String) {
+        self.id = id
+        self.name = name
+        self.membershipTier = membershipTier
+    }
+}
+
+public protocol UserRepositoryProtocol: Sendable {
+    func getUserProfile() async throws -> UserProfile
+}
+
+// MARK: - 3. Strangler Facade Adapter (Thin Wrapper)
+// Bridges the legacy Objective-C code to modern Swift async/await architecture.
+
+public final class LegacyUserRepositoryAdapter: UserRepositoryProtocol {
+    private let legacyService: LegacyUserBridge
+    
+    public init(legacyService: LegacyUserBridge = LegacyUserBridge()) {
+        self.legacyService = legacyService
+    }
+    
+    public func getUserProfile() async throws -> UserProfile {
+        // Swift automatically imports completion-handler Objective-C methods as async!
+        // We use withCheckedThrowingContinuation to bridge the completion block:
+        let rawDict: [String: Any] = try await withCheckedThrowingContinuation { continuation in
+            legacyService.fetchProfile { dict, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else if let dict = dict {
+                    continuation.resume(returning: dict)
+                } else {
+                    continuation.resume(throwing: URLError(.badServerResponse))
+                }
+            }
+        }
+        
+        // Defensive type extraction: Validate untyped legacy dictionaries into type-safe Swift structs
+        guard let id = rawDict["userId"] as? String,
+              let name = rawDict["name"] as? String,
+              let tier = rawDict["membershipTier"] as? String else {
+            throw DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "Invalid legacy payload"))
+        }
+        
+        return UserProfile(id: id, name: name, membershipTier: tier)
+    }
+}
+
+// MARK: - 4. Exposing Modern Swift to Legacy Objective-C
+// When Objective-C screens need to call newly written Swift features.
+
+@objc(SwiftPriceFormatter)
+@objcMembers
+public final class PriceFormatter: NSObject {
+    public func format(cents: Int) -> String {
+        let dollars = Double(cents) / 100.0
+        return String(format: "$%.2f", dollars)
+    }
+}
+
+// MARK: - 5. Future-State Pure Swift Implementation
+// When the team eventually retires the Objective-C service, we swap this in via DI.
+// Zero changes are needed in ViewModels or UI!
+
+public final class ModernUserRepository: UserRepositoryProtocol {
+    private let session: URLSession
+    
+    public init(session: URLSession = .shared) {
+        self.session = session
+    }
+    
+    public func getUserProfile() async throws -> UserProfile {
+        // Pure Swift Concurrency + Decodable implementation
+        return UserProfile(id: "usr_9981", name: "Jane Doe", membershipTier: "Platinum")
+    }
+}
+```
+
+
+---
+
+## 🧠 Memory Management (Q-85 – Q-92)
+
+### `Q-85` — How does ARC work? What is the difference between strong, weak, and unowned?
 
 - **Category:** `Memory Management`
 
@@ -10900,7 +11238,7 @@ class RequestManager {
 
 ---
 
-### `Q-85` — What is a retain cycle? How do you detect and fix them?
+### `Q-86` — What is a retain cycle? How do you detect and fix them?
 
 - **Category:** `Memory Management`
 
@@ -10975,7 +11313,7 @@ func testNoRetainCycle() {
 
 ---
 
-### `Q-86` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
+### `Q-87` — What is the difference between stack and heap memory? How does Swift decide where to allocate?
 
 - **Category:** `Memory Management`
 
@@ -11033,7 +11371,7 @@ struct LargeModel: Describable {
 
 ---
 
-### `Q-87` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
+### `Q-88` — Explain Copy-on-Write (CoW). How does Swift implement it, and how do you implement it in a custom type?
 
 - **Category:** `Memory Management`
 
@@ -11101,7 +11439,7 @@ print(s2.value)    // "world"
 
 ---
 
-### `Q-88` — How do you handle memory warnings?
+### `Q-89` — How do you handle memory warnings?
 
 - **Category:** `Memory Management`
 
@@ -11271,7 +11609,7 @@ func downsample(url: URL, maxPixel: CGFloat) -> UIImage? {
 
 ---
 
-### `Q-89` — What is the Swift runtime side table? How do weak references work under the hood?
+### `Q-90` — What is the Swift runtime side table? How do weak references work under the hood?
 
 - **Category:** `Memory Management`
 
@@ -11336,7 +11674,7 @@ print(observer?.id ?? "nil")  // "nil"
 
 ---
 
-### `Q-90` — How does Jetsam work? What strategies do you use to survive memory pressure?
+### `Q-91` — How does Jetsam work? What strategies do you use to survive memory pressure?
 
 - **Category:** `Memory Management`
 
@@ -11423,7 +11761,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MXMetricManagerSubscriber
 
 ---
 
-### `Q-91` — How do you profile and debug memory issues in a production iOS app?
+### `Q-92` — How do you profile and debug memory issues in a production iOS app?
 
 - **Category:** `Memory Management`
 

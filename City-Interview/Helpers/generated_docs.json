@@ -856,7 +856,7 @@
         "filename": "PerformanceProfiling-TalkingPoints.md"
       }
     ],
-    "Q-89": [
+    "Q-90": [
       "performance-profiling",
       "ios-internals"
     ],
@@ -1020,6 +1020,14 @@
         "title": "Dependency Injection (DI) — Interview Cheat Sheet",
         "icon": "💉",
         "filename": "DependencyInjection-CheatSheet.md"
+      }
+    ],
+    "Q-84": [
+      {
+        "docId": "leadership-ownership",
+        "title": "Development Lead & Feature Ownership Guide",
+        "filename": "DevelopmentLeadOwnership-TalkingPoints.md",
+        "icon": "👔"
       }
     ]
   }
