@@ -4721,7 +4721,11 @@ Say it like this:
 
 "A circular dependency means module A imports module B, and module B imports module A. In Swift Package Manager, this is not allowed. The build fails with a cycle error. So the compiler catches it, but I want to avoid it by design, not fix it later.
 
-I use four ways to stop cycles. First, I keep a one-way layer order: App → Features → Core. Core never imports a feature, and features never import other features. Second, I depend on protocols, not on modules. If A needs something from B, A defines a small protocol, and the App target injects the real B. Third, I use dependency inversion. The module that needs the service owns the protocol, so the arrow points to the module that needs it, not to the one that provides it. Fourth, I move the shared part out. If two modules truly need the same code, I pull that code into a new lower-level module that both can import.
+I use four ways to stop cycles:
+1. First, I keep a one-way layer order: App → Features → Core. Core never imports a feature, and features never import other features.
+2. Second, I depend on protocols, not on modules. If A needs something from B, A defines a small protocol, and the App target injects the real B.
+3. Third, I use dependency inversion. The module that needs the service owns the protocol, so the arrow points to the module that needs it, not to the one that provides it.
+4. Fourth, I move the shared part out. If two modules truly need the same code, I pull that code into a new lower-level module that both can import.
 
 I also check this in CI. A script fails the build if a feature imports another feature, so a cycle never comes back."
 
